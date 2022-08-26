@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Background Component renders slider correctly 1`] = `undefined`;
+
+exports[`Background Component renders the page correctly 1`] = `undefined`;
