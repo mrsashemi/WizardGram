@@ -7,7 +7,7 @@ export function TodayWeather(props) {
             <h3 className="city">{props.currentCity}</h3>
             <div className="time">{props.localDate}</div>
             <div className="temp">{props.currentTemp}</div>
-            <img src="" alt="" className="weatherIcon"></img>
+            <img src={props.currentIcon} alt="" className="weatherIcon"></img>
         </div>
     )
 }

@@ -55,7 +55,7 @@ export function WeatherImgSlider() {
             resetInterval();
         }
         
-    })
+    }, [index]);
     
 
     function advanceIndex() {

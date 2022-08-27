@@ -47,6 +47,7 @@
     width: 39.6vmin;
     pointer-events: auto;
     border-radius: 2.5vmin;
+    color: white;
 }
 
 #weatherAppImgSlider {
@@ -93,6 +94,7 @@
     backdrop-filter: blur(8.5px);
     -webkit-backdrop-filter: blur(6.5px);
     border-radius: 2.5vmin;
+    opacity: 0.75;
 }
 
 
@@ -176,9 +178,79 @@
 #todayWeather {
     margin-left: 3vmin;
     margin-top: 5vmin;
+    font-size: 1vmin;
+}
+
+.currentWeather,
+.city,
+.time,
+.temp {
+    margin: 0.25vmin;
+    padding: 0;
 }
 
 #todayDetails {
     margin-right: 3vmin;
-    margin-top: 1.5vmin;
+    margin-top: 1vmin;
+}
+
+.weatherIcon {
+    height: 6vmin;
+    width: auto;
+    opacity: 0.5;
+}
+
+.tempIcon,
+.humidityIcon,
+.cloudIcon,
+.windIcon {
+    height: 2vmin;
+    width: auto;
+    opacity: 0.5;
+}
+
+#todayDetails > ul > li {
+    list-style-type: none;
+    font-size: 1.1vmin;
+}
+
+#titleAppContainer {
+    height: 26.4vmin;
+    width: 26.4vmin;
+    /* From https://css.glass */
+    background: linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.1) 0%,
+        rgba(255, 154, 0, 0.1) 10%,
+        rgba(208, 222, 33, 0.1) 20%,
+        rgba(79, 220, 74, 0.1) 30%,
+        rgba(63, 218, 216, 0.1) 40%,
+        rgba(47, 201, 226, 0.1) 50%,
+        rgba(28, 127, 238, 0.1) 60%,
+        rgba(95, 21, 242, 0.1) 70%,
+        rgba(186, 12, 248, 0.1) 80%,
+        rgba(251, 7, 217, 0.1) 90%,
+        rgba(255, 0, 0, 0.1) 100%
+    );
+    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border-radius: 2.5vmin;
+}
+
+.titleContainer {
+    transform: translateX(1vmin) translateY(1vmin);
+    height: 26.4vmin;
+    width: 26.4vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.wrkTitle {
+    color: white;
+    font-size: 4.25vmin;
+    margin: 0;
+    padding: 0;
 }
