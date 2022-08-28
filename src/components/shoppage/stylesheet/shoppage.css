@@ -1,14 +1,19 @@
+#shopPageBodyContainer {
+    display: flex;
+    margin-top: 3vmin;
+    margin-left: 3vmin;
+    gap: 3vmin;
+}
+
 #shopNavContainer {
     display: flex;
     flex-direction: column;
     gap: 3vmin;
-    margin-top: 3vmin;
-    margin-left: 3vmin;
 }
 
 #shopHeaderContainer {
-    height: 24vmin;
-    width: 36vmin;
+    height: 24vh;
+    width: 24vw;
     /* From https://css.glass */
     background: rgb(255, 255, 255, 0.5);
     box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
@@ -19,13 +24,12 @@
 
 .shopTitleContainer {
     transform: translateX(1vmin) translateY(1vmin);
-    height: 24vmin;
-    width: 36vmin;
+    height: 24vh;
+    width: 24vw;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    pointer-events: none;
 }
 
 .shopTitle {
@@ -36,8 +40,8 @@
 }
 
 #shopLinksContainer {
-    height: 48vmin;
-    width: 36vmin;
+    height: 60vh;
+    width: 24vw;
     /* From https://css.glass */
     background: rgb(255, 255, 255, 0.5);
     box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
@@ -48,13 +52,12 @@
 
 .shopProductLinks {
     transform: translateX(1vmin) translateY(1vmin);
-    height: 48vmin;
-    width: 36vmin;
+    height: 60vh;
+    width: 24vw;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    pointer-events: none;
 }
 
 .productLink {
@@ -63,3 +66,35 @@
     margin: 0;
     padding: 0;
 }
+
+#shopProductListContainer {
+    height: 87vh;
+    width: 70vw;
+    /* From https://css.glass */
+    background: rgb(255, 255, 255, 0.5);
+    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border-radius: 2.5vmin;
+}
+
+.shopProductList {
+    transform: translateX(1vmin) translateY(1vmin);
+    height: 87vh;
+    width: 70vw;
+}
+
+.headerAndCart {
+    width: 97.5%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.productHeader {
+    color: black;
+    font-size: 4.25vmin;
+    margin: 0;
+    padding: 0;
+}
+
+
