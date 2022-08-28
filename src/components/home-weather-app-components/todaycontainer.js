@@ -10,7 +10,7 @@ export function TodayWeatherContainer() {
     const [currentCity, setCurrentCity] = useState('');
     const [currentTemp, setCurrentTemp] = useState('');
     const [currentIcon, setCurrentIcon] = useState('');
-    const [utcTime, setUtc] = useState(new Date().getTimezoneOffset()*60*1000);
+    const [utcTime] = useState(new Date().getTimezoneOffset()*60*1000);
     const [timeChange, setTimeChange] = useState('');
     const [localDate, setLocalDate] = useState('');
     const [feelsLike, setFeelsLike] = useState('');
@@ -18,9 +18,9 @@ export function TodayWeatherContainer() {
     const [cloudiness, setCloudiness] = useState('');
     const [wind, setWind] = useState('');
     const [tempIcon, setTempIcon] = useState('');
-    const [cloudIcon, setCloudIcon] = useState(`https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
-    const [humidityIcon, setHumidityIcon] = useState('https://icons.veryicon.com/png/128/weather/weather-colored-outline/humidity-24.png');
-    const [windIcon, setWindIcon] = useState('https://cdn-icons-png.flaticon.com/128/1458/1458846.png');
+    const [cloudIcon] = useState(`https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
+    const [humidityIcon] = useState('https://icons.veryicon.com/png/128/weather/weather-colored-outline/humidity-24.png');
+    const [windIcon] = useState('https://cdn-icons-png.flaticon.com/128/1458/1458846.png');
 
     useEffect(() => {
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=99b2660cb4dd6a884a9f1fbb2a34ba05&units=imperial`, {mode: 'cors'})
@@ -40,11 +40,21 @@ export function TodayWeatherContainer() {
                     setApiSuccess(() => true);
                 },
                 (error) => {
-                    console.log("error")
                     setError(error);
+                    setCurrentWeather(() => "loading...");
+                    setCurrentCity(() => "loading...");
+                    setCurrentTemp(() => "loading...");
+                    setCurrentIcon(() => `hhttps://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
+                    setTimeChange(() => "loading...");
+                    setFeelsLike(() => "loading...");
+                    setHumidity(() => "loading...");
+                    setCloudiness(() => "loading...");
+                    setWind(() => `About loading... mph`);
+                    setTempIcon(() => `https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
+                    setApiSuccess(() => false);
                 }
             )
-    }, []);
+    }, [location]);
 
     useEffect(() => {
         if (apiSuccess) {
@@ -54,7 +64,7 @@ export function TodayWeatherContainer() {
             setLocalDate(prevDate => localTime);
             console.log(localTime);
         }
-    }, [apiSuccess])
+    }, [apiSuccess, timeChange, utcTime])
 
     return (
         <div id="todayWeatherContainer">

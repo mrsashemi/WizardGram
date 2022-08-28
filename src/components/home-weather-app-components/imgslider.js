@@ -5,7 +5,7 @@ export function WeatherImgSlider() {
     const [index, setIndex] = useState(0);
     const [topOacity, setTopOpacity] = useState(0.25);
     const [bottomOpacity, setBottomOpacity] = useState(0.5);
-    const [filmPhotos, setFilmPhotos] = useState([
+    const [filmPhotos] = useState([
         {url: weatherImages['blacksandwave.jpg'], id: 0},
         {url: weatherImages['hasibsand.jpg'], id: 1},
         {url: weatherImages['joshuatree.jpg'], id: 2},
@@ -34,14 +34,15 @@ export function WeatherImgSlider() {
         {url: weatherImages['stars.jpg'], id: 25}
     ]);
 
+    //In order to create a fading slideshow, use a ref to clear interval
     const timeoutRef = React.useRef(null);
-
     function resetInterval() {
         if (timeoutRef.current) {
           clearInterval(timeoutRef.current);
         }
     }
 
+    //to fade the image in, useEffect with setInterval once the index of the image changes
     useEffect(() => {
         if (topOacity <= 0) {
             resetInterval();
@@ -51,13 +52,15 @@ export function WeatherImgSlider() {
             }, 50)
         }
 
-        if (topOacity == 0.25) {
+        if (topOacity === 0.25) {
             resetInterval();
         }
         
-    }, [index]);
+    }, [index, topOacity]);
     
 
+    //to fade the image out, set an Interval with a local counter variable
+    //once the counter hits the desired value, advance the index and clear interval
     function advanceIndex() {
         resetInterval();
         let count = 0;
@@ -68,7 +71,7 @@ export function WeatherImgSlider() {
                 count++
             } 
             
-            if (count == 25) {
+            if (count === 25) {
                 (index !== filmPhotos.length - 1) ? setIndex(idx => idx + 1) : setIndex(idx => 0)
                 resetInterval();
             }
@@ -85,7 +88,7 @@ export function WeatherImgSlider() {
                 count++
             } 
             
-            if (count == 25) {
+            if (count === 25) {
                 (index !== 0) ? setIndex(idx => idx - 1) : setIndex(idx => filmPhotos.length - 1);
                 resetInterval();
             }
