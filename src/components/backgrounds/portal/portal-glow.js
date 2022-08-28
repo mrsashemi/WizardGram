@@ -42,3 +42,13 @@ export function PortalBackgroundGlow(props) {
         </div>
     )
 }
+
+
+export function SimplePortalBackgroundGlow() {
+    return (
+        <div id="portalGlow">
+            <div id="portalGlow2">
+            </div>
+        </div>
+    )
+}

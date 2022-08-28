@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { images } from "./assets";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export function ShopApp() {
+    let navigate = useNavigate();
+
+    function onClickShopApp() {
+        navigate('/shop');
+    }
 
     return (
-        <div id="shopAppContainer">
+        <div id="shopAppContainer" onClick={onClickShopApp}>
             <div className="shopAppBackgroundContainer">
                 <div className="shopAppBackground"></div>
                 <div className="shopAppGlass"></div>

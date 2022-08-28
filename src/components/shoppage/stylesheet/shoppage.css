@@ -1,0 +1,65 @@
+#shopNavContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 3vmin;
+    margin-top: 3vmin;
+    margin-left: 3vmin;
+}
+
+#shopHeaderContainer {
+    height: 24vmin;
+    width: 36vmin;
+    /* From https://css.glass */
+    background: rgb(255, 255, 255, 0.5);
+    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border-radius: 2.5vmin;
+}
+
+.shopTitleContainer {
+    transform: translateX(1vmin) translateY(1vmin);
+    height: 24vmin;
+    width: 36vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    pointer-events: none;
+}
+
+.shopTitle {
+    color: black;
+    font-size: 4.25vmin;
+    margin: 0;
+    padding: 0;
+}
+
+#shopLinksContainer {
+    height: 48vmin;
+    width: 36vmin;
+    /* From https://css.glass */
+    background: rgb(255, 255, 255, 0.5);
+    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border-radius: 2.5vmin;
+}
+
+.shopProductLinks {
+    transform: translateX(1vmin) translateY(1vmin);
+    height: 48vmin;
+    width: 36vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    pointer-events: none;
+}
+
+.productLink {
+    color: black;
+    font-size: 4.25vmin;
+    margin: 0;
+    padding: 0;
+}

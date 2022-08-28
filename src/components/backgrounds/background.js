@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './stylesheets/portal.css'
-import { PortalBackgroundGlow } from "./portal/portal-glow";
-import { PortalBackground } from "./portal/portal";
+import { PortalBackgroundGlow, SimplePortalBackgroundGlow } from "./portal/portal-glow";
+import { PortalBackground, SimplePortalBackground } from "./portal/portal";
 
 export function Background() {
     const [opacityRange, setOpacityRange] = useState(255);
@@ -23,6 +23,16 @@ export function Background() {
                     onChange={opacitySlider} 
                 />
             </div>
+        </div>
+    )
+}
+
+export function SimpleBackground() {
+    return (
+        <div id="backgroundContainer">
+            <SimplePortalBackgroundGlow />
+            <SimplePortalBackground />
+            <div id="whiteGlassBackground"></div>
         </div>
     )
 }

@@ -45,3 +45,11 @@ export function PortalBackground(props) {
         </div>
     )
 }
+
+export function SimplePortalBackground() {
+    const [portalOpacity, setPortalOpacity] = useState(0.6)
+
+    return (
+        <div id="portalContainer" style={{opacity: portalOpacity}}></div>
+    )
+}
