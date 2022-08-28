@@ -1,8 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ShopPage } from './components/shoppage/shoppage';
-import { Homepage } from './components/homepage/homepage';
+import { ShopPage } from './pages/shoppage/shoppage';
+import { Homepage } from './pages/homepage/homepage';
 
 function App() {
   return (

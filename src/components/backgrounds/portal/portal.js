@@ -3,7 +3,7 @@ import '../stylesheets/portal.css'
 import uniqid from 'uniqid';
 
 export function PortalBackground(props) {
-    const [portalSquares, setPortalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
+    const [portalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
     const [portalOpacity, setPortalOpacity] = useState(props.opacityRange/255)
     const [portalPointerEvents, setPortalPointerEvents] = useState('auto')
     const [portalVisibility, setPortalVisibility] = useState('none')
@@ -26,8 +26,8 @@ export function PortalBackground(props) {
     useEffect(() => {
         if (portalOpacity !== props.opacityRange/255) setPortalOpacity(() => props.opacityRange/255);
         (props.opacityRange < 128) ? setPortalPointerEvents(() => 'none') : setPortalPointerEvents(() => 'auto');
-        (props.opacityRange == 0) ? setPortalVisibility(() => 'none') : setPortalVisibility(() => 'grid');
-    }, [props.opacityRange]);
+        (props.opacityRange === 0) ? setPortalVisibility(() => 'none') : setPortalVisibility(() => 'grid');
+    }, [props.opacityRange, portalOpacity]);
 
     return (
         <div id="portalContainer" style={{opacity: portalOpacity, pointerEvents: portalPointerEvents, display: portalVisibility}}>
@@ -47,7 +47,7 @@ export function PortalBackground(props) {
 }
 
 export function SimplePortalBackground() {
-    const [portalOpacity, setPortalOpacity] = useState(0.6)
+    const [portalOpacity] = useState(0.6)
 
     return (
         <div id="portalContainer" style={{opacity: portalOpacity}}></div>

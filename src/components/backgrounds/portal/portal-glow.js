@@ -3,8 +3,8 @@ import '../stylesheets/portal.css'
 import uniqid from 'uniqid';
 
 export function PortalBackgroundGlow(props) {
-    const [portalSquares, setPortalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
-    const [portalOpacity, setPortalOpacity] = useState(props.opacityRange/255)
+    const [portalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
+    const [portalOpacity] = useState(props.opacityRange/255)
     const [portalVisibility, setPortalVisibility] = useState('none')
     const [animateClass, setAnimateClass] = useState('nonanimated')
 
@@ -21,8 +21,8 @@ export function PortalBackgroundGlow(props) {
 
     useEffect(() => {
         if (portalOpacity !== props.opacityRange/255) setAnimateClass(() => 'animate');
-        (props.opacityRange == 255) ? setPortalVisibility(() => 'none') : setPortalVisibility(() => 'grid');
-    }, [props.opacityRange]);
+        (props.opacityRange === 255) ? setPortalVisibility(() => 'none') : setPortalVisibility(() => 'grid');
+    }, [props.opacityRange, portalOpacity]);
 
     return (
         <div id="portalGlow" className={animateClass}>
@@ -32,7 +32,6 @@ export function PortalBackgroundGlow(props) {
                         <div 
                             className="glowSquare" 
                             key={index} 
-                            role="glow-background-styling"
                             onMouseEnter={startGlowEffect}
                             onMouseLeave={fadeGlowEffect}
                         ></div>
