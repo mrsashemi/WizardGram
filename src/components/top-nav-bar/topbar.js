@@ -2,17 +2,20 @@ import { Link } from "react-router-dom";
 import './stylesheet/topbar.css';
 import { Clock } from "./clock";
 
-export function TopNavBar() {
+const linkStyle = {
+    color: "white"
+}
 
+export function TopNavBar() {
     return (
         <div id="topBarContainer">
             <Clock />
             <div className="topBarLinks">
-                <Link to='/'>
+                <Link to='/' style={linkStyle}>
                     <div>Home</div>
                 </Link>
                     <div className="visibilityQueries">About</div>
-                <Link to='/shop'>
+                <Link to='/shop' style={linkStyle}>
                     <div className="visibilityQueries">Shop</div>
                 </Link>
             </div>
@@ -26,11 +29,11 @@ export function ShopNavBar() {
         <div id="topBarContainer">
             <Clock />
             <div className="topBarLinks">
-                <Link to='/'>
+                <Link to='/' style={linkStyle}>
                     <div>Home</div>
                 </Link>
                 <div>Contact</div>
-                <Link to='/shop'>
+                <Link to='/shop' style={linkStyle}>
                     <div>Shop</div>
                 </Link>
                 <div>Cart</div>

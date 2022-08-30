@@ -12,17 +12,18 @@
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.6px);
     -webkit-backdrop-filter: blur(6.6px);
-    padding-top: 0.1rem;
 }
 
 .topBarLinks {
     display: var(--top-bar-links-dislpay);
+    margin-top: 0.1rem;
     gap: 1.5rem;
     margin-right: 1rem;
     font-size: 1em;
 }
 
 #clock {
+    align-self: center;
     font-size: 1em;
     margin-left: 1rem;
 }

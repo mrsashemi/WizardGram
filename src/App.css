@@ -1,3 +1,14 @@
+@font-face {
+  font-family: '8bit';
+  src: url('/src/data/fonts/VT323-Regular.ttf');
+}
+
+* {
+  font-family: '8bit', 'Courier New', Courier, monospace;
+  box-sizing: border-box;
+}
+
+
 :root {
   /*background*/
   --background-grid-columns: repeat(6, 1fr);
@@ -7,11 +18,11 @@
   --larger-app-width: 24rem;
   --small-app-dimension: 8rem;
   --wrk-title-font-size: 3em;
-  --today-weather-font-size: 0.6em;
+  --today-weather-font-size: 0.75em;
   --today-weather-margin-top: 2rem;
   --weather-icon-height: 3rem;
   --app-visibility: visibile;
-  --shop-app-title-size: 1em;
+  --shop-app-title-size: 1.1em;
   --analog-clock-position: translateX(2.6rem);
   --home-page-apps-gap: 1.5rem;
   --home-page-apps-margin-top: 1.5rem;

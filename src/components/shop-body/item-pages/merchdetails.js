@@ -13,7 +13,7 @@ export function MerchDetail() {
     },[merch, itemId.id])
 
     function advanceIndex() {
-        if (index < merchandise.imgExamples.length - 1) {
+        if (index < merch.imgExamples.length - 1) {
             setIndex(idx => idx + 1)
         } else {
             setIndex (() => 0);

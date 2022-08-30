@@ -9,6 +9,11 @@
     z-index: 1;
     top: 0;
     pointer-events: none;
+    text-shadow:
+    -1px -1px 0 black,  
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
 }
 
 #pageBodyContainer {
@@ -173,7 +178,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 0.5em;
+    font-size: 0.2em;
 }
 
 .weatherIcon {

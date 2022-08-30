@@ -124,13 +124,15 @@
 .productCardContainer > h6 {
     margin: 0;
     padding: 0;
+    font-size: 1em;
 }
 
 .itemTitle {
     margin: 0;
     padding: 0;
     text-align: center;
-    height: 2.5rem;
+    height: 1.5rem;
+    font-size: 1em;
 }
 
 
