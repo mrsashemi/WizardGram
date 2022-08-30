@@ -11,9 +11,9 @@ export function TopNavBar() {
                 <Link to='/'>
                     <div>Home</div>
                 </Link>
-                <div>About</div>
+                    <div className="visibilityQueries">About</div>
                 <Link to='/shop'>
-                    <div>Shop</div>
+                    <div className="visibilityQueries">Shop</div>
                 </Link>
             </div>
         </div>

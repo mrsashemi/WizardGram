@@ -1,31 +1,36 @@
+#shopPageContainer {
+    width: 100%;
+    height: 100%;
+}
+
 #shopPageBodyContainer {
     display: flex;
-    margin-top: 3vmin;
-    margin-left: 3vmin;
-    gap: 3vmin;
+    margin-top: var(--home-page-apps-margin-top);
+    margin-left: var(--home-page-apps-margin-left);
+    gap: var(--home-page-apps-gap);
 }
 
 #shopNavContainer {
     display: flex;
     flex-direction: column;
-    gap: 3vmin;
+    gap: var(--home-page-apps-gap);
 }
 
 #shopHeaderContainer {
-    height: 24vh;
-    width: 24vw;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     /* From https://css.glass */
     background: rgb(255, 255, 255, 0.5);
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .shopTitleContainer {
-    transform: translateX(1vmin) translateY(1vmin);
-    height: 24vh;
-    width: 24vw;
+    transform: translateX(1rem) translateY(0.5rem);
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -34,26 +39,26 @@
 
 .shopTitle {
     color: black;
-    font-size: 4.25vmin;
+    font-size: var(--wrk-title-font-size);
     margin: 0;
     padding: 0;
 }
 
 #shopLinksContainer {
-    height: 60vh;
-    width: 24vw;
+    height: var(--shop-product-links-height);
+    width: var(--larger-app-width);
     /* From https://css.glass */
     background: rgb(255, 255, 255, 0.5);
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .shopProductLinks {
-    transform: translateX(1vmin) translateY(1vmin);
-    height: 60vh;
-    width: 24vw;
+    transform: translateX(1rem) translateY(0.5rem);
+    height: var(--shop-product-links-height);
+    width: var(--larger-app-width);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -62,37 +67,36 @@
 
 .productLink {
     color: black;
-    font-size: 4.25vmin;
+    font-size: var(--wrk-title-font-size);
     margin: 0;
     padding: 0;
 }
 
 #shopProductListContainer {
-    height: 87vh;
-    width: 70vw;
+    height: var(--shop-product-list-height);
+    width: var(--shop-product-list-width);
     /* From https://css.glass */
     background: rgb(255, 255, 255, 0.5);
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .shopProductList {
-    transform: translateX(1vmin) translateY(1vmin);
-    height: 87vh;
-    width: 70vw;
+    height: 100%;
+    width: 100%;
 }
 
 .headerAndCart {
-    width: 97.5%;
+    width: var(--shop-product-list-width);
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .productHeader {
     color: black;
-    font-size: 4.25vmin;
+    font-size: var(--wrk-title-font-size);
     margin: 0;
     padding: 0;
 }

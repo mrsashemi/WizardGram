@@ -1,7 +1,7 @@
 #portalGlow {
     position: absolute;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-image: url('/src/components/backgrounds/background-images/portalglow.jpg');
     background-size: contain;
     z-index: -5;
@@ -30,13 +30,13 @@
 
 #portalGlow2 {
     position: absolute;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-image: url('/src/components/backgrounds/background-images/portalglow2.jpg');
     background-size: contain;
     z-index: -3;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: var(--background-grid-columns)
 }
 
 #portalGlow2 .animate {
@@ -71,13 +71,13 @@
 
 #portalContainer {
     position: absolute;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-image: url('/src/components/backgrounds/background-images/portal.jpg');
     background-size: contain;
     z-index: -1;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: var(--background-grid-columns);
 }
 
 #colorrange {
@@ -87,12 +87,26 @@
 
 #whiteGlassBackground {
     position: absolute;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: 0;
     /* From https://css.glass */
     background: rgb(255, 255, 255, 0.75);
     box-shadow: inset 0 4vmin 30vmin rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+}
+
+.slider {
+    position: absolute;
+    z-index: 4;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    transform: translateY(0.25rem);
+    pointer-events: none;
+}
+
+.slider > input {
+    pointer-events: auto;
 }

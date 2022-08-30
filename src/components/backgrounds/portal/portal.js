@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
-import '../stylesheets/portal.css'
+import '../stylesheets/portal.css';
 import uniqid from 'uniqid';
+import { useWindowSize } from '../../../hooks/windowsize';
 
 export function PortalBackground(props) {
-    const [portalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
-    const [portalOpacity, setPortalOpacity] = useState(props.opacityRange/255)
-    const [portalPointerEvents, setPortalPointerEvents] = useState('auto')
-    const [portalVisibility, setPortalVisibility] = useState('none')
+    const windowSize = useWindowSize();
+    const [portalSquares, setPortalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}));
+    const [portalOpacity, setPortalOpacity] = useState(props.opacityRange/255);
+    const [portalPointerEvents, setPortalPointerEvents] = useState('auto');
+    const [portalVisibility, setPortalVisibility] = useState('none');
+
+    useEffect(() => {
+        if (windowSize.width < 500) {
+            setPortalSquares(() => Array.apply(null, Array(8)).map(() => {return {id: uniqid}}))
+        } else {
+            setPortalSquares(() => Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
+        }
+    }, [windowSize])
 
 
 

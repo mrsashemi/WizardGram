@@ -1,38 +1,60 @@
-.App {
-  text-align: center;
+:root {
+  /*background*/
+  --background-grid-columns: repeat(6, 1fr);
+
+  /*home page (may be used site-wide) */
+  --large-app-dimension: 16rem;
+  --larger-app-width: 24rem;
+  --small-app-dimension: 8rem;
+  --wrk-title-font-size: 3em;
+  --today-weather-font-size: 0.6em;
+  --today-weather-margin-top: 2rem;
+  --weather-icon-height: 3rem;
+  --app-visibility: visibile;
+  --shop-app-title-size: 1em;
+  --analog-clock-position: translateX(2.6rem);
+  --home-page-apps-gap: 1.5rem;
+  --home-page-apps-margin-top: 1.5rem;
+  --home-page-apps-margin-left: 1.5rem;
+  --main-apps-container-width: 50%;
+  --main-apps-container-height: 50%;
+  --apps-border-radius: 1.5rem;
+
+  /*top nav bar*/
+  --top-bar-links-dislpay: flex;
+
+  /*shop page*/
+  --shop-product-links-height: 35rem;
+  --shop-product-list-height: calc(var(--large-app-dimension) + var(--home-page-apps-gap) + var(--shop-product-links-height));
+  --shop-product-list-width: calc(100vw - var(--larger-app-width) - var(--home-page-apps-gap) - (2 * var(--home-page-apps-margin-left)));
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+@media all and (max-width: 500px) {
+  :root {
+     /*background*/
+    --background-grid-columns: repeat(2, 1fr);
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+    /*home page (may be used site-wide) */
+    --large-app-dimension: 8rem;
+    --larger-app-width: 12rem;
+    --small-app-dimension: 4rem;
+    --wrk-title-font-size: 1.5em;
+    --today-weather-font-size: 0.3em;
+    --today-weather-margin-top: 0.5rem;
+    --weather-icon-height: 1.5rem;
+    --app-visibility: hidden;
+    --shop-app-title-size: 0.5em;
+    --analog-clock-position: translateX(1.3rem);
+    --home-page-apps-gap: 1rem;
+    --home-page-apps-margin-top: 1rem;
+    --home-page-apps-margin-left: 1.5rem;
+    --main-apps-container-width: 90%;
+    --main-apps-container-height: 25%;
+    --apps-border-radius: 1rem;
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+    /*top nav bar*/
+    --top-bar-links-dislpay: block;
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+    /*shop page*/
   }
 }

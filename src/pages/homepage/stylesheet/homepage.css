@@ -1,8 +1,10 @@
+
+
 #homepageContainer {
     display: flex;
     flex-direction: column;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     position: absolute;
     z-index: 1;
     top: 0;
@@ -10,40 +12,43 @@
 }
 
 #pageBodyContainer {
-    height: 85vh;
-    width: 100vw;
+    height: 85%;
+    width: 100%;
 }
 
 #weatherAppContainer {
     position: relative;
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     pointer-events: auto;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
     color: white;
+    justify-self: center;
 }
 
 #weatherAppImgSlider {
     position: relative;
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
+    margin: 0;
+    padding:0;
 }
 
 .weatherAppBackground {
     position: absolute;
     z-index: 5;
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     background-repeat: no-repeat;
     background-size: cover;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .weatherAppGlass {
     position: relative;
     z-index: 6;
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     overflow: hidden;
     top: 0;
     margin: 0;
@@ -63,10 +68,10 @@
         rgba(251, 7, 217, 0.1) 90%,
         rgba(255, 0, 0, 0.1) 100%
     );
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(8.5px);
-    -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    -webkit-backdrop-filter: blur(8.5px);
+    border-radius: var(--apps-border-radius);
     opacity: 0.75;
 }
 
@@ -74,11 +79,11 @@
 .weatherImgContainer {
     position: absolute;
     z-index: 7;
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     overflow: hidden;
     top: 0;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .weatherImgSlider {
@@ -88,15 +93,15 @@
     padding: 0;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 26.4vmin;
-    width: 39.6vmin;
-    border-radius: 2.5vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
+    border-radius: var(--apps-border-radius);
 }
 
 .advanceImgSlider {
     position: absolute;
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     top: 0;
     display: flex;
     align-items: center;
@@ -117,20 +122,20 @@
 }
 
 #next {
-    right: 1.5vmin;
+    right: 1rem;
     border-style: solid;
     border-color: #FFF;
-    border-width: 0 0.75vmin 0.75vmin 0;
-    padding: 0.75vmin;
+    border-width: 0 7.5px 7.5px 0;
+    padding: 0.5rem;
     transform: rotate(-45deg);
 }
 
 #prev {
-    left: 1.5vmin;
+    left: 1rem;
     border-style: solid;
     border-color: #FFF;
-    border-width: 0 0.75vmin 0.75vmin 0;
-    padding: 0.75vmin;
+    border-width: 0 7.5px 7.5px 0;
+    padding: 0.5rem;
     transform: rotate(135deg);
 }
 
@@ -138,37 +143,41 @@
     position: absolute;
     top: 0;
     z-index: 12;
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     display: flex;
     justify-content: space-between;
     margin: 0;
     padding: 0;
-    font-size: 1vmin;
     pointer-events: none;
 }
 
 #todayWeather {
-    margin-left: 3vmin;
-    margin-top: 5vmin;
-    font-size: 1vmin;
+    margin-left: 3rem;
+    margin-top: var(--today-weather-margin-top);
+    font-size: var(--today-weather-font-size);
+    opacity: 0.75;
 }
 
 .currentWeather,
 .city,
 .time,
 .temp {
-    margin: 0.25vmin;
     padding: 0;
 }
 
 #todayDetails {
-    margin-right: 3vmin;
-    margin-top: 1vmin;
+    visibility: var(--app-visibility);
+    margin-right: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.5em;
 }
 
 .weatherIcon {
-    height: 6vmin;
+    height: var(--weather-icon-height);
     width: auto;
     opacity: 0.5;
 }
@@ -177,19 +186,19 @@
 .humidityIcon,
 .cloudIcon,
 .windIcon {
-    height: 2vmin;
+    height: 1.5rem;
     width: auto;
     opacity: 0.5;
 }
 
 #todayDetails > ul > li {
     list-style-type: none;
-    font-size: 1.1vmin;
+    font-size: 0.5em;
 }
 
 #titleAppContainer {
-    height: 26.4vmin;
-    width: 39.6vmin;
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     /* From https://css.glass */
     background: linear-gradient(
         90deg,
@@ -205,16 +214,16 @@
         rgba(251, 7, 217, 0.1) 90%,
         rgba(255, 0, 0, 0.1) 100%
     );
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .titleContainer {
-    transform: translateX(1vmin) translateY(1vmin);
-    height: 26.4vmin;
-    width: 39.6vmin;
+    transform: translateX(1rem) translateY(0.5rem);
+    height: var(--large-app-dimension);
+    width: var(--larger-app-width);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -224,25 +233,27 @@
 
 .wrkTitle {
     color: white;
-    font-size: 4.25vmin;
+    font-size: var(--wrk-title-font-size);
     margin: 0;
     padding: 0;
 }
 
 #shopAppContainer {
     position: relative;
-    height: 13.2vmin;
-    width: 13.2vmin;
+    height: var(--small-app-dimension);
+    width: var(--small-app-dimension);
     display: flex;
     flex-direction: column;
+    align-items: center;
     cursor: pointer;
     pointer-events: auto;
 }
 
 .shopAppTitle {
     padding: 0;
-    margin: 0.5vmin 0 0 0;
+    margin: 0 0.5rem 0 0 0;
     color: white;
+    font-size: var(--shop-app-title-size);
 }
 
 .shopAppBackground {
@@ -250,17 +261,17 @@
     background-image: url('/src/components/home-body/app-images/shoppingsymbol.jpg');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 13.2vmin;
-    width: 13.2vmin;
+    height: var(--small-app-dimension);
+    width: var(--small-app-dimension);
     opacity: 0.5;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .shopAppGlass {
     position: absolute;
     top: 0;
-    height: 13.2vmin;
-    width: 13.2vmin;
+    height: var(--small-app-dimension);
+    width: var(--small-app-dimension);
     /* From https://css.glass */
     background: linear-gradient(
         90deg,
@@ -276,10 +287,10 @@
         rgba(251, 7, 217, 0.1) 90%,
         rgba(255, 0, 0, 0.1) 100%
     );
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .shopAppBackgroundMid {
@@ -288,10 +299,10 @@
     background-image: url('/src/components/home-body/app-images/shoppingsymbol.jpg');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 13.2vmin;
-    width: 13.2vmin;
+    height: var(--small-app-dimension);
+    width: var(--small-app-dimension);
     opacity: 0.25;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .shopAppBackgroundTop {
@@ -300,17 +311,17 @@
     background-image: url('/src/components/home-body/app-images/shoppingsymbol2.png');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 13.2vmin;
-    width: 13.2vmin;
-    border-radius: 2.5vmin;
+    height: var(--small-app-dimension);
+    width: var(--small-app-dimension);
+    border-radius: var(--apps-border-radius);
     opacity: 0.75;
 }
 
 .shopAppBackgroundTopGlass {
     position: absolute;
     top: 0;
-    height: 13.2vmin;
-    width: 13.2vmin;
+    height: var(--small-app-dimension);
+    width: var(--small-app-dimension);
     /* From https://css.glass */
     background: linear-gradient(
         90deg,
@@ -326,10 +337,10 @@
         rgba(251, 7, 217, 0.1) 90%,
         rgba(255, 0, 0, 0.1) 100%
     );
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .shopAppBackgroundFinal {
@@ -338,18 +349,18 @@
     background-image: url('/src/components/home-body/app-images/shoppingsymbol2.png');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 13.2vmin;
-    width: 13.2vmin;
+    height: var(--small-app-dimension);
+    width: var(--small-app-dimension);
     opacity: 0.5;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 
 #analogClockContainer {
     position: relative;
-    height: 26.4vmin;
-    width: 26.4vmin;
-    border-radius: 2.5vmin;
+    height: var(--large-app-dimension);
+    width: var(--large-app-dimension);
+    border-radius: var(--apps-border-radius);
 }
 
 .analogClockBackground {
@@ -357,17 +368,17 @@
     background-image: url('/src/components/home-body/app-images/disksymbol.jpg');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 26.4vmin;
-    width: 26.4vmin;
+    height: var(--large-app-dimension);
+    width: var(--large-app-dimension);
     opacity: 0.5;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .analogClockGlass {
     position: absolute;
     top: 0;
-    height: 26.4vmin;
-    width: 26.4vmin;
+    height: var(--large-app-dimension);
+    width: var(--large-app-dimension);
     /* From https://css.glass */
     background: linear-gradient(
         90deg,
@@ -383,10 +394,10 @@
         rgba(251, 7, 217, 0.1) 90%,
         rgba(255, 0, 0, 0.1) 100%
     );
-    box-shadow: 0 0.15vmin 1vmin rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .analogClockBackgroundTop {
@@ -395,30 +406,30 @@
     background-image: url('/src/components/home-body/app-images/disksymbol.jpg');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 26.4vmin;
-    width: 26.4vmin;
+    height: var(--large-app-dimension);
+    width: var(--large-app-dimension);
     opacity: 0.25;
-    border-radius: 2.5vmin;
+    border-radius: var(--apps-border-radius);
 }
 
 .analogContainer {
     position: absolute;
     top: 0;
-    height: 26.4vmin;
-    width: 26.4vmin;
+    height: var(--large-app-dimension);
+    width: var(--large-app-dimension);
     opacity: 0.25;
-    transform: translateX(4vmin);
+    transform: var(--analog-clock-position);
 }
 
 #mainAppsContainer {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    width: 50vw;
-    height: 50vh;
+    width: var(--main-apps-container-width);
+    height: var(--main-apps-container-height);
     align-items: center;
     justify-items: center;
-    gap: 3vmin;
-    margin-top: 3vmin;
-    margin-left: 3vmin;
+    gap: var(--home-page-apps-gap);
+    margin-top: var(--home-page-apps-margin-top);
+    margin-left: var(--home-page-apps-margin-left);
 }

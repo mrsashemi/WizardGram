@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import '../stylesheets/portal.css'
 import uniqid from 'uniqid';
+import { useWindowSize } from '../../../hooks/windowsize'
 
 export function PortalBackgroundGlow(props) {
-    const [portalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
+    const windowSize = useWindowSize();
+    const [portalSquares, setPortalSquares] = useState(Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
     const [portalOpacity] = useState(props.opacityRange/255)
     const [portalVisibility, setPortalVisibility] = useState('none')
     const [animateClass, setAnimateClass] = useState('nonanimated')
+
+    useEffect(() => {
+        if (windowSize.width < 500) {
+            setPortalSquares(() => Array.apply(null, Array(8)).map(() => {return {id: uniqid}}))
+        } else {
+            setPortalSquares(() => Array.apply(null, Array(24)).map(() => {return {id: uniqid}}))
+        }
+    }, [windowSize])
+
 
     function startGlowEffect(e) {
         e.target.style.opacity = 0;
