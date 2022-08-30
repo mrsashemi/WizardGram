@@ -1,10 +1,7 @@
 import { Link } from "react-router-dom";
 import './stylesheet/topbar.css';
 import { Clock } from "./clock";
-
-const linkStyle = {
-    color: "white"
-}
+import { linkStyle } from "../../hooks/linkstyle";
 
 export function TopNavBar() {
     return (
@@ -14,7 +11,9 @@ export function TopNavBar() {
                 <Link to='/' style={linkStyle}>
                     <div>Home</div>
                 </Link>
+                <Link to='/' style={linkStyle}>
                     <div className="visibilityQueries">About</div>
+                </Link>
                 <Link to='/shop' style={linkStyle}>
                     <div className="visibilityQueries">Shop</div>
                 </Link>
@@ -32,11 +31,15 @@ export function ShopNavBar() {
                 <Link to='/' style={linkStyle}>
                     <div>Home</div>
                 </Link>
-                <div>Contact</div>
+                <Link to='/' style={linkStyle}>
+                    <div>Contact</div>
+                </Link>
                 <Link to='/shop' style={linkStyle}>
                     <div>Shop</div>
                 </Link>
-                <div>Cart</div>
+                <Link to='/shop' style={linkStyle}>
+                    <div>Cart</div>
+                </Link>
             </div>
         </div>
     )

@@ -1,5 +1,4 @@
 import { Routes, Route, Outlet } from "react-router-dom";
-import { ShopCommissions } from "./commissions";
 
 export function ShopProducts() {
     return (
