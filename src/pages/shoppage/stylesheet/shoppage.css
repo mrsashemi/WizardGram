@@ -101,4 +101,156 @@
     padding: 0;
 }
 
+#productsContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 1rem;
+}
 
+.productCardContainer {
+    max-height: var(--large-app-dimension);
+    max-width: var(--large-app-dimension);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: var(--apps-border-radius);
+}
+
+.productCardContainer > h6 {
+    margin: 0;
+    padding: 0;
+}
+
+.itemTitle {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    height: 2.5rem;
+}
+
+
+.productImgContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.productImgContainer > img {
+    height: 10rem;
+    width: auto;
+    object-fit: contain;
+    border-radius: var(--apps-border-radius);
+    opacity: 1;
+}
+
+
+.productImgGlass {
+    position: absolute;
+    z-index: 15;
+    height: 10rem;
+    width: 10rem;
+    /* From https://css.glass */
+    background: linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.1) 0%,
+        rgba(255, 154, 0, 0.1) 10%,
+        rgba(208, 222, 33, 0.1) 20%,
+        rgba(79, 220, 74, 0.1) 30%,
+        rgba(63, 218, 216, 0.1) 40%,
+        rgba(47, 201, 226, 0.1) 50%,
+        rgba(28, 127, 238, 0.1) 60%,
+        rgba(95, 21, 242, 0.1) 70%,
+        rgba(186, 12, 248, 0.1) 80%,
+        rgba(251, 7, 217, 0.1) 90%,
+        rgba(255, 0, 0, 0.1) 100%
+    );
+    box-shadow: 0 0.15rem 1rem rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border-radius: var(--apps-border-radius);
+    opacity: 0;
+}
+
+.productImgGlass:hover {
+    opacity: 1;
+}
+
+#productsNotAvailable {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25em;
+    text-align: center;
+}
+
+.commissionsFormContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.commissionsFormContainer > label {
+    margin-top: 0.5rem;
+}
+
+#itemDetail {
+    display: grid;
+    margin: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.itemImgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--apps-border-radius);
+}
+
+#illusion,
+#artdeck,
+#artgrip {
+    background-color: white;
+    height: fit-content;
+    width: 25rem;
+}
+
+
+.itemImgContainer > img {
+    height: 25rem;
+    width: auto;
+    object-fit: contain;
+    border-radius: var(--apps-border-radius);
+    opacity: 1;
+    object-fit: contain;
+}
+
+.itemPreviews {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.itemPreviews > img {
+    height: 25rem;
+    width: auto;
+    border-radius: var(--apps-border-radius);
+}
+
+.itemPreviews > img:hover {
+    cursor: pointer;
+}
+
+.pricingOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}

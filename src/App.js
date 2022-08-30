@@ -2,6 +2,13 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ShopPage } from './pages/shoppage/shoppage';
 import { Homepage } from './pages/homepage/homepage';
+import { ShopPrints } from './components/shop-body/product-page/prints';
+import { ShopMerch } from './components/shop-body/product-page/merch';
+import { ShopNFT } from './components/shop-body/product-page/nft';
+import { ShopCommissions } from './components/shop-body/product-page/commissions';
+import { PrintDetail } from './components/shop-body/item-pages/printdetails';
+import { MerchDetail } from './components/shop-body/item-pages/merchdetails';
+import { ProductHome } from './components/shop-body/product-page/producthome';
 
 function App() {
   return (
@@ -9,7 +16,15 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Homepage />} />
-          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/shop" element={<ShopPage />}>
+            <Route path="" element={<ProductHome />} />
+            <Route path="prints" element={<ShopPrints />} />
+            <Route path="prints/:id" element={<PrintDetail />} />
+            <Route path="merchandise" element={<ShopMerch />} />
+            <Route path="merchandise/:id" element={<MerchDetail />} />
+            <Route path="NFT" element={<ShopNFT />} />
+            <Route path="commissions" element={<ShopCommissions />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
