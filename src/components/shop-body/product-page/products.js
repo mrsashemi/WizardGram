@@ -1,13 +1,8 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { useState } from "react";
+import { Outlet, Link } from "react-router-dom";
 
 export function ShopProducts() {
     const [cart, setCart] = useState([]);
-
-    useEffect(() => {
-        console.log(cart);
-    }, [cart]);
-
 
     return (
         <div id="shopProductListContainer">

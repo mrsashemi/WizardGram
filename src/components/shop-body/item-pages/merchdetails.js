@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import { merchandise } from "../../../data/product-data";
+import classnames from 'classnames'
 
 export function MerchDetail() {
     const itemId = useParams();
@@ -53,7 +54,7 @@ export function MerchDetail() {
                 {merch && merch.price.map((pricing) => {
                     return (
                         <div key={`${merch && merch.id}-${merch && pricing[0]}`} className="pricingInput">
-                            <label htmlFor={merch && pricing[0]} className="pricingLabel">{merch && pricing[0]}: ${merch && pricing[1]}</label>
+                            <label htmlFor={merch && pricing[0]} className="pricingLabel">{merch && pricing[0]}: ${merch && pricing[1]}.00</label>
                             <input type="checkbox" id={merch && pricing[0]} value={merch && pricing[1]} className="pricingCheckbox" onClick={(e) => {
                                 setPricingDetails((arr) => {
                                     if (pricingDetails.some(item => item === pricing)) {
@@ -67,9 +68,9 @@ export function MerchDetail() {
                         </div>
                     )
                 })}
-                <div className="totalPrice">Total: {totalPrice} {`(shipping calculated at checkout)`}</div>
+                <div className="totalPrice">Total: ${(totalPrice === 0) ? `000` : totalPrice}.00 {`(shipping calculated at checkout)`}</div>
                 <div className="addToCart">
-                    <button style={{pointerEvents: buttonEvents, opacity: buttonOpacity}} onClick={(e) => {
+                    <button className={classnames("addToButton", "shopButtonStyle")} style={{pointerEvents: buttonEvents, opacity: buttonOpacity}} onClick={(e) => {
                         setItemCount(count => count + 1)
                         setCart((arr) => {
                             if (!cart.some(item => merch.id === item.id)) {
@@ -78,9 +79,9 @@ export function MerchDetail() {
                                 return arr.concat([{id: merch.id, name: merch.name, details: pricingDetails, total: totalPrice, preview: merch.imgPreview, quantity: 1}]);
                             }
                         });
-                    }}>Add To Cart<span></span></button>
+                    }}>Add To Cart<span className="shopSpanStyle"></span></button>
                     <div className="incrementCart">
-                        <button onClick={(e) => {
+                        <button className={classnames("incrementButton", "shopButtonStyle")} onClick={(e) => {
                             setItemCount(count => count - 1)
                             setCart(() => {
                                 if (cart.some(item => `${merch.id}-2` === item.id)) {
@@ -95,9 +96,9 @@ export function MerchDetail() {
                                     return [...newCart];
                                 }
                             });
-                        }}>-<span></span></button>
+                        }}>-<span className="shopSpanStyle"></span></button>
                         <h6>{itemCount}</h6>
-                        <button onClick={(e) => {
+                        <button className={classnames("incrementButton", "shopButtonStyle")} onClick={(e) => {
                             setItemCount(count => count + 1)
                             setCart((arr) => {
                                 if (cart.some(item => merch.id === item.id)) {
@@ -106,7 +107,7 @@ export function MerchDetail() {
                                     return arr.concat([{id: `${merch.id}-2`, name: merch.name, details: pricingDetails, total: totalPrice, preview: merch.imgPreview, quantity: 2}]);
                                 }
                             });
-                        }}>+<span></span></button>
+                        }}>+<span className="shopSpanStyle"></span></button>
                     </div>
                 </div><br></br><br></br>
                 <div className="terms">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom"
+import classnames from 'classnames';
 
 export function ShopCart() {
     const [cart, setCart] = useOutletContext();
@@ -27,12 +28,12 @@ export function ShopCart() {
                                         })}
                                     </div>
                                     <h4 className="cardItemHeaders">Total: ${item.total}.00</h4>
-                                    <button onClick={() => {
+                                    <button className={classnames("removeFromButton", "shopButtonStyle")} onClick={() => {
                                         setCart(() => {
                                             let newCart = cart.filter(cartItem => cartItem.id !== item.id);
                                             return [...newCart];
                                         });
-                                    }}>Remove From Cart<span></span></button>
+                                    }}>Remove From Cart<span className="shopSpanStyle"></span></button>
                                 </div>
                                 <div className="cartItemImgPrev">
                                     <img src={item.preview}></img>
@@ -44,7 +45,7 @@ export function ShopCart() {
             })}
             <div className="cartTotalPrice">
                 <h2 className="cardItemHeaders">Cart Total: ${cartTotal}.00</h2>
-                <button className="checkOutButton">Checkout</button>
+                <button className={classnames("checkOutButton", "shopButtonStyle")}>Checkout<span className="shopSpanStyle"></span></button>
             </div>
         </div>
     )

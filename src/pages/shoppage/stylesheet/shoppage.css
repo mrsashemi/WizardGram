@@ -202,7 +202,7 @@
     display: block;
 }
 
-.removeFromButton {
+.hideButton {
     display: none;
 }
 
@@ -213,7 +213,7 @@
     display: none;
 }
 
-.incrementCart > button {
+.incrementButton {
     border:none;
     font-size: 1em;
     height: 1.5rem;
@@ -226,7 +226,8 @@
     cursor: pointer;
 }
 
-.addToCart > button {
+.addToButton,
+.removeFromButton {
     border:none;
     font-size: 0.9em;
     height: 1.5rem;
@@ -238,8 +239,19 @@
     cursor: pointer;
 }
 
-.addToCart > button::before,
-.incrementCart > button::before {
+.checkOutButton {
+    border:none;
+    font-size: 0.9em;
+    height: 2.25rem;
+    width: 10.5rem;
+    text-transform:uppercase;
+    background-color:white;
+    position:relative;
+    overflow:hidden;
+    cursor: pointer;
+}
+
+.shopButtonStyle::before {
     content:'';
     position:absolute;
     top:0;
@@ -250,8 +262,7 @@
     transition:all 1s;
 }
 
-.addToCart > button::after,
-.incrementCart > button::after {
+.shopButtonStyle::after {
     content:'';
     position:absolute;
     bottom:0;
@@ -262,19 +273,16 @@
     transition:all 1s;
 }
 
-.addToCart > button:hover::before,
-.incrementCart > button:hover::before {
+.shopButtonStyle:hover::before {
     left: 0;
 }
 
-.addToCart > button:hover::after,
-.incrementCart > button:hover::after {
+.shopButtonStyle:hover::after {
     right: 0;
 }
 
 
-.addToCart > button > span::before,
-.incrementCart > button > span::before {
+.shopButtonStyle > .shopSpanStyle::before {
     content:'';
     position:absolute;
     top:-100%;
@@ -285,15 +293,12 @@
     transition:all 1s;
 }
 
-.addToCart > button:hover,
-.addToCart > button:hover > span::before,
-.incrementCart > button:hover,
-.incrementCart > button:hover > span::before {
+.shopButtonStyle:hover,
+.shopButtonStyle:hover > .shopSpanStyle::before {
     top: 0;
 }
 
-.addToCart > button > span::after,
-.incrementCart > button > span::after {
+.shopButtonStyle > .shopSpanStyle::after {
     content:'';
     position:absolute;
     bottom:-100%;
@@ -304,10 +309,8 @@
     transition:all 1s;
 }
 
-.addToCart > button:hover,
-.addToCart > button:hover > span::after,
-.incrementCart > button:hover,
-.incrementCart > button:hover > span::after  {
+.shopButtonStyle:hover,
+.shopButtonStyle:hover > .shopSpanStyle::after {
     bottom: 0;
 }
 
@@ -504,3 +507,4 @@
     margin: 0 0 0.5rem 0;
     padding: 0;
 }
+
