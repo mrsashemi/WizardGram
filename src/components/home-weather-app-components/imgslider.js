@@ -92,7 +92,7 @@ export function WeatherImgSlider() {
                 (index !== 0) ? setIndex(idx => idx - 1) : setIndex(idx => filmPhotos.length - 1);
                 resetInterval();
             }
-        }, 100);
+        }, 50);
     }
 
 

@@ -137,16 +137,24 @@
 
 
 .productImgContainer {
+    width: fit-content;
     display: flex;
     justify-content: center;
 }
 
 .productImgContainer > img {
     height: 10rem;
-    width: auto;
-    object-fit: contain;
+    width: 10rem;
+    object-fit: cover;
     border-radius: var(--apps-border-radius);
     opacity: 1;
+}
+
+#product-illusion,
+#product-eggllusion,
+#product-artdeck,
+#product-artgrip {
+    object-fit: contain;
 }
 
 
@@ -179,6 +187,128 @@
 
 .productImgGlass:hover {
     opacity: 1;
+    cursor: pointer;
+}
+
+
+/*add to cart animation refactored from Tonmoy Islam on codepen*/
+.addToCart {
+    justify-content:center;
+    align-items:center;
+    display:flex;
+}
+
+.addToButton {
+    display: block;
+}
+
+.removeFromButton {
+    display: none;
+}
+
+.incrementCart {
+    height: 1.5rem;
+    align-items: center;
+    gap: 1rem;
+    display: none;
+}
+
+.incrementCart > button {
+    border:none;
+    font-size: 1em;
+    height: 1.5rem;
+    width: 1.5rem;
+    text-align: center;
+    text-transform:uppercase;
+    background-color:white;
+    position:relative;
+    overflow:hidden;
+    cursor: pointer;
+}
+
+.addToCart > button {
+    border:none;
+    font-size: 0.9em;
+    height: 1.5rem;
+    width: 7rem;
+    text-transform:uppercase;
+    background-color:white;
+    position:relative;
+    overflow:hidden;
+    cursor: pointer;
+}
+
+.addToCart > button::before,
+.incrementCart > button::before {
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height: 0.1rem;
+    background-color:black;
+    transition:all 1s;
+}
+
+.addToCart > button::after,
+.incrementCart > button::after {
+    content:'';
+    position:absolute;
+    bottom:0;
+    right:-100%;
+    width:100%;
+    height: 0.1rem;
+    background-color:black;
+    transition:all 1s;
+}
+
+.addToCart > button:hover::before,
+.incrementCart > button:hover::before {
+    left: 0;
+}
+
+.addToCart > button:hover::after,
+.incrementCart > button:hover::after {
+    right: 0;
+}
+
+
+.addToCart > button > span::before,
+.incrementCart > button > span::before {
+    content:'';
+    position:absolute;
+    top:-100%;
+    right:0%;
+    width: 0.1rem;
+    height:100%;
+    background-color:black;
+    transition:all 1s;
+}
+
+.addToCart > button:hover,
+.addToCart > button:hover > span::before,
+.incrementCart > button:hover,
+.incrementCart > button:hover > span::before {
+    top: 0;
+}
+
+.addToCart > button > span::after,
+.incrementCart > button > span::after {
+    content:'';
+    position:absolute;
+    bottom:-100%;
+    left:0%;
+    width: 0.1rem;
+    height:100%;
+    background-color:black;
+    transition:all 1s;
+}
+
+.addToCart > button:hover,
+.addToCart > button:hover > span::after,
+.incrementCart > button:hover,
+.incrementCart > button:hover > span::after  {
+    bottom: 0;
 }
 
 #productsNotAvailable {
@@ -206,14 +336,12 @@
     margin: 1rem;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    justify-content: center;
     align-items: center;
+    justify-items: center;
 }
 
 .itemImgContainer {
     display: flex;
-    justify-content: center;
-    align-items: center;
     border-radius: var(--apps-border-radius);
 }
 
@@ -223,7 +351,10 @@
     background-color: white;
     height: fit-content;
     width: 25rem;
+    display: flex;
+    justify-content: center;
 }
+
 
 
 .itemImgContainer > img {
@@ -237,8 +368,6 @@
 
 .itemPreviews {
     display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .itemPreviews > img {
@@ -255,4 +384,123 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.pricingInput {
+    width: 16rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.terms {
+    width: 16rem;
+}
+
+.itemDescription {
+    width: 16rem;
+}
+
+/*checkbox animation refactored from Harm Putman on codepen*/
+.pricingCheckbox {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    position: relative;
+    margin: 0 0.5em 0 0;
+    cursor: pointer;
+}
+
+.pricingCheckbox::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: #ddd;
+    color: #fff;
+    text-align: center;
+    line-height: 1.25;
+    border-radius: 0.4rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+  
+.pricingCheckbox:checked::before {
+    content: '\2714';
+    background: #000000;
+}
+  
+.pricingCheckbox::after {
+    content: '';
+    width: 300%;
+    height: 300%;
+    background-color: #02000052;
+    border-radius: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 5;
+    opacity: 0;
+    transform: translate( -50%, -50% );
+    animation: none;
+}
+  
+.pricingCheckbox:checked::after {
+    animation: check 0.3s;
+}
+  
+@keyframes check {
+    0% { 
+        transform: translate( -50%, -50% ) scale( 0.1 ); 
+        opacity: 1;
+    }
+    40% { 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translate( -50%, -50% ) scale( 1 ); 
+        opacity: 0;
+    }
+}
+
+#shoppingPageCart {
+    width: 100%;
+    height: fit-content;
+    padding: 2rem 2rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cartItemCard {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.cartCardItemContent {
+    background-color: white;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    border-radius: var(--apps-border-radius);
+}
+
+.cartItemAndImgFlex {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.cartItemImgPrev > img {
+    height: 10rem;
+    width: auto;
+    object-fit: contain;
+    border-radius: var(--apps-border-radius);
+}
+
+.cardItemHeaders {
+    margin: 0 0 0.5rem 0;
+    padding: 0;
 }

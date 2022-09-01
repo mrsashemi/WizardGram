@@ -9,6 +9,7 @@ import { ShopCommissions } from './components/shop-body/product-page/commissions
 import { PrintDetail } from './components/shop-body/item-pages/printdetails';
 import { MerchDetail } from './components/shop-body/item-pages/merchdetails';
 import { ProductHome } from './components/shop-body/product-page/producthome';
+import { ShopCart } from './components/shop-body/cart-page/cart';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/shop" element={<ShopPage />}>
             <Route path="" element={<ProductHome />} />
+            <Route path="cart" element={<ShopCart />} />
             <Route path="prints" element={<ShopPrints />} />
             <Route path="prints/:id" element={<PrintDetail />} />
             <Route path="merchandise" element={<ShopMerch />} />

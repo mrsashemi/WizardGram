@@ -6,18 +6,18 @@ export function TodayWeatherContainer() {
     const [error, setError] = useState(null);
     const [apiSuccess, setApiSuccess] = useState(false);
     const [location, setLocation] = useState('Osaka')
-    const [currentWeather, setCurrentWeather] = useState('');
-    const [currentCity, setCurrentCity] = useState('');
-    const [currentTemp, setCurrentTemp] = useState('');
-    const [currentIcon, setCurrentIcon] = useState('');
+    const [currentWeather, setCurrentWeather] = useState('loading...');
+    const [currentCity, setCurrentCity] = useState('loading...');
+    const [currentTemp, setCurrentTemp] = useState('loading...');
+    const [currentIcon, setCurrentIcon] = useState('https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256');
     const [utcTime] = useState(new Date().getTimezoneOffset()*60*1000);
-    const [timeChange, setTimeChange] = useState('');
-    const [localDate, setLocalDate] = useState('');
-    const [feelsLike, setFeelsLike] = useState('');
-    const [humidity, setHumidity] = useState('');
-    const [cloudiness, setCloudiness] = useState('');
-    const [wind, setWind] = useState('');
-    const [tempIcon, setTempIcon] = useState('');
+    const [timeChange, setTimeChange] = useState('loading...');
+    const [localDate, setLocalDate] = useState('loading...');
+    const [feelsLike, setFeelsLike] = useState('loading...');
+    const [humidity, setHumidity] = useState('loading...');
+    const [cloudiness, setCloudiness] = useState('loading...');
+    const [wind, setWind] = useState('loading...');
+    const [tempIcon, setTempIcon] = useState('https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256');
     const [cloudIcon] = useState(`https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
     const [humidityIcon] = useState('https://icons.veryicon.com/png/128/weather/weather-colored-outline/humidity-24.png');
     const [windIcon] = useState('https://cdn-icons-png.flaticon.com/128/1458/1458846.png');
@@ -38,22 +38,12 @@ export function TodayWeatherContainer() {
                     setWind(() => `About ${result.wind.speed} mph`);
                     setTempIcon(() => `http://openweathermap.org/img/wn/${result.weather[0].icon}@2x.png`);
                     setApiSuccess(() => true);
-                },
-                (error) => {
-                    setError(error);
-                    setCurrentWeather(() => "loading...");
-                    setCurrentCity(() => "loading...");
-                    setCurrentTemp(() => "loading...");
-                    setCurrentIcon(() => `hhttps://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
-                    setTimeChange(() => "loading...");
-                    setFeelsLike(() => "loading...");
-                    setHumidity(() => "loading...");
-                    setCloudiness(() => "loading...");
-                    setWind(() => `About loading... mph`);
-                    setTempIcon(() => `https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
-                    setApiSuccess(() => false);
                 }
             )
+            .catch((error) => {
+                setError(error)
+                setApiSuccess(() => false);
+            })
     }, [location]);
 
     useEffect(() => {

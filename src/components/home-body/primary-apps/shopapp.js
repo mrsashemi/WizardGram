@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 export function ShopApp() {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     function onClickShopApp() {
         navigate('/shop');
