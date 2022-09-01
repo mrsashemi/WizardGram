@@ -37,7 +37,7 @@ export function ShopNavBar() {
                 <Link to='/shop' style={linkStyle}>
                     <div>Shop</div>
                 </Link>
-                <Link to='/shop' style={linkStyle}>
+                <Link to='/shop/cart' style={linkStyle}>
                     <div>Cart</div>
                 </Link>
             </div>

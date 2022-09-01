@@ -3,7 +3,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { prints } from "../../../data/product-data";
 import classnames from 'classnames'
 
-export function PrintDetail() {
+export default function PrintDetail() {
     const itemId = useParams();
     const [print, setPrint] = useState();
     const [index, setIndex] = useState(0);
@@ -12,8 +12,6 @@ export function PrintDetail() {
     const [buttonOpacity, setButtonOpacity] = useState('0.5');
     const [buttonEvents, setButtonEvents] = useState('none');
     const [cart, setCart] = useOutletContext();
-
-    
 
     useEffect(() => {
         let selectedItem = prints.filter((item) => {return item.id === itemId.id});
@@ -58,15 +56,22 @@ export function PrintDetail() {
         })
     }
 
-    function addToCart(e) {
+    function addToCart() {
         setCart((arr) => {
             if (!cart.some(item => print.id === item.id)) {
-                return arr.concat([{id: print.id, name: print.name, details: pricingDetails, total: totalPrice, preview: print.imgPreview, quantity: 1}]);
+                return arr.concat([{
+                    id: print.id, 
+                    name: print.name, 
+                    details: pricingDetails, 
+                    total: totalPrice, 
+                    preview: 
+                    print.imgPreview
+                }]);
             }
         });
     }
 
-    function removeFromCart(e) {
+    function removeFromCart() {
         setCart(() => {
             let newCart = cart.filter(item => item.id !== print.id);
             return [...newCart]

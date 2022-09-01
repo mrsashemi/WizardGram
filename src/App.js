@@ -6,10 +6,15 @@ import { ShopPrints } from './components/shop-body/product-page/prints';
 import { ShopMerch } from './components/shop-body/product-page/merch';
 import { ShopNFT } from './components/shop-body/product-page/nft';
 import { ShopCommissions } from './components/shop-body/product-page/commissions';
-import { PrintDetail } from './components/shop-body/item-pages/printdetails';
-import { MerchDetail } from './components/shop-body/item-pages/merchdetails';
+//import { PrintDetail } from './components/shop-body/item-pages/printdetails';
+//import { MerchDetail } from './components/shop-body/item-pages/merchdetails';
 import { ProductHome } from './components/shop-body/product-page/producthome';
-import { ShopCart } from './components/shop-body/cart-page/cart';
+//import { ShopCart } from './components/shop-body/cart-page/cart';
+import React from 'react';
+
+const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
+const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
+const ShopCart = React.lazy(() => import("./components/shop-body/cart-page/cart"))
 
 function App() {
   return (
@@ -19,11 +24,23 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/shop" element={<ShopPage />}>
             <Route path="" element={<ProductHome />} />
-            <Route path="cart" element={<ShopCart />} />
+            <Route path="cart" element={
+              <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
+                <ShopCart />
+              </React.Suspense>
+            } />
             <Route path="prints" element={<ShopPrints />} />
-            <Route path="prints/:id" element={<PrintDetail />} />
+            <Route path="prints/:id" element={
+              <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
+                <PrintDetail />
+              </React.Suspense>
+            } />
             <Route path="merchandise" element={<ShopMerch />} />
-            <Route path="merchandise/:id" element={<MerchDetail />} />
+            <Route path="merchandise/:id" element={
+              <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
+                <MerchDetail />
+              </React.Suspense>
+            } />
             <Route path="NFT" element={<ShopNFT />} />
             <Route path="commissions" element={<ShopCommissions />} />
           </Route>

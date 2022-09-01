@@ -81,6 +81,7 @@
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
     border-radius: var(--apps-border-radius);
+    overflow-y: auto;
 }
 
 .shopProductList {
@@ -202,15 +203,11 @@
     display: block;
 }
 
-.hideButton {
-    display: none;
-}
-
 .incrementCart {
     height: 1.5rem;
     align-items: center;
     gap: 1rem;
-    display: none;
+    display: flex;
 }
 
 .incrementButton {
@@ -507,4 +504,5 @@
     margin: 0 0 0.5rem 0;
     padding: 0;
 }
+
 
