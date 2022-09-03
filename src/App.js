@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import { ShopPage } from './pages/shoppage/shoppage';
 import { Homepage } from './pages/homepage/homepage';
 import { ShopPrints } from './components/shop-body/product-page/prints';
@@ -16,10 +16,11 @@ const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/p
 const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
 const ShopCart = React.lazy(() => import("./components/shop-body/cart-page/cart"))
 
+
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/shop" element={<ShopPage />}>
@@ -45,7 +46,7 @@ function App() {
             <Route path="commissions" element={<ShopCommissions />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
