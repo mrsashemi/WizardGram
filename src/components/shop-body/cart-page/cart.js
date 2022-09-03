@@ -5,7 +5,7 @@ import classnames from 'classnames';
 export default function ShopCart() {
     const [cart, setCart] = useOutletContext();
     const [cartTotal, setCartTotal] = useState(0);
-  
+    
     useEffect(() => {
         let newTotal = cart.reduce((a, b) => a + b.total, 0)
         setCartTotal(total => total = newTotal);
@@ -19,7 +19,6 @@ export default function ShopCart() {
     }
 
   
-
     return (
         <div id="shoppingPageCart">
             {cart.map((item, index) => {
