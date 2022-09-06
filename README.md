@@ -63,6 +63,7 @@ This project began as an active learning exercise alongside tutorials on React v
 ## Future Updates
 
 - Add dock to homepage to complete iPad look
+- Update media queries for improved responsiveness
 - More apps and pages (about page, contact page, art gallery, etc)
 - Improvements to how the shop handles item data
 - Better pictures for shop items
