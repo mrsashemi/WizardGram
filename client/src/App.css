@@ -38,6 +38,10 @@
   --shop-product-links-height: 35rem;
   --shop-product-list-height: calc(var(--large-app-dimension) + var(--home-page-apps-gap) + var(--shop-product-links-height));
   --shop-product-list-width: calc(100vw - var(--larger-app-width) - var(--home-page-apps-gap) - (2 * var(--home-page-apps-margin-left)));
+
+  /*blog page colors*/
+  --main-blog-color: rgba(109,0,25,1);
+  --secondary-blog-color: rgba(255,168,76,1);
 }
 
 @media all and (max-width: 500px) {

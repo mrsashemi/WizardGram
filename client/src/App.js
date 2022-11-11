@@ -10,6 +10,7 @@ import { ShopCommissions } from './components/shop-body/product-page/commissions
 //import { MerchDetail } from './components/shop-body/item-pages/merchdetails';
 import { ProductHome } from './components/shop-body/product-page/producthome';
 //import { ShopCart } from './components/shop-body/cart-page/cart';
+import { BlogPage } from './pages/blogpage/blogpage';
 import React from 'react';
 
 const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
@@ -23,6 +24,7 @@ function App() {
       <HashRouter>
         <Routes>
           <Route path="/" element={<Homepage />} />
+          <Route path="/blog" element={<BlogPage />} ></Route>
           <Route path="/shop" element={<ShopPage />}>
             <Route path="" element={<ProductHome />} />
             <Route path="cart" element={

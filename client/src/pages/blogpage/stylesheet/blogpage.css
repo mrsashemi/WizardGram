@@ -1,0 +1,487 @@
+#blogPageContainer {
+    height: 100%;
+    width: 100%;
+}
+
+#blogDashboard {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr 5fr;
+    grid-template-areas: 
+    "sidebar usermenu"
+    "sidebar activityDash";
+    overflow: hidden;
+}
+
+/* left-side nav sidebar*/
+#blogPageSideBar {
+    position: relative;
+    background: linear-gradient(to bottom, rgba(255,168,76,0.75) 0%,rgba(255,123,13,0.75) 100%);
+    box-shadow: 0vmin 0.125vmin 1vmin 0.125vmin var(--secondary-blog-color), 
+    0vmin 0.75vmin 0.5vmin 0.5vmin beige;
+    grid-area: sidebar;
+    display: grid;
+    grid-template-rows: 0.25fr 0.5fr 1fr;
+    padding: 0 1vmin 0 1vmin;
+    z-index: 1;
+    min-width: 30vmin;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#FaceBok {
+    font-family: '8bit', 'Courier New', Courier, monospace;
+    background-image: linear-gradient(135deg, rgba(169,3,41,0.6) 0%,rgba(143,2,34,0.8) 44%,rgba(109,0,25,1) 100%);
+    background-size: contain;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5vmin;
+    height: 100%;
+    max-width: 100%;
+    font-size: 6vmin;
+    position: relative;
+    top: -1vmin;
+    left:7vmin;
+    text-shadow: 0vmin 0.5vmin white;
+}
+
+/*the following before and after create the chicken icon next to the h1 header*/
+#FaceBok::before {
+    position: absolute;
+    font-family: Times;
+    content: "------------";
+    text-align: right;
+    letter-spacing: -1vmin;
+    text-shadow: 
+    0.6vmin 0.5vmin black,
+    0.6vmin 0.3vmin white,
+    -0.4vmin -0.4vmin gold,
+    -0.6vmin -0.55vmin black,
+    -0.4vmin -0.7vmin gold,
+    -0.4vmin -0.8vmin gold,
+    0.6vmin 0.4vmin white;
+    font-size: 2vmin;
+    color: white;
+    background-color: black;
+    width: 3vmin;
+    height: 3vmin;
+    border-radius: 50%;
+    top: 1.25vmin;
+    left: -6vmin;
+    border: 0.6vmin solid white;
+    box-shadow: 
+    0.1vmin -0.3vmin black inset,
+    -0.1vmin -0.3vmin black inset,
+    0.4vmin 0.4vmin gold inset,
+    0.8vmin 0.8vmin coral inset,
+    1.2vmin 1.2vmin gold inset,
+    1.6vmin 1.6vmin coral inset,
+    2vmin 2vmin gold inset,
+    2.4vmin 2.4vmin coral inset,
+    0.3vmin 0vmin red, 
+    0vmin .3vmin red, 
+    0vmin -0.4vmin white,
+    0.57vmin 0.15vmin black,
+    0.57vmin 0vmin white,
+    0.75vmin 0.25vmin gold,
+    0.85vmin 0vmin red,
+    0.5vmin -0.25vmin red,
+    0.5vmin -0.5vmin gold,
+    0.5vmin 0.5vmin red,
+    0.7vmin 0.6vmin white;
+    transform: scaleY(-1) scaleX(-1);
+}
+
+#FaceBok::after {
+    font-family: Times;
+    content: "^";
+    text-shadow: 
+    0 -0.3vmin black;
+    font-weight: bolder;
+    letter-spacing: -1.1vmin;
+    writing-mode: vertical-lr;
+    white-space: pre-wrap;
+    font-size: 3vmin;
+    color: gold;
+    background-color: red;
+    position: absolute;
+    top: 3.25vmin;
+    left: -3.6vmin;
+    height: 0.7vmin;
+    width: 1.3vmin;
+    border-radius: 0 0 1.5vmin 1.5vmin;
+    box-shadow: 
+    0vmin 0.15vmin black inset,
+    0.2vmin 0 black inset,
+    -0.2vmin 0 black inset,
+    0vmin -0.2vmin black inset,
+    0.3vmin 0 white inset,
+    -0.3vmin 0 white inset,
+    0vmin -0.3vmin white inset,
+    0.55vmin 0vmin gold,
+    -1vmin 0vmin gold,
+    -2vmin 0vmin red,
+    -3vmin 0vmin gold,
+    0.25vmin 0.5vmin orange,
+    -0.75vmin 0.5vmin red,
+    -1.75vmin 0.5vmin yellow,
+    -2.75vmin 0.5vmin orange,
+    -0.25vmin 1vmin white,
+    -1.25vmin 1vmin coral,
+    -2.25vmin 1vmin white,
+    -0.75vmin 1.5vmin red,
+    -1.75vmin 1.5vmin gold,
+    -1.25vmin 1.75vmin red,
+    0.55vmin 0.5vmin gold,
+    0.3vmin 1.25vmin gold,
+    0.3vmin 1vmin gold,
+    0.6vmin 1.25vmin red,
+    0.35vmin 1.4vmin red,
+    -0.25vmin 1.75vmin coral,
+    -0.75vmin 2vmin gold;
+}
+
+#blogPageSideLinks {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0 2vmin 0vmin 2vmin;
+ }
+
+ #blogPageSideLinks > li {
+    width: fit-content;
+    position: relative;
+    left: 3vmin;
+    margin: 1vmin 0 1vmin 0;
+    font-family: '8bit', 'Courier New', Courier, monospace;
+    font-size: 3vmin;
+    color: white;
+    text-shadow:
+    -1px -1px 0 var(--main-blog-color),  
+    1px -1px 0 var(--main-blog-color),
+    -1px 1px 0 var(--main-blog-color),
+    1px 1px 0 var(--main-blog-color);
+ }
+
+ #blogPageSideLinks > li:hover {
+     cursor: pointer;
+     text-shadow:
+     -1px -1px 0 var(--secondary-blog-color),  
+     1px -1px 0 var(--secondary-blog-color),
+     -1px 1px 0 var(--secondary-blog-color),
+     1px 1px 0 var(--secondary-blog-color);
+ }
+
+ #blogLatest::before {
+    content: "";
+    position: absolute;
+    height: 1vmin;
+    width: 1vmin;
+    border-radius: 50%;
+    background-color: var(--main-blog-color);
+    left: -2.3vmin;
+    top: 0.6vmin;
+ }
+
+ #blogLatest::after {
+    content: "";
+    position: absolute;
+    height: 1.25vmin;
+    width: 1.5vmin;
+    background-color: var(--main-blog-color);
+    border-radius: 2vmin 2vmin 0 0;
+    left: -2.5vmin;
+    top: 1.35vmin;
+ }
+
+ #blogAllPosts::before {
+    content: "";
+    position: absolute;
+    height: 1.65vmin;
+    width: 1.4vmin;
+    background-color: var(--main-blog-color);
+    border-top-right-radius: 0.35vmin;
+    box-shadow: 
+    -0.1vmin 0.1vmin var(--secondary-blog-color),
+    -0.25vmin 0.25vmin var(--main-blog-color);
+    left: -2.25vmin;
+    top: 0.7vmin;
+ }
+
+ #blogAllPosts::after {
+    content: "";
+    position: absolute;
+    border-top: 0.25vmin solid var(--secondary-blog-color);
+    border-right: 0.25vmin solid transparent;
+    border-left: 0.25vmin solid transparent;
+    background-color: transparent;
+    left: -1.5vmin;
+    top: 1vmin;
+    transform: rotate(45deg);
+ }
+
+ /*top header menu*/
+#blogUserMenu {
+    grid-area: usermenu;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    padding: 0 1vmin 0 1vmin;
+    box-shadow: 0vmin 0.5vmin 1vmin 0.25vmin var(--main-blog-color);
+    background-color: white;
+    z-index: 0;
+}
+
+#blogSearchMenu {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    justify-items: center;
+    align-items: center;
+}
+
+#blogSearchBar {
+    position: relative;
+    justify-self: stretch;
+    left: 5vmin
+}
+
+#blogSearchBar::before {
+    content: "";
+    position: absolute;
+    left: -3vmin;
+    top: 0.6vmin;
+    height: 0.8vmin;
+    width: 0.8vmin;
+    border-radius: 50%;
+    border: 0.3vmin solid var(--main-blog-color);
+    background-color: transparent;
+}
+
+#blogSearchBar:hover::before {
+    cursor: pointer;
+    border: 0.4vmin solid var(--secondary-blog-color);
+}
+
+#blogSearchBar::after {
+    content: "";
+    position: absolute;
+    height: 0.3vmin;
+    width: 0.9vmin;
+    left: -2vmin;
+    top: 2vmin;
+    background: var(--main-blog-color);
+    transform: rotate(45deg);
+}
+
+#blogSearchBar:hover::after {
+    cursor: pointer;
+    height: 0.35vmin;
+    width: 0.95vmin;
+    background: var(--secondary-blog-color);
+}
+
+#blogLookup {
+    appearance: none;
+    width: 90%;
+    height: 3vmin;
+    border-radius: 1vmin;
+    box-shadow: 0vmin 0.1vmin 0.5vmin 0.1vmin rgba(109,0,25,0.5) inset;
+}
+
+#blogLookup:hover {
+    box-shadow: 0vmin 0.1vmin 0.5vmin 0.1vmin var(--secondary-blog-color) inset;
+}
+
+#blogNotifications {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    align-items: center;
+    margin: 0;
+    padding: 0 2vmin 0 0;
+}
+
+/*the following creates a notification bell icon and animates it upon hovering*/
+.blogNotify {
+    padding: 0.5vmin;
+    position: relative;
+    height: 0.75vmin;
+    width: 0.75vmin;
+    border-radius: 50%;
+    background-color: var(--main-blog-color);
+    top: -0.5vmin;
+    left: 3vmin;
+    cursor: pointer;
+}
+
+.blogNotify:active {
+    animation-name: ring;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes ring {
+    0% {transform: rotate(-45deg);}
+    25% {transform: rotate(45deg);}
+    50% {transform: rotate(-45deg);}
+    75% {transform: rotate(45deg);}
+    100% {transform: rotate(-45deg);}
+}
+
+
+.blogNotify::before {
+    content: "";
+    position: absolute;
+    height: 1vmin;
+    width: 0.75vmin;
+    border-radius: 50%;
+    background-color: var(--main-blog-color);
+    top: 1.3vmin;
+    left: -0.05vmin;
+    transform: rotate(180deg);
+}
+
+.blogNotify:hover::before {
+    animation-name: bell;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes bell {
+    0% {right: 0.25vmin;}
+    25% {left: 0.25vmin;}
+    50% {right: 0.25vmin;}
+    75% {left: 0.25vmin;}
+    100% {right: 0.25vmin;}
+}
+
+.blogNotify::after {
+    content: "";
+    color: var(--secondary-blog-color);
+    font-family: Times;
+    text-shadow: none;
+    text-align: center;
+    font-size: 1vmin;
+    position: absolute;
+    height: 0.65vmin;
+    width: 1.5vmin;
+    left: -0.25vmin;
+    top: 0.3vmin;
+    background-color: var(--main-blog-color);
+    border-bottom: 0.75vmin solid var(--main-blog-color);
+    border-radius: 50% 50% 50% 50% / 12% 12% 88% 88%;
+    transform: rotate(180deg);
+    box-shadow: 
+    0vmin -0.15vmin var(--secondary-blog-color),
+    0vmin -0.25vmin white;
+}
+
+.blogTopProfilePic {
+    width: 5vmin;
+    height: 5vmin;
+    border-radius: 50%;
+    border: 0.25vmin solid var(--secondary-blog-color);
+    cursor: pointer;
+}
+
+.blogTopProfilePic:hover {
+    border: 0.35vmin solid var(--main-blog-color);
+}
+
+.blogTopUserName {
+    font-family: '8bit';
+    font-size: 2vmin;
+    cursor: pointer;
+}
+
+.blogTopUserName:hover {
+    color: white;
+    text-shadow:
+    -1px -1px 0 var(--main-blog-color),  
+    1px -1px 0 var(--main-blog-color),
+    -1px 1px 0 var(--main-blog-color),
+    1px 1px 0 var(--main-blog-color);
+}
+
+#blogActivityMenu {
+    margin-bottom: 1.5vmin;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+}
+
+#blogProfile {
+    margin: 0;
+    padding: 0vmin 0vmin 0vmin 4vmin;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 8fr;
+    justify-items: start;
+    align-items: center;
+}
+
+.blogMainProfilePic {
+    width: 7vmin;
+    height: 7vmin;
+    border-radius: 50%;
+    border: 0.25vmin solid var(--secondary-blog-color);
+    cursor: pointer;
+}
+
+.blogMainProfilePic:hover {
+    border: 0.45vmin solid var(--main-blog-color);
+}
+
+.blogUser {
+    font-family: '8bit';
+}
+
+.blogUser > p {
+    font-size: 1.5vmin;
+    margin: 0;
+}
+
+.blogUserName {
+    font-size: 2.5vmin;
+    margin: 0;
+}
+
+#blogActivity {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+}
+
+#blogActivity > li > button {
+    appearance: none;
+    font-family: '8bit';
+    color: white;
+    font-size: 2.5vmin;
+    width: 9vmin;
+    height: 4vmin;
+    background-color: var(--secondary-blog-color);
+    border-radius: 1vmin;
+    border: 0.25vmin solid var(--main-blog-color);
+    text-shadow:
+    -1px -1px 0 var(--main-blog-color),  
+    1px -1px 0 var(--main-blog-color),
+    -1px 1px 0 var(--main-blog-color),
+    1px 1px 0 var(--main-blog-color);
+    cursor: pointer;
+}
+
+#blogActivity > li > button:hover {
+    background-color: var(--main-blog-color);
+    border-radius: 1vmin;
+    border: 0.25vmin solid var(--secondary-blog-color);
+    text-shadow:
+    -1px -1px 0 var(--secondary-blog-color),  
+    1px -1px 0 var(--secondary-blog-color),
+    -1px 1px 0 var(--secondary-blog-color),
+    1px 1px 0 var(--secondary-blog-color);
+    box-shadow: 0.25vmin 0.25vmin 1vmin var(--main-blog-color);
+}
