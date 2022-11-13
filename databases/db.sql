@@ -1,3 +1,5 @@
+CREATE DATABASE artwebsite;
+
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,
     first_name NVARCHAR(100) NOT NULL,
