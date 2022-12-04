@@ -28,7 +28,7 @@ export function LoginForm() {
             cookies.set("TOKEN", result.data.token, {
                 path: "/",
             });
-            window.location.href = "/auth";
+            window.location.href = "/";
             setLogin(true);
         })
         .catch((error) => {
