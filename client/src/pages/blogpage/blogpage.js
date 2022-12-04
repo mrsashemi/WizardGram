@@ -1,6 +1,6 @@
 import { SimpleBackground } from "../../components/backgrounds/background";
 import { BlogPageBody } from "../../components/blog-body/blogbody";
-import { ShopNavBar } from "../../components/top-nav-bar/topbar";
+import { TopNavBar } from "../../components/top-nav-bar/topbar";
 import './stylesheet/blogpage.css'
 
 export function BlogPage() {
@@ -8,7 +8,7 @@ export function BlogPage() {
         <div>
             <SimpleBackground />
             <div id="blogPageContainer">
-                <ShopNavBar />
+                <TopNavBar />
                 <BlogPageBody />
             </div>
         </div>

@@ -1,25 +1,27 @@
 CREATE DATABASE artwebsite;
 
 CREATE TABLE users(
-    id SERIAL PRIMARY KEY,
-    first_name NVARCHAR(100) NOT NULL,
-    last_name NVARCHAR(100) NOT NULL,
-    hashed_password NVARCHAR(100) NOT NULL,
-    email NVARCHAR(320) NOT NULL UNIQUE,
-    username NVARCHAR(100) NOT NULL UNIQUE,
+    users_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    hashed_password VARCHAR(100) NOT NULL,
+    email VARCHAR(320) NOT NULL UNIQUE,
+    username VARCHAR(10) NOT NULL UNIQUE,
     address_id INT,
+    phonenumber TEXT UNIQUE,
     date_created DATE NOT NULL DEFAULT CURRENT_DATE,
     date_updated DATE NOT NULL DEFAULT CURRENT_DATE,
     administrator BOOLEAN NOT NULL DEFAULT FALSE, 
+    verified BOOLEAN NOT NULL DEFAULT FALSE,
     profile_pic TEXT,
     CONSTRAINT fk_address
         FOREIGN KEY(address_id)
-            REFERENCES addresses(id)
+            REFERENCES addresses(address_id)
             ON DELETE SET NULL
 );
 
 CREATE TABLE blog_posts(
-    id SERIAL PRIMARY KEY,
+    blog_id SERIAL PRIMARY KEY,
     theme_id INT NOT NULL,
     title TEXT NOT NULL,
     body TEXT NOT NULL,
@@ -29,22 +31,22 @@ CREATE TABLE blog_posts(
     date_updated DATE NOT NULL DEFAULT CURRENT_DATE,
     CONSTRAINT fk_theme
         FOREIGN KEY(theme_id)
-            REFERENCES themes(id)
+            REFERENCES themes(theme_id)
             ON DELETE CASCADE,
     CONSTRAINT fk_user
         FOREIGN KEY(users_id)
-            REFERENCES users(id)
+            REFERENCES users(users_id)
             ON DELETE CASCADE
 );
 
 CREATE TABLE blog_themes(
-    id SERIAL PRIMARY KEY,
-    theme_name NVARCHAR(50) NOT NULL UNIQUE
+    theme_id SERIAL PRIMARY KEY,
+    theme_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE comments(
-    id SERIAL PRIMARY KEY,
-    body NVARCHAR(500) NOT NULL,
+    comment_id SERIAL PRIMARY KEY,
+    body VARCHAR(500) NOT NULL,
     users_id INT NOT NULL,
     blog_id INT NOT NULL,
     parent_comment_id INT, 
@@ -52,30 +54,39 @@ CREATE TABLE comments(
     date_updated TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT fk_user
         FOREIGN KEY(users_id)
-            REFERENCES users(id)
+            REFERENCES users(users_id)
             ON DELETE CASCADE,
     CONSTRAINT fk_blog
         FOREIGN KEY(blog_id)
-            REFERENCES blog_posts(id)
+            REFERENCES blog_posts(blog_id)
             ON DELETE CASCADE,
     CONSTRAINT fk_parent_comment
         FOREIGN KEY(parent_comment_id)
-            REFERENCES comments(id)
+            REFERENCES comments(comment_id)
             ON DELETE SET NULL
 );
 
 CREATE TABLE addresses(
-    id SERIAL PRIMARY KEY,
+    address_id SERIAL PRIMARY KEY,
+    city VARCHAR(50) NOT NULL,
+    street VARCHAR(25) NOT NULL,
+    state_code VARCHAR(2) NOT NULL,
+    zip VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE users_addresses(
     users_id INT NOT NULL,
-    city NVARCHAR(50) NOT NULL,
-    street NVARCHAR(25) NOT NULL,
-    state_code NVARCHAR(2) NOT NULL,
-    zip NVARCHAR(10) NOT NULL,
+    address_id INT NOT NULL,
+    address_type VARCHAR(20) NOT NULL,
+    CONSTRAINT fk_address
+        FOREIGN KEY(address_id)
+            REFERENCES addresses(address_id)
+            ON DELETE CASCADE,
     CONSTRAINT fk_user
         FOREIGN KEY(users_id)
-            REFERENCES users(id)
+            REFERENCES users(users_id)
             ON DELETE CASCADE
-);
+)
 
 CREATE OR REPLACE FUNCTION UPDATE_DATE()
     RETURNS TRIGGER
@@ -111,6 +122,6 @@ CREATE TRIGGER update_users_date
 
 CREATE TRIGGER update_users_date
     BEFORE UPDATE 
-    ON users
+    ON comments
     FOR EACH ROW
         EXECUTE PROCEDURE UPDATE_TIMESTAMP();

@@ -8,6 +8,9 @@ export function TopNavBar() {
         <div id="topBarContainer">
             <Clock />
             <div className="topBarLinks">
+                <Link to='/login' style={linkStyle}>
+                    <div>Login</div>
+                </Link>
                 <Link to='/' style={linkStyle}>
                     <div>Home</div>
                 </Link>
@@ -28,6 +31,9 @@ export function ShopNavBar() {
         <div id="topBarContainer">
             <Clock />
             <div className="topBarLinks">
+                <Link to='/login' style={linkStyle}>
+                    <div>Login</div>
+                </Link>
                 <Link to='/' style={linkStyle}>
                     <div>Home</div>
                 </Link>

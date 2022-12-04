@@ -1,17 +1,26 @@
 const express = require('express');
-
 const app = express();
+const cors = require("cors");
+const pool = require("./databases/db");
+if (process.env.NODE_ENV === 'development') require('dotenv').config()
 
-app.get('/api/customers', (req, res) => {
-    const customers = [
-        {id: 1, firstName: 'John', lastName: 'Doe'},
-        {id: 2, firstName: 'Steve', lastName: 'Buscemi'},
-        {id: 3, firstName: 'Ron', lastName: 'Swanson'}
-    ];
+//middleware
+app.use(cors());
+app.use(express.json());
 
-    res.json(customers);
+pool.connect((err) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("Data logging initiated!")
+    }
 })
 
-const port = 5050;
+//ROUTES
+const user = require("./routers/users");
+
+app.use("/user", user);
+
+const port = process.env.PORT || 5050;
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

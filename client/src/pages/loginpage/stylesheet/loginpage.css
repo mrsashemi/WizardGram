@@ -1,0 +1,64 @@
+#loginPageContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10em;
+}
+
+#loginFormContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+
+#formHeader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+    margin: 0;
+    padding: 0;
+}
+
+/*chicken logo */
+#formHeader > div {
+    position: relative;
+    left: 0.7em;
+}
+
+
+
+.loginForm {
+    width: 10em;
+    height: 18em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.signupForm {
+    width: 10em;
+    height: 30em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.formInput > label {
+    font-size: 1.25em;
+}
+
+.buttonInput {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.buttonInput > button,
+.toSignUp {
+    font-size: 1em;
+}
