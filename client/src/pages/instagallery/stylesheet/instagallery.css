@@ -1,0 +1,160 @@
+#instaGalleryContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#instaUserDashboard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 35%;
+    height: 100%;
+    background-color: black;
+    z-index: 1;
+    color: white;
+}
+
+.instaUserHeader,
+.instaProfileImg{
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.instaUserHeader {
+    height: 3em;
+}
+
+.instaProfileImg {
+    height: 6em;
+}
+
+.instaProfileDesc {
+    display: flex;
+    flex-direction: column;
+    height: 7.5em;
+    justify-content: center;
+    width: 95%;
+}
+
+.instaHighlights {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1em;
+    height: 5.5em;
+    width: 95%;
+}
+
+.highlightContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.instaGridContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 34.05em;
+}
+
+.gridSwitch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gridSwitch > button {
+    width: 12em;
+}
+
+.instaGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    align-items: center;
+}
+
+.instaGrid > img {
+    height: 10em;
+    width: 10em;
+    border: 0.1em solid white;
+}
+
+.highlightContainer > h4 {
+    margin: 0.5em 0 0 0;
+}
+
+.instaHighlightPic,
+.newHighlight {
+    margin: 0;
+    padding: 0;
+    width: 3em;
+    height: 3em;
+    border-radius: 10em;
+    background-color: white;
+    border: 0.25em solid red;
+}
+
+.descriptionHeader {
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+}
+
+.instaDescription {
+    text-align: left;
+}
+
+.descriptionButtons {
+    display: flex;
+}
+
+.editProfile {
+    width: 100%;
+}
+
+.headerButtons {
+    width: 15%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.instaProfilePic {
+    width: 5em;
+    height: 5em;
+    border-radius: 10em;
+    background-color: white;
+    border: 0.25em solid red;
+}
+
+.instaProfileStats {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
+.profileStats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileStats > h4 {
+    margin: 0;
+    padding: 0;
+}
+

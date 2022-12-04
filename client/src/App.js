@@ -14,6 +14,7 @@ import { BlogPage } from './pages/blogpage/blogpage';
 import React from 'react';
 import { LoginPage } from './pages/loginpage/loginpage';
 import { SignUpPage } from './pages/loginpage/signuppage';
+import { InstaGallery } from './pages/instagallery/instagallery';
 
 const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
 const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
@@ -29,6 +30,7 @@ function App() {
           <Route path="/blog" element={<BlogPage />} ></Route>
           <Route path="/login" element={<LoginPage />} ></Route>
           <Route path="/signup" element={<SignUpPage />} ></Route>
+          <Route path="fishstagram" element={<InstaGallery />} ></Route>
           <Route path="/shop" element={<ShopPage />}>
             <Route path="" element={<ProductHome />} />
             <Route path="cart" element={
