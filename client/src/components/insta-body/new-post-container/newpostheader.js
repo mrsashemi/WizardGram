@@ -7,7 +7,9 @@ export function NewPostHeader() {
                 <button className="closeNewPost">X</button>
             </Link>
             <h2>New Post</h2>
-            <button className="nextButton">Next</button>
+            <Link to='/fishstagram/editpost'>
+                <button className="nextButton">Next</button>
+            </Link>
         </div>
     )
 }

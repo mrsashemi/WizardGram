@@ -17,6 +17,8 @@ import { SignUpPage } from './pages/loginpage/signuppage';
 import { InstaGallery } from './pages/instagallery/instagallery';
 import { InstaUserBody } from './components/insta-body/instabody';
 import { NewPostBody } from './components/insta-body/newpostbody';
+import { EditPostBody } from './components/insta-body/editpostbody';
+import { CreatePostBody } from './components/insta-body/createpostbody';
 
 const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
 const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
@@ -35,6 +37,8 @@ function App() {
           <Route path="/fishstagram" element={<InstaGallery />} >
             <Route path='' element={<InstaUserBody />} />
             <Route path='newpost' element={<NewPostBody />} />
+            <Route path='editpost' element={<EditPostBody />} />
+            <Route path='createpost' element={<CreatePostBody />} />
           </Route>
           <Route path="/shop" element={<ShopPage />}>
             <Route path="" element={<ProductHome />} />
