@@ -15,6 +15,8 @@ import React from 'react';
 import { LoginPage } from './pages/loginpage/loginpage';
 import { SignUpPage } from './pages/loginpage/signuppage';
 import { InstaGallery } from './pages/instagallery/instagallery';
+import { InstaUserBody } from './components/insta-body/instabody';
+import { NewPostBody } from './components/insta-body/newpostbody';
 
 const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
 const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
@@ -24,13 +26,16 @@ const ShopCart = React.lazy(() => import("./components/shop-body/cart-page/cart"
 function App() {
   return (
     <div className="App">
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/blog" element={<BlogPage />} ></Route>
           <Route path="/login" element={<LoginPage />} ></Route>
           <Route path="/signup" element={<SignUpPage />} ></Route>
-          <Route path="fishstagram" element={<InstaGallery />} ></Route>
+          <Route path="/fishstagram" element={<InstaGallery />} >
+            <Route path='' element={<InstaUserBody />} />
+            <Route path='newpost' element={<NewPostBody />} />
+          </Route>
           <Route path="/shop" element={<ShopPage />}>
             <Route path="" element={<ProductHome />} />
             <Route path="cart" element={
@@ -54,7 +59,7 @@ function App() {
             <Route path="commissions" element={<ShopCommissions />} />
           </Route>
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </div>
   );
 }
