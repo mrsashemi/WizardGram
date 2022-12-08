@@ -14,15 +14,17 @@ CREATE TABLE users(
     administrator BOOLEAN NOT NULL DEFAULT FALSE, 
     verified BOOLEAN NOT NULL DEFAULT FALSE,
     profile_pic TEXT,
+    refresh_token TEXT,
     CONSTRAINT fk_address
         FOREIGN KEY(address_id)
             REFERENCES addresses(address_id)
             ON DELETE SET NULL
 );
 
-CREATE TABLE blog_posts(
-    blog_id SERIAL PRIMARY KEY,
-    theme_id INT NOT NULL,
+CREATE TABLE posts(
+    post_id SERIAL PRIMARY KEY,
+    theme_id INT,
+    post_type TEXT NOT NULL,
     title TEXT NOT NULL,
     body TEXT NOT NULL,
     photos TEXT[], 
@@ -31,7 +33,7 @@ CREATE TABLE blog_posts(
     date_updated DATE NOT NULL DEFAULT CURRENT_DATE,
     CONSTRAINT fk_theme
         FOREIGN KEY(theme_id)
-            REFERENCES themes(theme_id)
+            REFERENCES posts_themes(theme_id)
             ON DELETE CASCADE,
     CONSTRAINT fk_user
         FOREIGN KEY(users_id)
@@ -39,7 +41,7 @@ CREATE TABLE blog_posts(
             ON DELETE CASCADE
 );
 
-CREATE TABLE blog_themes(
+CREATE TABLE posts_themes(
     theme_id SERIAL PRIMARY KEY,
     theme_name VARCHAR(50) NOT NULL UNIQUE
 );
@@ -48,7 +50,7 @@ CREATE TABLE comments(
     comment_id SERIAL PRIMARY KEY,
     body VARCHAR(500) NOT NULL,
     users_id INT NOT NULL,
-    blog_id INT NOT NULL,
+    posts_id INT NOT NULL,
     parent_comment_id INT, 
     date_created TIMESTAMPTZ DEFAULT NOW(),
     date_updated TIMESTAMPTZ DEFAULT NOW(),
@@ -56,9 +58,9 @@ CREATE TABLE comments(
         FOREIGN KEY(users_id)
             REFERENCES users(users_id)
             ON DELETE CASCADE,
-    CONSTRAINT fk_blog
-        FOREIGN KEY(blog_id)
-            REFERENCES blog_posts(blog_id)
+    CONSTRAINT fk_posts
+        FOREIGN KEY(posts_id)
+            REFERENCES posts(posts_id)
             ON DELETE CASCADE,
     CONSTRAINT fk_parent_comment
         FOREIGN KEY(parent_comment_id)
@@ -86,7 +88,7 @@ CREATE TABLE users_addresses(
         FOREIGN KEY(users_id)
             REFERENCES users(users_id)
             ON DELETE CASCADE
-)
+);
 
 CREATE OR REPLACE FUNCTION UPDATE_DATE()
     RETURNS TRIGGER
@@ -108,9 +110,9 @@ BEGIN
 END;
 $$;
 
-CREATE TRIGGER update_blog_date
+CREATE TRIGGER update_posts_date
     BEFORE UPDATE 
-    ON blog_posts
+    ON posts_posts
     FOR EACH ROW
         EXECUTE PROCEDURE UPDATE_DATE();
 

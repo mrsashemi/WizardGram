@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ShopPage } from './pages/shoppage/shoppage';
 import { Homepage } from './pages/homepage/homepage';
 import { ShopPrints } from './components/shop-body/product-page/prints';
@@ -19,6 +19,8 @@ import { InstaUserBody } from './components/insta-body/instabody';
 import { NewPostBody } from './components/insta-body/newpostbody';
 import { EditPostBody } from './components/insta-body/editpostbody';
 import { CreatePostBody } from './components/insta-body/createpostbody';
+import { AuthProvider } from './context/auth-provider';
+import RequireAuth from './components/authentication/require-auth';
 
 const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
 const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
@@ -29,40 +31,47 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/blog" element={<BlogPage />} ></Route>
-          <Route path="/login" element={<LoginPage />} ></Route>
-          <Route path="/signup" element={<SignUpPage />} ></Route>
-          <Route path="/fishstagram" element={<InstaGallery />} >
-            <Route path='' element={<InstaUserBody />} />
-            <Route path='newpost' element={<NewPostBody />} />
-            <Route path='editpost' element={<EditPostBody />} />
-            <Route path='createpost' element={<CreatePostBody />} />
-          </Route>
-          <Route path="/shop" element={<ShopPage />}>
-            <Route path="" element={<ProductHome />} />
-            <Route path="cart" element={
-              <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
-                <ShopCart />
-              </React.Suspense>
-            } />
-            <Route path="prints" element={<ShopPrints />} />
-            <Route path="prints/:id" element={
-              <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
-                <PrintDetail />
-              </React.Suspense>
-            } />
-            <Route path="merchandise" element={<ShopMerch />} />
-            <Route path="merchandise/:id" element={
-              <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
-                <MerchDetail />
-              </React.Suspense>
-            } />
-            <Route path="NFT" element={<ShopNFT />} />
-            <Route path="commissions" element={<ShopCommissions />} />
-          </Route>
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/blog" element={<BlogPage />} ></Route>
+            <Route path="/login" element={<LoginPage />} ></Route>
+            <Route path="/signup" element={<SignUpPage />} ></Route>
+
+            <Route element={<RequireAuth allowedRoles={"0001"} />}>
+              <Route path="/fishstagram" element={<InstaGallery />} >
+                <Route path='' element={<InstaUserBody />} />
+                <Route path='newpost' element={<NewPostBody />} />
+                <Route path='editpost' element={<EditPostBody />} />
+                <Route path='createpost' element={<CreatePostBody />} />
+              </Route>
+            </Route>
+
+
+            <Route path="/shop" element={<ShopPage />}>
+              <Route path="" element={<ProductHome />} />
+              <Route path="cart" element={
+                <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
+                  <ShopCart />
+                </React.Suspense>
+              } />
+              <Route path="prints" element={<ShopPrints />} />
+              <Route path="prints/:id" element={
+                <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
+                  <PrintDetail />
+                </React.Suspense>
+              } />
+              <Route path="merchandise" element={<ShopMerch />} />
+              <Route path="merchandise/:id" element={
+                <React.Suspense fallback={<div style={{marginRight: '1rem'}}>loading...</div>}>
+                  <MerchDetail />
+                </React.Suspense>
+              } />
+              <Route path="NFT" element={<ShopNFT />} />
+              <Route path="commissions" element={<ShopCommissions />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );

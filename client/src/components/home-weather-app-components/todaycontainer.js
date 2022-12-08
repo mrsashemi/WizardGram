@@ -17,8 +17,8 @@ export function TodayWeatherContainer() {
     const [humidity, setHumidity] = useState('loading...');
     const [cloudiness, setCloudiness] = useState('loading...');
     const [wind, setWind] = useState('loading...');
-    const [tempIcon, setTempIcon] = useState('https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256');
-    const [cloudIcon] = useState(`https://www.veryicon.com/download/png/weather/icon-by-qning/weather-icon-cloudy?s=256`);
+    const [tempIcon, setTempIcon] = useState('');
+    const [cloudIcon] = useState(`https://icons.veryicon.com/png/o/miscellaneous/open-ncloud/cloud-63.png`);
     const [humidityIcon] = useState('https://icons.veryicon.com/png/128/weather/weather-colored-outline/humidity-24.png');
     const [windIcon] = useState('https://cdn-icons-png.flaticon.com/128/1458/1458846.png');
 

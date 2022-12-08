@@ -1,5 +1,6 @@
 import { AnalogClockApp } from "./analogclock";
 import { BlogApp } from "./blogapp";
+import { FishstagramApp } from "./fishstagramapp";
 import { ShopApp } from "./shopapp";
 import { TitleApp } from "./titleapp";
 import { WeatherApp } from "./weatherapp";
@@ -13,6 +14,7 @@ export function MainApps() {
             <WeatherApp />
             <ShopApp />
             <BlogApp />
+            <FishstagramApp />
         </div>
     )
 }
