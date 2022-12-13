@@ -4,14 +4,22 @@ import { NewPostGrid } from "./new-post-container/newpostgrid";
 import { NewPostHeader } from "./new-post-container/newpostheader";
 import { NewPostSelect } from "./new-post-container/newpostselect";
 import useAxiosPrivate from "../../hooks/useaxiosprivate";
-const SAVE_IMG_URL = '/img/save-image'
+import { useOutletContext } from "react-router-dom";
+const SAVE_IMG_URL = '/img/save-image';
+const GET_ALL_IMG_URL = '/img/get-all-images';
 
 
 export function NewPostBody() {
     const [selectedImage, setSelectedImage] = useState("");
-    const [currentImgId, setCurrentImgId] = useState("");
-    const [currentImg, setCurrentImg] = useState("");
-
+    const [
+        currentImg, setCurrentImg, 
+        currentImgId, setCurrentImgId, 
+        objPosX, setObjPosX,
+        objPosY, setObjPosY,
+        objScale, setObjScale,
+        imgFit, setImgFit
+    ] = useOutletContext();
+    const [allImg, setAllImg] = useState(null);
     const axiosPrivate = useAxiosPrivate();
 
     useEffect(() => {
@@ -19,42 +27,63 @@ export function NewPostBody() {
         formData.append("image", selectedImage);
    
         if (selectedImage !== "") {
-            let isMounted = true;
-            const controller = new AbortController();
-
-            const createPost = async () => {
+            const createImg = async () => {
                 try {
                     const result = await axiosPrivate.post(SAVE_IMG_URL, formData, 
                         {
                             headers: {'Content-Type': 'multipart/form-data'},
                             withCredentials: true,
-                            signal: controller.signal
                         });
-                        console.log(result.data);
-                        if (isMounted) {
-                            setCurrentImg(result.data.img_location);
-                            setCurrentImgId(result.data.img_id);
-                        }              
+                        setCurrentImg(result.data.img_location);
+                        setCurrentImgId(result.data.img_id);  
+                        setSelectedImage("");       
                 } catch (error) {
                     console.error(error);
                 }
             }
 
-            createPost();
-    
-            return () => {
-                isMounted = false;
-                controller.abort();
+            createImg();
+        }
+    }, [selectedImage])
+
+    useEffect(() => {
+        const getAllImg = async () => {
+            try {
+                const result = await axiosPrivate.get(GET_ALL_IMG_URL, {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true,
+                });
+                setAllImg(result.data.imageList);
+                setCurrentImg(result.data.imageList[0].img_location);
+                setCurrentImgId(result.data.imageList[0].img_id);
+            } catch (error) {
+                console.error(error);
             }
         }
+
+        getAllImg();
     }, [selectedImage])
 
     return (
         <div id="instaUserDashboard">
             <NewPostHeader />
-            <NewPostFile currentImg={currentImg} currentImgId={currentImgId} setCurrentImg={setCurrentImg} />
-            <NewPostSelect setSelectedImage={setSelectedImage} />
-            <NewPostGrid />
+            <NewPostFile 
+                currentImg={currentImg} 
+                setCurrentImg={setCurrentImg}
+                objPosX={objPosX}
+                setObjPosX={setObjPosX}
+                objPosY={objPosY}
+                setObjPosY={setObjPosY}
+                objScale={objScale}
+                setObjScale={setObjScale}
+                imgFit={imgFit}
+                setImgFit={setImgFit} />
+            <NewPostSelect 
+                setSelectedImage={setSelectedImage} />
+            <NewPostGrid 
+                allImg={allImg}
+                setCurrentImg={setCurrentImg}
+                setCurrentImgId={setCurrentImgId} />
         </div>
     )
 }

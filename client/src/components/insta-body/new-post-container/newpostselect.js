@@ -8,6 +8,7 @@ export function NewPostSelect({setSelectedImage}) {
     }
 
     const handleChange = (e) => {
+        e.preventDefault();
         setSelectedImage(e.target.files[0]);
     }
    

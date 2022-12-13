@@ -47,9 +47,22 @@ CREATE TABLE images(
     img_key TEXT
 );
 
+CREATE TABLE image_classes(
+    class_id SERIAL PRIMARY KEY,
+    classname TEXT NOT NULL
+);
+
+ 
+
 CREATE TABLE posts_images(
     img_id INT NOT NULL,
     post_id INT NOT NULL,
+    class_id INT NOT NULL,
+    CONSTRAINT fk_class
+        FOREIGN KEY(class_id)
+        REFERENCES image_classes(class_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     CONSTRAINT fk_img
         FOREIGN KEY(img_id)
         REFERENCES images(img_id)

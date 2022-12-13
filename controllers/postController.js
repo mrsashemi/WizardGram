@@ -13,7 +13,7 @@ exports.createPost = async (req, res) => {
     if(!cookies.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
 
-    const { post_type, title, body, photos, users_id  } = req.body;
+    const { post_type, title, body } = req.body;
 
     try {
         const udata = await pool.query(`SELECT * FROM users WHERE refresh_token = $1;`, [refreshToken]);

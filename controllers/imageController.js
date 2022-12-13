@@ -109,6 +109,7 @@ exports.getImg = async (req, res) => {
     readStream.pipe(res);
 }
 
+// update an image
 
 // delete an image 
 exports.imageDelete = async (req, res) => {
