@@ -27,18 +27,40 @@ CREATE TABLE posts(
     post_type TEXT NOT NULL,
     title TEXT NOT NULL,
     body TEXT NOT NULL,
-    photos TEXT[], 
     users_id INT NOT NULL,
     date_created DATE NOT NULL DEFAULT CURRENT_DATE,
     date_updated DATE NOT NULL DEFAULT CURRENT_DATE,
     CONSTRAINT fk_theme
         FOREIGN KEY(theme_id)
             REFERENCES posts_themes(theme_id)
-            ON DELETE CASCADE,
+            ON UPDATE CASCADE,
     CONSTRAINT fk_user
         FOREIGN KEY(users_id)
             REFERENCES users(users_id)
+            ON UPDATE CASCADE
             ON DELETE CASCADE
+);
+
+CREATE TABLE images(
+    img_id SERIAL PRIMARY KEY,
+    img_location TEXT NOT NULL,
+    img_key TEXT
+);
+
+CREATE TABLE posts_images(
+    img_id INT NOT NULL,
+    post_id INT NOT NULL,
+    CONSTRAINT fk_img
+        FOREIGN KEY(img_id)
+        REFERENCES images(img_id)
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_post
+        FOREIGN KEY (post_id)
+        REFERENCES posts(post_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT img_posts_id 
+        PRIMARY KEY (img_id, post_id)
 );
 
 CREATE TABLE posts_themes(
@@ -57,15 +79,17 @@ CREATE TABLE comments(
     CONSTRAINT fk_user
         FOREIGN KEY(users_id)
             REFERENCES users(users_id)
+            ON UPDATE CASCADE
             ON DELETE CASCADE,
     CONSTRAINT fk_posts
         FOREIGN KEY(posts_id)
             REFERENCES posts(posts_id)
+            ON UPDATE CASCADE
             ON DELETE CASCADE,
     CONSTRAINT fk_parent_comment
         FOREIGN KEY(parent_comment_id)
             REFERENCES comments(comment_id)
-            ON DELETE SET NULL
+            ON DELETE CASCADE
 );
 
 CREATE TABLE addresses(

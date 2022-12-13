@@ -27,11 +27,13 @@ app.use('/', express.static(path.join(__dirname, '/public')));
 //ROUTES
 const user = require("./routers/users");
 const refresh = require("./routers/refresh");
-const { application } = require('express');
+const posts = require("./routers/posts");
+const images = require("./routers/images");
 
 app.use("/user", user);
 app.use("/refresh", refresh);
-
+app.use("/posts", posts);
+app.use("/img", images);
 
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
