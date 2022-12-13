@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export function EditPostFilters({currentImg, objPosX, objPosY, objScale, imgFit}) {
+export function EditPostFilters({currentImg, objPosX, objPosY, objScale, imgFit, setImgFilter}) {
     const [filterClasses] = useState([
         ["1977", "filter-1977"],
         ["Aden", "filter-aden"],
@@ -43,6 +43,10 @@ export function EditPostFilters({currentImg, objPosX, objPosY, objScale, imgFit}
         ["X-Pro II", "filter-xpro-ii"]
     ]);
 
+    const handleSaveFilter = (filter) => {
+        setImgFilter(filter);
+    }
+
     return (
         <div className="filterContainer">
             {filterClasses.map((filter, index) =>
@@ -51,7 +55,8 @@ export function EditPostFilters({currentImg, objPosX, objPosY, objScale, imgFit}
                     <img 
                         className={`filterSquare ${imgFit} ${filter[1]}`}
                         style={{objectPosition: `${objPosX}% ${objPosY}%`, transform: `scale(${objScale})`}} 
-                        src={currentImg}></img>
+                        src={currentImg}
+                        onClick={() => {handleSaveFilter(filter[1])}}></img>
                 </div>
             )}
         </div>

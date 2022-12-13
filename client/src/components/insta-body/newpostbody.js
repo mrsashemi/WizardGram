@@ -17,7 +17,8 @@ export function NewPostBody() {
         objPosX, setObjPosX,
         objPosY, setObjPosY,
         objScale, setObjScale,
-        imgFit, setImgFit
+        imgFit, setImgFit,
+        imgFilter, setImgFilter
     ] = useOutletContext();
     const [allImg, setAllImg] = useState(null);
     const axiosPrivate = useAxiosPrivate();

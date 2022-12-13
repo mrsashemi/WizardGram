@@ -11,7 +11,8 @@ export function EditPostBody() {
         objPosX, setObjPosX,
         objPosY, setObjPosY,
         objScale, setObjScale,
-        imgFit, setImgFit
+        imgFit, setImgFit,
+        imgFilter, setImgFilter
     ] = useOutletContext();
 
 
@@ -23,10 +24,15 @@ export function EditPostBody() {
                 objPosX={objPosX}
                 objPosY={objPosY}
                 objScale={objScale}
-                imgFit={imgFit} />
+                imgFit={imgFit}
+                imgFilter={imgFilter} />
             <EditPostFilters 
                 currentImg={currentImg}
-                imgFit={imgFit} />
+                objPosX={objPosX}
+                objPosY={objPosY}
+                objScale={objScale}
+                imgFit={imgFit}
+                setImgFilter={setImgFilter} />
             <EditPostOptions />
         </div>
     )

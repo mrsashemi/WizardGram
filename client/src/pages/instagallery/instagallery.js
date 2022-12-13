@@ -24,7 +24,8 @@ export function InstaGallery() {
                     objPosX, setObjPosX,
                     objPosY, setObjPosY,
                     objScale, setObjScale,
-                    imgFit, setImgFit]} />
+                    imgFit, setImgFit,
+                    imgFilter, setImgFilter]} />
             </div>
         </div>
     )
