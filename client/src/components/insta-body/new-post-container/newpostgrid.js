@@ -1,9 +1,11 @@
-export function NewPostGrid({allImg, setCurrentImg, setCurrentImgId}) {
+export function NewPostGrid({allImg, newImage, setNewImage}) {
 
     const handleCurrentImage = (img_location, img_id) => {
-        setCurrentImg(img_location);
-        setCurrentImgId(img_id);
-        console.log(img_location);
+        setNewImage({
+            ...newImage,
+            url: img_location,
+            id: img_id
+        })
     }
 
     return (

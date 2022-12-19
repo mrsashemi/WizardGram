@@ -11,15 +11,7 @@ const GET_ALL_IMG_URL = '/img/get-all-images';
 
 export function NewPostBody() {
     const [selectedImage, setSelectedImage] = useState("");
-    const [
-        currentImg, setCurrentImg, 
-        currentImgId, setCurrentImgId, 
-        objPosX, setObjPosX,
-        objPosY, setObjPosY,
-        objScale, setObjScale,
-        imgFit, setImgFit,
-        imgFilter, setImgFilter
-    ] = useOutletContext();
+    const [newImage, setNewImage] = useOutletContext();
     const [allImg, setAllImg] = useState(null);
     const axiosPrivate = useAxiosPrivate();
 
@@ -35,8 +27,11 @@ export function NewPostBody() {
                             headers: {'Content-Type': 'multipart/form-data'},
                             withCredentials: true,
                         });
-                        setCurrentImg(result.data.img_location);
-                        setCurrentImgId(result.data.img_id);  
+                        setNewImage({
+                            ...newImage,
+                            url: result.data.img_location,
+                            id: result.data.img_id
+                        })
                         setSelectedImage("");       
                 } catch (error) {
                     console.error(error);
@@ -55,8 +50,11 @@ export function NewPostBody() {
                     withCredentials: true,
                 });
                 setAllImg(result.data.imageList);
-                setCurrentImg(result.data.imageList[0].img_location);
-                setCurrentImgId(result.data.imageList[0].img_id);
+                setNewImage({
+                    ...newImage,
+                    url: result.data.imageList[0].img_location,
+                    id: result.data.imageList[0].img_id
+                })
             } catch (error) {
                 console.error(error);
             }
@@ -69,22 +67,14 @@ export function NewPostBody() {
         <div id="instaUserDashboard">
             <NewPostHeader />
             <NewPostFile 
-                currentImg={currentImg} 
-                setCurrentImg={setCurrentImg}
-                objPosX={objPosX}
-                setObjPosX={setObjPosX}
-                objPosY={objPosY}
-                setObjPosY={setObjPosY}
-                objScale={objScale}
-                setObjScale={setObjScale}
-                imgFit={imgFit}
-                setImgFit={setImgFit} />
+                newImage={newImage}
+                setNewImage={setNewImage} />
             <NewPostSelect 
                 setSelectedImage={setSelectedImage} />
             <NewPostGrid 
                 allImg={allImg}
-                setCurrentImg={setCurrentImg}
-                setCurrentImgId={setCurrentImgId} />
+                newImage={newImage}
+                setNewImage={setNewImage} />
         </div>
     )
 }

@@ -49,10 +49,12 @@ CREATE TABLE images(
 
 CREATE TABLE image_classes(
     class_id SERIAL PRIMARY KEY,
-    classname TEXT NOT NULL
+    filter_class TEXT,
+    fit_class TEXT, 
+    scale INT,
+    object_position_x INT,
+    object_position_y INT,
 );
-
- 
 
 CREATE TABLE posts_images(
     img_id INT NOT NULL,

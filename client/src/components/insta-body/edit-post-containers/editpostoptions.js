@@ -1,8 +1,9 @@
-export function EditPostOptions() {
+export function EditPostOptions({setUseFilter}) {
+    
     return (
         <div className="editOptionsContainer">
-            <button className="editButton">Filters</button>
-            <button className="editButton">Edit</button>
+            <button className="editButton" onClick={() => {setUseFilter(true)}}>Filters</button>
+            <button className="editButton" onClick={() => {setUseFilter(false)}}>Edit</button>
         </div>
     )
 }

@@ -1,49 +1,92 @@
 import { useEffect, useState } from "react"
 import { useOutletContext } from "react-router-dom";
 
-export function NewPostFile({currentImg, objPosX, setObjPosX, objPosY, setObjPosY, objScale, setObjScale, imgFit, setImgFit}) {
-    const [xPos, setXPos] = useState(null);
-    const [yPos, setYPos] = useState(null);
-    const [leftBound, setLeftBound] = useState(null);
-    const [topBound, setTopBound] = useState(null);
+export function NewPostFile({newImage, setNewImage}) {
     const [start, setStart] = useState(10);
     const [startTimer, setStartTimer] = useState(false);
+    const [tile, setTile] = useState("");
     let timer = undefined;
 
     const handleFit = () => {
-        if (imgFit === "coverImg") setImgFit("containImg")
-        else setImgFit("coverImg")
-
-        setObjScale(1);
-        setObjPosX(50);
-        setObjPosY(50);
+        setNewImage({
+            ...newImage,
+            fit: (newImage.fit === "coverImg") ? "containImg" : "coverImg",
+            posX: 0,
+            posY: 0,
+            scale: 1
+        })
     }
 
     useEffect(() => {
         if (startTimer) timer = setTimeout(repeatEvent, start);
-    }, [objPosX, objPosY, objScale])
+    }, [newImage.posX, newImage.posY, newImage.scale])
 
     const adjustPos = (e) => {
-        let offsetX = xPos - leftBound;
-        let halfBound = leftBound/2;
-
-        let offsetY = yPos - topBound;
-        let topHalfBound = topBound/2;
-
-        if (offsetX < (halfBound - halfBound/2) && objPosX > 0) {
-            setObjPosX(objPosX-1)
-        } else if (offsetX > (halfBound + halfBound/2) && objPosX < 100) {
-            setObjPosX(objPosX+1)
+        if (tile === "middleMiddle") {
+            setNewImage({
+                ...newImage,
+                scale: newImage.scale+0.01
+            })
         }
 
-        if (offsetY < (topBound + topHalfBound) && objPosY > 0) {
-            setObjPosY(objPosY-1);
-        } else if (offsetY > (topBound*5 + topHalfBound) && objPosY < 100) {
-            setObjPosY(objPosY+1);
-        } 
+        if (tile === "middleLeft") {
+            setNewImage({
+                ...newImage,
+                posX: newImage.posX-1
+            })
+        }
 
-        if (offsetX > (halfBound - halfBound/2) && offsetX < (halfBound + halfBound/2) && offsetY > (topBound + topHalfBound) && offsetY < (topBound*5 + topHalfBound)) {
-            setObjScale(objScale+0.01)
+        if (tile === "middleRight") {
+            setNewImage({
+                ...newImage,
+                posX: newImage.posX+1
+            })
+        }
+
+        if (tile === "topMiddle") {
+            setNewImage({
+                ...newImage,
+                posY: newImage.posY-1
+            })
+        }
+
+        if (tile === "bottomMiddle") {
+            setNewImage({
+                ...newImage,
+                posY: newImage.posY+1
+            })
+        }
+
+        if (tile === "topLeft") {
+            setNewImage({
+                ...newImage,
+                posY: newImage.posY-1,
+                posX: newImage.posX-1
+            })
+        }
+
+        if (tile === "topRight") {
+            setNewImage({
+                ...newImage,
+                posY: newImage.posY-1,
+                posX: newImage.posX+1
+            })
+        }
+
+        if (tile === "bottomLeft") {
+            setNewImage({
+                ...newImage,
+                posY: newImage.posY+1,
+                posX: newImage.posX-1
+            })
+        }
+
+        if (tile === "bottomRight") {
+            setNewImage({
+                ...newImage,
+                posY: newImage.posY+1,
+                posX: newImage.posX+1
+            })
         }
     }
     
@@ -54,10 +97,7 @@ export function NewPostFile({currentImg, objPosX, setObjPosX, objPosY, setObjPos
     
     const mouseDownEvent = (e) => {
         setStartTimer(true);
-        setXPos(e.clientX);
-        setYPos(e.clientY);
-        setLeftBound(e.target.parentElement.getBoundingClientRect().left)
-        setTopBound(e.target.parentElement.getBoundingClientRect().top)
+        setTile(e.target.className);
         repeatEvent(e); 
     }
 
@@ -67,26 +107,27 @@ export function NewPostFile({currentImg, objPosX, setObjPosX, objPosY, setObjPos
         setStart(10);
     }
 
-    const findPositions = (e) => {
-        setXPos(e.clientX);
-        setYPos(e.clientY);
-        setLeftBound(e.target.parentElement.getBoundingClientRect().left)
-        setTopBound(e.target.parentElement.getBoundingClientRect().top)
-    }
-
     return (
         <div className="newPostFileContainer">
-            {currentImg
+            {newImage.url
                 ? <img 
-                    className={`newPostFile ${imgFit}`}
-                    src={currentImg} 
-                    style={{objectPosition: `${objPosX}% ${objPosY}%`, transform: `scale(${objScale})`}} 
-                    draggable={false}
-                    onMouseDown={mouseDownEvent}
-                    onMouseUp={mouseUpEvent}
-                    onMouseOver={findPositions}></img>
+                    className={`newPostFile ${newImage.fit}`}
+                    src={newImage.url} 
+                    style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}px) translateY(${newImage.posY}px)`}} 
+                    draggable={false}></img>
                 : <img className="newPostFile"></img>
             }
+            <div className="invisibleGrid">
+                <div className="topLeft" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="topMiddle" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="topRight" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="middleLeft" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="middleMiddle" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="middleRight" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="bottomLeft" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="bottomMiddle" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+                <div className="bottomRight" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>
+            </div>
             <button className="expandButton" onClick={handleFit}>{`< >`}</button>
         </div>
     )

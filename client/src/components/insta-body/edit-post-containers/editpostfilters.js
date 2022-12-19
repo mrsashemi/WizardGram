@@ -1,7 +1,8 @@
 import { useState } from "react"
 
-export function EditPostFilters({currentImg, objPosX, objPosY, objScale, imgFit, setImgFilter}) {
+export function EditPostFilters({newImage, setNewImage}) {
     const [filterClasses] = useState([
+        ["None", "no-filter"],
         ["1977", "filter-1977"],
         ["Aden", "filter-aden"],
         ["Amaro", "filter-amaro"],
@@ -43,8 +44,11 @@ export function EditPostFilters({currentImg, objPosX, objPosY, objScale, imgFit,
         ["X-Pro II", "filter-xpro-ii"]
     ]);
 
-    const handleSaveFilter = (filter) => {
-        setImgFilter(filter);
+    const handleSaveFilter = (selectedFilter) => {
+        setNewImage({
+            ...newImage,
+            filter: selectedFilter
+        })
     }
 
     return (
@@ -52,11 +56,13 @@ export function EditPostFilters({currentImg, objPosX, objPosY, objScale, imgFit,
             {filterClasses.map((filter, index) =>
                 <div className="filterTile" key={index}>
                     <h5 className="filterTitle">{filter[0]}</h5>
-                    <img 
-                        className={`filterSquare ${imgFit} ${filter[1]}`}
-                        style={{objectPosition: `${objPosX}% ${objPosY}%`, transform: `scale(${objScale})`}} 
-                        src={currentImg}
-                        onClick={() => {handleSaveFilter(filter[1])}}></img>
+                    <div className="filterSquareContainer">
+                        <img 
+                            className={`filterSquare ${newImage.fit} ${filter[1]}`}
+                            style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}px) translateY(${newImage.posY}px)`}} 
+                            src={newImage.url}
+                            onClick={() => {handleSaveFilter(filter[1])}}></img>
+                    </div>
                 </div>
             )}
         </div>
