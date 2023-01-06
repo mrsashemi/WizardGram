@@ -29,11 +29,13 @@ const user = require("./routers/users");
 const refresh = require("./routers/refresh");
 const posts = require("./routers/posts");
 const images = require("./routers/images");
+const classes = require("./routers/classes");
 
 app.use("/user", user);
 app.use("/refresh", refresh);
 app.use("/posts", posts);
 app.use("/img", images);
+app.use("/classes", classes);
 
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

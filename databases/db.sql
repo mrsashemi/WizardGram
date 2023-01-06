@@ -49,12 +49,43 @@ CREATE TABLE images(
 
 CREATE TABLE image_classes(
     class_id SERIAL PRIMARY KEY,
-    filter_class TEXT,
-    fit_class TEXT, 
-    scale INT,
-    object_position_x INT,
-    object_position_y INT,
+    filter_class TEXT NOT NULL DEFAULT 'no-filter',
+    fit_class TEXT NOT NULL DEFAULT 'coverImg', 
+    position_x INT NOT NULL DEFAULT 0,
+    position_y INT NOT NULL DEFAULT 0, 
+    scale INT NOT NULL DEFAULT 1,
+    brightness INT NOT NULL DEFAULT 100,
+    contrast INT NOT NULL DEFAULT 100,
+    saturate INT NOT NULL DEFAULT 100,
+    grayscale INT NOT NULL DEFAULT 0,
+    sepia INT NOT NULL DEFAULT 0,
+    hue INT NOT NULL DEFAULT 0,
+    opacity INT NOT NULL DEFAULT 100,
+    blur INT NOT NULL DEFAULT 0,
+    rotate INT NOT NULL DEFAULT 0,
+    vignette BOOLEAN NOT NULL DEFAULT FALSE,
+    vignette_class TEXT NOT NULL DEFAULT 'vignette',
+    vignette_blur INT NOT NULL DEFAULT 0,
+    vignette_spread INT NOT NULL DEFAULT 0,
+    unedited INT NOT NULL DEFAULT FALSE
 );
+
+ALTER TABLE image_classes
+ALTER COLUMN position_x TYPE NUMERIC,
+ALTER COLUMN position_y TYPE NUMERIC,
+ALTER COLUMN scale TYPE NUMERIC,
+ALTER COLUMN brightness TYPE NUMERIC,
+ALTER COLUMN contrast TYPE NUMERIC,
+ALTER COLUMN saturate TYPE NUMERIC,
+ALTER COLUMN grayscale TYPE NUMERIC,
+ALTER COLUMN sepia TYPE NUMERIC,
+ALTER COLUMN hue TYPE NUMERIC,
+ALTER COLUMN opacity TYPE NUMERIC,
+ALTER COLUMN blur TYPE NUMERIC,
+ALTER COLUMN rotate TYPE NUMERIC,
+ALTER COLUMN vignette_blur TYPE NUMERIC,
+ALTER COLUMN vignette_spread TYPE NUMERIC,
+ALTER COLUMN unedited TYPE BOOLEAN;
 
 CREATE TABLE posts_images(
     img_id INT NOT NULL,

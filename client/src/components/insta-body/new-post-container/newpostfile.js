@@ -32,60 +32,60 @@ export function NewPostFile({newImage, setNewImage}) {
         if (tile === "middleLeft") {
             setNewImage({
                 ...newImage,
-                posX: newImage.posX-1
+                posX: newImage.posX-0.25
             })
         }
 
         if (tile === "middleRight") {
             setNewImage({
                 ...newImage,
-                posX: newImage.posX+1
+                posX: newImage.posX+0.25
             })
         }
 
         if (tile === "topMiddle") {
             setNewImage({
                 ...newImage,
-                posY: newImage.posY-1
+                posY: newImage.posY-0.25
             })
         }
 
         if (tile === "bottomMiddle") {
             setNewImage({
                 ...newImage,
-                posY: newImage.posY+1
+                posY: newImage.posY+0.25
             })
         }
 
         if (tile === "topLeft") {
             setNewImage({
                 ...newImage,
-                posY: newImage.posY-1,
-                posX: newImage.posX-1
+                posY: newImage.posY-0.25,
+                posX: newImage.posX-0.25
             })
         }
 
         if (tile === "topRight") {
             setNewImage({
                 ...newImage,
-                posY: newImage.posY-1,
-                posX: newImage.posX+1
+                posY: newImage.posY-0.25,
+                posX: newImage.posX+0.25
             })
         }
 
         if (tile === "bottomLeft") {
             setNewImage({
                 ...newImage,
-                posY: newImage.posY+1,
-                posX: newImage.posX-1
+                posY: newImage.posY+0.25,
+                posX: newImage.posX-0.25
             })
         }
 
         if (tile === "bottomRight") {
             setNewImage({
                 ...newImage,
-                posY: newImage.posY+1,
-                posX: newImage.posX+1
+                posY: newImage.posY+0.25,
+                posX: newImage.posX+0.25
             })
         }
     }
@@ -113,7 +113,7 @@ export function NewPostFile({newImage, setNewImage}) {
                 ? <img 
                     className={`newPostFile ${newImage.fit}`}
                     src={newImage.url} 
-                    style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}px) translateY(${newImage.posY}px)`}} 
+                    style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}%) translateY(${newImage.posY}%)`}} 
                     draggable={false}></img>
                 : <img className="newPostFile"></img>
             }

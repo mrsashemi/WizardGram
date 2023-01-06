@@ -146,6 +146,17 @@ export function EditPostSettings ({newImage, setNewImage, setEditRotate}) {
             vignetteSpread: (property === "box-shadow") ? 0 : newImage.vignetteSpread,
             vignette: (property === "box-shadow") ? false : newImage.vignette
         })
+
+        setDefaultOptions([...defaultOptions].map(object => {
+            if (object.property === property) {
+                return {
+                    ...object,
+                    value: (property === "brightness" || property === "contrast" || property === "saturate" || property === "opacity") ? 100 : 0
+                }
+            } else {
+                return object;
+            }
+        }))
     }
 
     const finishSetting = () => {

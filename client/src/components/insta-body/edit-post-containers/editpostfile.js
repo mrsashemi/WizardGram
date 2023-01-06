@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback, useRef } from "react";
 
 export function EditPostFile({newImage, setNewImage, editRotate, useFilter}) {
     const [start, setStart] = useState(10);
@@ -9,11 +9,11 @@ export function EditPostFile({newImage, setNewImage, editRotate, useFilter}) {
 
     useEffect(() => {
         setScaleReminder(newImage.scale)
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (startTimer) timer = setTimeout(repeatEvent, start);
-    }, [newImage.scale])
+    }, [newImage.scale]);
 
     const adjustPos = (e) => {
         if (tile === "middleMiddle") {
@@ -21,39 +21,42 @@ export function EditPostFile({newImage, setNewImage, editRotate, useFilter}) {
                 ...newImage,
                 scale: newImage.scale+0.01
             })
-        }
+        };
 
         if (tile === "middleLeft") {
             setNewImage({
                 ...newImage,
                 scale: newImage.scale-0.01
-            })
-        }
+            });
+        };
 
         if (tile === "middleRight") {
             setNewImage({
                 ...newImage,
                 scale: scaleReminder
-            })
-        }
-    }
+            });
+        };
+    };
     
 
     const repeatEvent = (e) => {
         adjustPos(e);
-    }
+    };
     
     const mouseDownEvent = (e) => {
         setStartTimer(true);
         setTile(e.target.className);
         repeatEvent(e); 
-    }
+    };
 
     const mouseUpEvent = () => {
         setStartTimer(false);
         clearTimeout(timer);
         setStart(10);
-    }
+    };
+
+
+
 
     return (
         <div className="newPostFileContainer">
@@ -61,8 +64,8 @@ export function EditPostFile({newImage, setNewImage, editRotate, useFilter}) {
                     className={`newPostFile ${newImage.fit} ${newImage.filter}`}
                     src={newImage.url} 
                     style={{transform:  `scale(${newImage.scale}) 
-                                        translateX(${newImage.posX}px) 
-                                        translateY(${newImage.posY}px)
+                                        translateX(${newImage.posX}%) 
+                                        translateY(${newImage.posY}%)
                                         rotate(${newImage.rotate}deg)`, 
                             opacity: `${newImage.opacity}%`,
                             filter: !useFilter && `brightness(${newImage.brightness}%) 
@@ -85,12 +88,10 @@ export function EditPostFile({newImage, setNewImage, editRotate, useFilter}) {
                 <div className="bottomRight"></div>
                 <div className="bottomMiddle"></div>
                 <div className="bottomLeft"></div>
-            </div>
-            }
+            </div>}
             {newImage.vignette &&
             <div className="vignette" style={{boxShadow: `inset 0px 0px ${newImage.vignetteBlur}px ${newImage.vignetteSpread}px rgba(0, 0, 0, 0.5)`}}>
-            </div>
-            }
+            </div>}
         </div>
     )
 }

@@ -48,7 +48,7 @@ export function InstaGallery() {
                     original: false
                 })
             }
-    }, [newImage])
+    }, [newImage.filter, newImage.brightness, newImage.contrast, newImage.saturate, newImage.grayscale, newImage.sepia, newImage.hue, newImage.blur])
 
     return (
         <div>

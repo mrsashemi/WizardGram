@@ -7,13 +7,17 @@ const { uploadFile, getFileStream } = require('../databases/s3');
 
 
 
-// upload a photo to s3 and store information in psql
+// upload a post and store information in psql
 exports.createPost = async (req, res) => {
     const cookies = req.cookies;
     if(!cookies.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
 
-    const { post_type, title, body } = req.body;
+    const { post_type, 
+            title, 
+            body,
+            img_id,
+            class_id } = req.body;
 
     try {
         const udata = await pool.query(`SELECT * FROM users WHERE refresh_token = $1;`, [refreshToken]);
@@ -29,23 +33,26 @@ exports.createPost = async (req, res) => {
                 title,
                 body,
                 users_id: user[0].users_id,
+                img_id,
+                class_id
             };
 
-            pool.query(`INSERT INTO posts (post_type, title, body, users_id) VALUES ($1, $2, $3, $4) RETURNING post_id;`,
-            [post.post_type, post.title, post.body, post.users_id], (error, results) => {
+            pool.query(`WITH inserted AS 
+            (INSERT INTO posts (post_type, title, body, users_id) VALUES ($1, $2, $3, $4) RETURNING post_id)
+            INSERT INTO posts_images (img_id, post_id, class_id)
+            SELECT $5, inserted.post_id, $6 FROM inserted
+            RETURNING post_id;`, 
+                [post.post_type, post.title, post.body, post.users_id, post.img_id, post.class_id], (error, results) => {
                 if (error) {
-                    throw error
+                    console.log(error);
                 }
 
                 res.status(200).json({
                     message: "Post Created",
-                    post_id: results.rows[0].post_id,
+                    post_id: results.rows[0].post_id
                 })
             })
-        };
-
-    
-        
+        }
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -90,6 +97,35 @@ exports.getPost = async (req, res) => {
         console.log(error);
         res.status(500).json({
             error: "Database error while getting post"
+        })
+    }
+}
+
+//get all posts from postgres 
+exports.getAllFishstaPosts = async (req, res) => {
+    try {
+        const data = await pool.query(`SELECT posts.*, images.*, image_classes.* 
+            FROM posts_images 
+            INNER JOIN posts ON posts.post_id = posts_images.post_id 
+            INNER JOIN images ON posts_images.img_id = images.img_id 
+            INNER JOIN image_classes ON posts_images.class_id = image_classes.class_id 
+            WHERE posts.post_type = 'fishstagram';`);
+        const posts = data.rows;
+
+        if (posts.length === 0) {
+            res.status(404).json({
+                error: "No posts found"
+            });
+        } else {
+            res.status(200).json({
+                message: "Posts found",
+                postList: posts
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Database error while getting posts"
         })
     }
 }

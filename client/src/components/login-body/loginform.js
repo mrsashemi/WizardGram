@@ -66,51 +66,6 @@ export function LoginForm() {
         }
     }
 
-    /*const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const configuration = {
-            method: "post",
-            url: "http://localhost:5050/user/signin",
-            data: {
-                email,
-                hashed_password,
-            }
-        };
-
-        axios(configuration)
-        .then((result) => {
-            const accessToken = result.data.token;
-            const admin = result.data.admin;
-            const verified = result.data.verified;
-            const username = result.data.username;
-            const fname = result.data.fname;
-            const lname = result.data.lname;
-           
-            setAuth({username, email, hashed_password, admin, verified, fname, lname, accessToken});
-            setEmail('');
-            setPassword('');
-            navigate(from, {replace: true});
-        })
-        .catch((error) => {
-            console.log(error.response.status);
-            if (!error.response) {
-                setErrMsg('No Server Response')
-            } else if (error.response.status === 400) {
-                setErrMsg("Missing Email or Password");
-            } else if (error.response.status === 401) {
-                setErrMsg("Unauthorized");
-            } else {
-                setErrMsg("Login Failed")
-            }
-
-            errRef.current.focus();
-            
-        })
-
-
-    }*/
-
     return (
         <div id="loginFormContainer">
             <form className="loginForm" onSubmit={(e) => handleSubmit(e)}>
