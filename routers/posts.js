@@ -5,8 +5,8 @@ const {createPost, updatePost, deletePost, getPost, getAllFishstaPosts} = requir
 router.post('/create-post', createPost);
 router.get('/get-post/:id', getPost);
 router.get('/get-all-fishstaposts', getAllFishstaPosts)
-router.put('/update-post', updatePost);
-router.delete('/delete-post', deletePost)
+router.put('/update-post/:id', updatePost);
+router.delete('/delete-post/:id', deletePost)
 
 
 module.exports = router;

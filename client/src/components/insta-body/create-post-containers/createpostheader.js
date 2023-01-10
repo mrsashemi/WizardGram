@@ -43,11 +43,9 @@ export function CreatePostHeader({newImage, message}) {
 
             const class_id = result.data.class_id
             setClassId(class_id);
-            //createPost();
         } catch (error) {
             if (error.response.status === 303) {
                 setClassId(error.response.data.class_id);
-                //createPost();
             } else if (!error.response) {
                 setErrMsg('No Server Response')
             } else if (error.response.status === 500) {

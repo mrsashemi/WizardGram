@@ -5,7 +5,14 @@ import { CreatePostHeader } from "./create-post-containers/createpostheader";
 import { CreatePostLinks } from "./create-post-containers/createpostlinks";
 
 export function CreatePostBody() {
-    const [newImage, setNewImage] = useOutletContext();
+    const [
+        newImage, setNewImage, 
+        allPosts, setAllPosts, 
+        isExpanded, 
+        expandImage, 
+        singlePost, 
+        selectedIndex, setSelectedIndex, 
+        editing, setEditing] = useOutletContext();
     const [message, setMessage] = useState("");
 
     return (

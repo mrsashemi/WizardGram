@@ -11,9 +11,16 @@ const GET_ALL_IMG_URL = '/img/get-all-images';
 
 export function NewPostBody() {
     const [selectedImage, setSelectedImage] = useState("");
-    const [newImage, setNewImage] = useOutletContext();
     const [allImg, setAllImg] = useState(null);
     const axiosPrivate = useAxiosPrivate();
+    const [
+        newImage, setNewImage, 
+        allPosts, setAllPosts, 
+        isExpanded, 
+        expandImage, 
+        singlePost, 
+        selectedIndex, setSelectedIndex, 
+        editing, setEditing] = useOutletContext();
 
     useEffect(() => {
         const formData = new FormData();

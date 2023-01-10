@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import axios from "../../api/axios";
 import { InstaGrid } from "./insta-containers/instagrid";
 import { InstaHeader } from "./insta-containers/instaheader";
@@ -10,27 +11,14 @@ const GET_ALL_POSTS_URL = '/posts/get-all-fishstaposts'
 
 export function InstaUserBody() {
     const [showModal, setShowModal] = useState(false);
-    const [allPosts, setAllPosts] = useState(null);
-
-    useEffect(() => {
-        const getAllPosts = async () => {
-            try {
-                const result = await axios.get(GET_ALL_POSTS_URL, {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true,
-                });
-                setAllPosts(result.data.postList);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        getAllPosts();
-    }, []);
-
-    useEffect(() => {
-        console.log(allPosts)
-    }, [allPosts])
+    const [
+        newImage, setNewImage, 
+        allPosts, setAllPosts, 
+        isExpanded, 
+        expandImage, 
+        singlePost, 
+        selectedIndex, setSelectedIndex, 
+        editing, setEditing] = useOutletContext();
 
     function showPostModal() {
         setShowModal(true);
@@ -40,15 +28,20 @@ export function InstaUserBody() {
         setShowModal(false);
     }
 
-
     return (
         <div id="instaUserDashboard">
             <InstaHeader onShow={showPostModal} />
             <InstaProfileImg />
             <InstaProfileDescription />
             <InstaHighlights />
-            <InstaGrid allPosts={allPosts}/>
-            <NewPostModal onHide={hidePostModal} showModal={showModal} />
+            <InstaGrid 
+            allPosts={allPosts}
+            expandImage={expandImage}
+            isExpanded={isExpanded}
+            setSelectedIndex={setSelectedIndex}/>
+            <NewPostModal 
+            onHide={hidePostModal} 
+            showModal={showModal} />
         </div>
     )
 }

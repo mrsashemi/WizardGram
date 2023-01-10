@@ -6,10 +6,7 @@ import { ShopPrints } from './components/shop-body/product-page/prints';
 import { ShopMerch } from './components/shop-body/product-page/merch';
 import { ShopNFT } from './components/shop-body/product-page/nft';
 import { ShopCommissions } from './components/shop-body/product-page/commissions';
-//import { PrintDetail } from './components/shop-body/item-pages/printdetails';
-//import { MerchDetail } from './components/shop-body/item-pages/merchdetails';
 import { ProductHome } from './components/shop-body/product-page/producthome';
-//import { ShopCart } from './components/shop-body/cart-page/cart';
 import { BlogPage } from './pages/blogpage/blogpage';
 import React from 'react';
 import { LoginPage } from './pages/loginpage/loginpage';
@@ -21,6 +18,8 @@ import { EditPostBody } from './components/insta-body/editpostbody';
 import { CreatePostBody } from './components/insta-body/createpostbody';
 import { AuthProvider } from './context/auth-provider';
 import RequireAuth from './components/authentication/require-auth';
+import { PostScrollBody } from './components/insta-body/postscrollbody';
+import { SinglePostBody } from './components/insta-body/singlepostbody';
 
 const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
 const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
@@ -44,6 +43,8 @@ function App() {
                 <Route path='newpost' element={<NewPostBody />} />
                 <Route path='editpost' element={<EditPostBody />} />
                 <Route path='createpost' element={<CreatePostBody />} />
+                <Route path='allposts' element={<PostScrollBody/>} />
+                <Route path='posts/:id' element={<SinglePostBody/>} />
               </Route>
             </Route>
 

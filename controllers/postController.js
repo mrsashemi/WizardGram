@@ -138,7 +138,7 @@ exports.updatePost = async (req, res) => {
     if(!cookies.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
 
-    const { body, theme_id, title, date_updated } = req.body;
+    const { body, theme_id, title, date_updated, likes, show_likes } = req.body;
 
     try {
         const udata = await pool.query(`SELECT * FROM users WHERE refresh_token = $1;`, [refreshToken]);
@@ -160,20 +160,19 @@ exports.updatePost = async (req, res) => {
                 body,
                 theme_id,
                 title,
-                date_updated
+                date_updated, 
+                likes,
+                show_likes
             }
 
-            pool.query(`UPDATE posts SET body = $1, theme_id = $2, title = $3, date_updated = $4 WHERE post_id = $5;`, 
-            [post.body, post.theme_id, post.title, post.date_updated, post_id], (error, results) => {
+            pool.query(`UPDATE posts SET body = $1, theme_id = $2, title = $3, date_updated = $4, likes = $5, show_likes = $6 WHERE post_id = $7;`, 
+            [post.body, post.theme_id, post.title, post.date_updated, post.likes, post.show_likes, post_id], (error, results) => {
                 if (error) {
                     throw error
                 }
 
                 res.status(200).json({
-                    message: "Post updated",
-                    body: results.rows[0].body,
-                    post_id: results.rows[0].id,
-                    photo: results.rows[0].photos
+                    message: "Post updated"
                 })
             })
         }

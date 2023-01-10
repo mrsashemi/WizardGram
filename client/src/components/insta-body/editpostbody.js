@@ -8,8 +8,15 @@ import { EditPostSettings } from "./edit-post-containers/editpostsettings";
 
 export function EditPostBody() {
     const [useFilter, setUseFilter] = useState(true);
-    const [newImage, setNewImage] = useOutletContext();
     const [editRotate, setEditRotate] = useState(false);
+    const [
+        newImage, setNewImage, 
+        allPosts, setAllPosts, 
+        isExpanded, 
+        expandImage, 
+        singlePost, 
+        selectedIndex, setSelectedIndex, 
+        editing, setEditing] = useOutletContext();
 
     useEffect(() => {
         if (!useFilter) {
