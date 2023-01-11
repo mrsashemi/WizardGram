@@ -30,7 +30,7 @@ export function EditPostBody() {
 
     return (
         <div id="instaUserDashboard">
-            <EditPostHeader />
+            <EditPostHeader newImage={newImage} setNewImage={setNewImage} />
             <EditPostFile 
                 newImage={newImage}
                 setNewImage={setNewImage}

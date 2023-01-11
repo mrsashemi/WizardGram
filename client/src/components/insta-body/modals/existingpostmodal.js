@@ -59,12 +59,82 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
 
 
 
-   const archivePost = async () => {
+    const archivePost = async () => {
+        try {
+            const result = await axiosPrivate.put(`/posts/update-post/${postIndex.id}`, 
+                JSON.stringify({
+                    body: allPosts[postIndex.index].body,
+                    theme_id: allPosts[postIndex.index].theme_id,
+                    title: allPosts[postIndex.index].title,
+                    date_updated: allPosts[postIndex.index].date_updated,
+                    likes: allPosts[postIndex.index].likes,
+                    show_likes: allPosts[postIndex.index].show_likes,
+                    archived: (allPosts[postIndex.index].archived) ? false : true
+                }),
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
+            );
 
+            console.log(result) 
+            if (result) {
+                let tempPostsArray = allPosts.slice();
+                tempPostsArray[postIndex.index].archived = (allPosts[postIndex.index].archived) ? false : true;
+                setAllPosts(tempPostsArray);
+                return navigate('/fishstagram/allposts')
+            }
+        } catch (error) {
+            if (error.response.status === 500) {
+                setErrMsg("Database Error");
+            } else if (error.response.status === 401) {
+                setErrMsg("Unauthorized");
+            } else {
+                setErrMsg("Failed")
+            }
+
+            console.log("updatePost", error);
+        }
    }
 
-   const hideLikes = async () => {
+    const hideLikes = async () => {
+        const time = new Date().toISOString();
 
+        try {
+            const result = await axiosPrivate.put(`/posts/update-post/${postIndex.id}`, 
+                JSON.stringify({
+                    body: allPosts[postIndex.index].body,
+                    theme_id: allPosts[postIndex.index].theme_id,
+                    title: allPosts[postIndex.index].title,
+                    date_updated: allPosts[postIndex.index].date_updated,
+                    likes: allPosts[postIndex.index].likes,
+                    show_likes: (allPosts[postIndex.index].show_likes) ? false : true,
+                    archived: allPosts[postIndex.index].archived
+                }),
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
+            );
+
+            console.log(result)
+            if (result) {
+                let tempPostsArray = allPosts.slice();
+                tempPostsArray[postIndex.index].show_likes = (allPosts[postIndex.index].show_likes) ? false : true;
+                setAllPosts(tempPostsArray);
+                return navigate('/fishstagram/allposts')
+            }
+        } catch (error) {
+            if (error.response.status === 500) {
+                setErrMsg("Database Error");
+            } else if (error.response.status === 401) {
+                setErrMsg("Unauthorized");
+            } else {
+                setErrMsg("Failed")
+            }
+
+            console.log("updatePost", error);
+        }
    }
 
     return (
@@ -98,11 +168,11 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton">Archive</button>
+                    <button className="modalButton" onClick={() => archivePost()}>{(!postIndex) ? 'Archive' : (allPosts[postIndex.index].archived) ? 'Unarchive' : 'Archive'}</button>
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton">Hide Like Count</button>
+                    <button className="modalButton" onClick={() => hideLikes()}>{(!postIndex) ? 'Hide Like Count' : (allPosts[postIndex.index].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
                     <div className="modalButtonBottomBar"></div>
                 </div>
             </div>}

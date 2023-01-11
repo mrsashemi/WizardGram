@@ -189,6 +189,20 @@
   gap: 0.5rem;
 }
 
+.postCommentEdit {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.postCommentBody {
+  width: 100%;
+  height: 5rem;
+  background: black;
+  color: white;
+}
+
 .expandedPostContainer {
   width: 50rem;
   height: auto;
@@ -235,10 +249,14 @@
   gap: 0.5rem;
 }
 
+
+
 .gridImageContainer {
   width: 12rem;
   height: 12rem;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   overflow: hidden;
   border: 0.1rem solid lightgray;
@@ -246,6 +264,7 @@
 }
 
 .gridPage {
+  display: flex;
   height: 100%;
   width: 100%;
   object-fit: cover;

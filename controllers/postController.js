@@ -138,7 +138,7 @@ exports.updatePost = async (req, res) => {
     if(!cookies.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
 
-    const { body, theme_id, title, date_updated, likes, show_likes } = req.body;
+    const { body, theme_id, title, date_updated, likes, show_likes, archived } = req.body;
 
     try {
         const udata = await pool.query(`SELECT * FROM users WHERE refresh_token = $1;`, [refreshToken]);
@@ -162,11 +162,12 @@ exports.updatePost = async (req, res) => {
                 title,
                 date_updated, 
                 likes,
-                show_likes
+                show_likes,
+                archived
             }
 
-            pool.query(`UPDATE posts SET body = $1, theme_id = $2, title = $3, date_updated = $4, likes = $5, show_likes = $6 WHERE post_id = $7;`, 
-            [post.body, post.theme_id, post.title, post.date_updated, post.likes, post.show_likes, post_id], (error, results) => {
+            pool.query(`UPDATE posts SET body = $1, theme_id = $2, title = $3, date_updated = $4, likes = $5, show_likes = $6, archived = $7 WHERE post_id = $8;`, 
+            [post.body, post.theme_id, post.title, post.date_updated, post.likes, post.show_likes, post.archived, post_id], (error, results) => {
                 if (error) {
                     throw error
                 }

@@ -4,7 +4,7 @@ import { axiosPrivate } from "../../../api/axios";
 const SAVE_CLASS_URL = "/classes/create-class";
 const SHARE_POST_URL = "/posts/create-post"
 
-export function CreatePostHeader({newImage, message}) {
+export function CreatePostHeader({newImage, setNewImage, message}) {
     const [classId, setClassId] = useState(null);
     const [errMsg, setErrMsg] = useState(null);
     const [postType] = useState("fishstagram");
@@ -80,6 +80,30 @@ export function CreatePostHeader({newImage, message}) {
         
                     console.log(result)
                     setClassId(null)
+                    if (newImage) {
+                        setNewImage({
+                            ...newImage,
+                            posX: 0,
+                            posY: 0,
+                            scale: 1,
+                            fit: "coverImg",
+                            filter: "no-filter",
+                            brightness: 100,
+                            contrast: 100,
+                            saturate: 100,
+                            grayscale: 0,
+                            sepia: 0,
+                            hue: 0,
+                            opacity: 100,
+                            blur: 0,
+                            rotate: 0,
+                            vignette: false,
+                            vignetteClass: "vignette",
+                            vignetteBlur: 0,
+                            vignetteSpread: 0,
+                            original: true
+                        })
+                    }
                     return navigate("/fishstagram")
                 } catch (error) {
                     if (!error.response) {

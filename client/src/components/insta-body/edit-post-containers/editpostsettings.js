@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 export function EditPostSettings ({newImage, setNewImage, setEditRotate}) {
     const [selectedSetting, setSetting] = useState(true);
+    const [selectedIndex, setSelectedIndex] = useState(null);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(200);
     const [value, setValue] = useState(100);
@@ -109,7 +110,14 @@ export function EditPostSettings ({newImage, setNewImage, setEditRotate}) {
         }
     ])
 
-    const goToSetting = (pMin, pMax, pVal, pProperty) => {
+    useEffect(() => {
+        if (selectedIndex && selectedSetting) {
+            document.getElementById(`filtertile-${selectedIndex}`).scrollIntoView();
+        }
+    }, [selectedSetting, selectedIndex])
+
+    const goToSetting = (index, pMin, pMax, pVal, pProperty) => {
+        setSelectedIndex(index)
         setSetting(false);
         setMin(pMin)
         setMax(pMax)
@@ -172,7 +180,6 @@ export function EditPostSettings ({newImage, setNewImage, setEditRotate}) {
                 return object;
             }
         }))
-
     }
 
     const adjustValue = (e) => {
@@ -199,11 +206,11 @@ export function EditPostSettings ({newImage, setNewImage, setEditRotate}) {
             {selectedSetting
                 ? <div className="filterContainer">
                     {defaultOptions.map((option, index) => 
-                    <div className="filterTile" key={index}>
+                    <div className="filterTile" key={index} id={`filtertile-${index}`}>
                         <h5 className="filterTitle">{option.name}</h5>
                         <div className="optionSquareContainer">
                                 <button className={`filterSquare optionSquare`}
-                                    onClick={() => {goToSetting(option.range.min, option.range.max, option.value, option.property)}}></button>
+                                    onClick={() => {goToSetting(index, option.range.min, option.range.max, option.value, option.property)}}></button>
                             </div>
                     </div>)}
                 </div>

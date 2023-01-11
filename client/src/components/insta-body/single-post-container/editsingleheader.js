@@ -21,7 +21,8 @@ export function EditSingleHeader({post, message, allPosts, setAllPosts, selected
                     title: post.title,
                     date_updated: time,
                     likes: post.likes,
-                    show_likes: post.show_likes
+                    show_likes: post.show_likes,
+                    archived: post.archived
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -55,8 +56,7 @@ export function EditSingleHeader({post, message, allPosts, setAllPosts, selected
                     <button className="postButton" onClick={() => cancelEdit()}>Cancel</button>
             </div>
             <div className="postsUserHeader">
-                <h4 className="usernameHeader">Username</h4>
-                <h3 className="usernameHeader">Edit</h3>
+                <h3 className="usernameHeader">Edit info</h3>
             </div>
             <button className="editButton" onClick={() => {updatePostBody()}}>Done</button>
         </div>

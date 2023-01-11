@@ -1,8 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios, { axiosPrivate } from "../../../api/axios";
 
-export function AllPostsScroll({allPosts, selectedIndex, onShow, setPostIndex, setSelectedIndex}) {
-    const selectedRef = useRef(null);
-
+export function AllPostsScroll({allPosts, setAllPosts, selectedIndex, onShow, setPostIndex, setSelectedIndex}) {    
     const scrollToPost = (e, index) => {
         if (index === selectedIndex) e.target.scrollIntoView();
     }
@@ -13,9 +12,69 @@ export function AllPostsScroll({allPosts, selectedIndex, onShow, setPostIndex, s
         onShow();
     } 
 
+    const incrementLikes = async (e, index, post) => {
+        if (e.target.style.background === 'white') {
+            try {
+                const result = await axios.put(`/posts/update-post/${post.post_id}`, 
+                    JSON.stringify({
+                        body: post.body,
+                        theme_id: post.theme_id,
+                        title: post.title,
+                        date_updated: post.date_updated,
+                        likes: post.likes+1,
+                        show_likes: post.show_likes,
+                        archived: post.archived
+                    }),
+                    {
+                        headers: {'Content-Type': 'application/json'},
+                        withCredentials: true
+                    }
+                );
+    
+                console.log(result)
+                if (result) {
+                    e.target.style.background = 'red'
+                    let tempPostsArray = allPosts.slice();
+                    tempPostsArray[index].likes = post.likes+1;
+                    setAllPosts(tempPostsArray);
+                }
+            } catch (error) {
+                console.log("updatePost", error);
+            }
+        } else if (e.target.style.background === 'red') {
+            try {
+                const result = await axios.put(`/posts/update-post/${post.post_id}`, 
+                    JSON.stringify({
+                        body: post.body,
+                        theme_id: post.theme_id,
+                        title: post.title,
+                        date_updated: post.date_updated,
+                        likes: post.likes-1,
+                        show_likes: post.show_likes,
+                        archived: post.archived
+                    }),
+                    {
+                        headers: {'Content-Type': 'application/json'},
+                        withCredentials: true
+                    }
+                );
+    
+                console.log(result)
+                if (result) {
+                    e.target.style.background = 'white'
+                    let tempPostsArray = allPosts.slice();
+                    tempPostsArray[index].likes = post.likes-1;
+                    setAllPosts(tempPostsArray);
+                }
+            } catch (error) {
+                console.log("updatePost", error);
+            }
+        }
+    }
+
     return (
         <div className="instaScroll">
-            {allPosts && allPosts.map((post, index) => 
+            {allPosts && allPosts.filter(post => post.archived === false).map((post, index) => 
                 <div 
                 key={post.post_id} 
                 className='scrollPostContainer'
@@ -51,10 +110,10 @@ export function AllPostsScroll({allPosts, selectedIndex, onShow, setPostIndex, s
                             </div>}
                     </div>
                     <div className="scrollPostLikesAndComment">
-                        <div className="postLikes">
-                            <button>Heart</button>
-                            <div>100 Likes</div>
-                        </div>
+                        {post.show_likes && <div className="postLikes">
+                            <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, index, post)}}>Heart</button>
+                            <div>{post.likes} likes</div>
+                        </div>}
                         {post.body && <div className="postComment">
                             <h4 className="usernameHeader">Username</h4>
                             <p className="usernameHeader">{post.body}</p>

@@ -17,7 +17,7 @@ export function CreatePostBody() {
 
     return (
         <div id="instaUserDashboard">
-            <CreatePostHeader newImage={newImage} message={message}/>
+            <CreatePostHeader newImage={newImage} message={message} setNewImage={setNewImage} />
             <CreatePostContent newImage={newImage} setMessage={setMessage}/>
             <CreatePostLinks />
         </div>

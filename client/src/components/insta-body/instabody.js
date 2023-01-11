@@ -18,7 +18,24 @@ export function InstaUserBody() {
         expandImage, 
         singlePost, 
         selectedIndex, setSelectedIndex, 
-        editing, setEditing] = useOutletContext();
+        editing, setEditing
+    ] = useOutletContext();
+
+    useEffect(() => {
+        const getAllPosts = async () => {
+            try {
+                const result = await axios.get(GET_ALL_POSTS_URL, {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true,
+                });
+                setAllPosts(result.data.postList.slice(0).reverse());
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        getAllPosts();
+    }, []);
 
     function showPostModal() {
         setShowModal(true);

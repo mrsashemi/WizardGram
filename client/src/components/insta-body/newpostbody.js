@@ -20,7 +20,8 @@ export function NewPostBody() {
         expandImage, 
         singlePost, 
         selectedIndex, setSelectedIndex, 
-        editing, setEditing] = useOutletContext();
+        editing, setEditing
+    ] = useOutletContext();
 
     useEffect(() => {
         const formData = new FormData();
@@ -47,9 +48,7 @@ export function NewPostBody() {
 
             createImg();
         }
-    }, [selectedImage])
 
-    useEffect(() => {
         const getAllImg = async () => {
             try {
                 const result = await axiosPrivate.get(GET_ALL_IMG_URL, {
@@ -57,11 +56,13 @@ export function NewPostBody() {
                     withCredentials: true,
                 });
                 setAllImg(result.data.imageList);
-                setNewImage({
-                    ...newImage,
-                    url: result.data.imageList[0].img_location,
-                    id: result.data.imageList[0].img_id
-                })
+                if (!newImage) {
+                    setNewImage({
+                        ...newImage,
+                        url: result.data.imageList[0].img_location,
+                        id: result.data.imageList[0].img_id
+                    })
+                }
             } catch (error) {
                 console.error(error);
             }

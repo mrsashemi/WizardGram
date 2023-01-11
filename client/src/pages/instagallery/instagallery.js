@@ -84,7 +84,7 @@ export function InstaGallery() {
                 if (i === 2) clearTimeout(interval)
                 i++
                 setDelay(true)
-            }, 750)
+            }, 500)
         } else {
             i = 1;
             setDelay(false)

@@ -37,8 +37,8 @@ export function EditSinglePost({post, setMessage, message}) {
                         </div>}
                 </div>
                 <div className="scrollPostLikesAndComment">
-                    <div className="postComment">
-                        <textarea onChange={handleMessageChange}>{message}</textarea>
+                    <div className="postCommentEdit">
+                        <textarea className="postCommentBody" onChange={handleMessageChange} value={post.body}></textarea>
                     </div>
                 </div>
             </div>
