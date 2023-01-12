@@ -11,15 +11,15 @@ import { BlogPage } from './pages/blogpage/blogpage';
 import React from 'react';
 import { LoginPage } from './pages/loginpage/loginpage';
 import { SignUpPage } from './pages/loginpage/signuppage';
-import { InstaGallery } from './pages/instagallery/instagallery';
-import { InstaUserBody } from './components/insta-body/instabody';
-import { NewPostBody } from './components/insta-body/newpostbody';
-import { EditPostBody } from './components/insta-body/editpostbody';
-import { CreatePostBody } from './components/insta-body/createpostbody';
+import { ArtworkGallery } from './pages/artworkspage/artworkspage';
+import { ArtworksHome } from './components/artworks-components/artworkshome';
+import { NewPost } from './components/artworks-components/newpost';
+import { EditPost } from './components/artworks-components/editpost';
+import { PublishPost } from './components/artworks-components/publishpost';
 import { AuthProvider } from './context/auth-provider';
 import RequireAuth from './components/authentication/require-auth';
-import { PostScrollBody } from './components/insta-body/postscrollbody';
-import { SinglePostBody } from './components/insta-body/singlepostbody';
+import { AllPosts } from './components/artworks-components/allposts';
+import { SinglePost } from './components/artworks-components/singlepost';
 
 const PrintDetail = React.lazy(() => import("./components/shop-body/item-pages/printdetails"));
 const MerchDetail = React.lazy(() => import("./components/shop-body/item-pages/merchdetails"));
@@ -38,13 +38,13 @@ function App() {
             <Route path="/signup" element={<SignUpPage />} ></Route>
 
             <Route element={<RequireAuth allowedRoles={"0001"} />}>
-              <Route path="/fishstagram" element={<InstaGallery />} >
-                <Route path='' element={<InstaUserBody />} />
-                <Route path='newpost' element={<NewPostBody />} />
-                <Route path='editpost' element={<EditPostBody />} />
-                <Route path='createpost' element={<CreatePostBody />} />
-                <Route path='allposts' element={<PostScrollBody/>} />
-                <Route path='posts/:id' element={<SinglePostBody/>} />
+              <Route path="/fishstagram" element={<ArtworkGallery />} >
+                <Route path='' element={<ArtworksHome />} />
+                <Route path='newpost' element={<NewPost />} />
+                <Route path='editpost' element={<EditPost />} />
+                <Route path='createpost' element={<PublishPost />} />
+                <Route path='allposts' element={<AllPosts />} />
+                <Route path='posts/:id' element={<SinglePost />} />
               </Route>
             </Route>
 
