@@ -13,62 +13,32 @@ export function AllPostsScroll({allPosts, setAllPosts, selectedIndex, onShow, se
     } 
 
     const incrementLikes = async (e, index, post) => {
-        if (e.target.style.background === 'white') {
-            try {
-                const result = await axios.put(`/posts/update-post/${post.post_id}`, 
-                    JSON.stringify({
-                        body: post.body,
-                        theme_id: post.theme_id,
-                        title: post.title,
-                        date_updated: post.date_updated,
-                        likes: post.likes+1,
-                        show_likes: post.show_likes,
-                        archived: post.archived
-                    }),
-                    {
-                        headers: {'Content-Type': 'application/json'},
-                        withCredentials: true
-                    }
-                );
-    
-                console.log(result)
-                if (result) {
-                    e.target.style.background = 'red'
-                    let tempPostsArray = allPosts.slice();
-                    tempPostsArray[index].likes = post.likes+1;
-                    setAllPosts(tempPostsArray);
+        try {
+            const result = await axios.put(`/posts/update-post/${post.post_id}`, 
+                JSON.stringify({
+                    body: post.body,
+                    theme_id: post.theme_id,
+                    title: post.title,
+                    date_updated: post.date_updated,
+                    likes: (e.target.style.background === 'white') ? post.likes+1 : post.likes-1,
+                    show_likes: post.show_likes,
+                    archived: post.archived
+                }),
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
                 }
-            } catch (error) {
-                console.log("updatePost", error);
+            );
+
+            console.log(result)
+            if (result) {
+                let tempPostsArray = allPosts.slice();
+                tempPostsArray[index].likes = (e.target.style.background === 'white') ? post.likes+1 : post.likes-1;
+                e.target.style.background = (e.target.style.background === 'white') ? 'red' : 'white';
+                setAllPosts(tempPostsArray);
             }
-        } else if (e.target.style.background === 'red') {
-            try {
-                const result = await axios.put(`/posts/update-post/${post.post_id}`, 
-                    JSON.stringify({
-                        body: post.body,
-                        theme_id: post.theme_id,
-                        title: post.title,
-                        date_updated: post.date_updated,
-                        likes: post.likes-1,
-                        show_likes: post.show_likes,
-                        archived: post.archived
-                    }),
-                    {
-                        headers: {'Content-Type': 'application/json'},
-                        withCredentials: true
-                    }
-                );
-    
-                console.log(result)
-                if (result) {
-                    e.target.style.background = 'white'
-                    let tempPostsArray = allPosts.slice();
-                    tempPostsArray[index].likes = post.likes-1;
-                    setAllPosts(tempPostsArray);
-                }
-            } catch (error) {
-                console.log("updatePost", error);
-            }
+        } catch (error) {
+            console.log("updatePost", error);
         }
     }
 

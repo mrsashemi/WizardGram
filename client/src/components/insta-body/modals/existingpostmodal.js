@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios";
 
-export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, allPosts, setAllPosts, setEditing}) {
+export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, allPosts, setAllPosts, setEditing, editing}) {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [errMsg, setErrMsg] = useState(null);
     const modalRef = useRef(null);
@@ -30,6 +30,9 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
     }, [onHide]);
 
     const deletePost = async () => {
+        let tempPostsArray = allPosts.slice();
+        let position = tempPostsArray.map(post => post.post_id).indexOf(postIndex.id)
+
         try {
             const result = await axiosPrivate.delete(`/posts/delete-post/${postIndex.id}`,
                 {
@@ -40,19 +43,16 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
 
             console.log(result)
             if (result) {
-                allPosts.splice(postIndex.index, 1);
-                setAllPosts(allPosts)
-                onHide();
+                tempPostsArray.splice(position, 1);
+                setAllPosts(tempPostsArray)
+                if (!editing) {
+                    onHide();
+                } else {
+                    onHide();
+                    return navigate(-1);
+                }
             }
         } catch (error) {
-            if (error.response.status === 500) {
-                setErrMsg("Database Error");
-            } else if (error.response.status === 401) {
-                setErrMsg("Unauthorized");
-            } else {
-                setErrMsg("Failed")
-            }
-
             console.log("deletePost", error);
         }
     }
@@ -60,16 +60,20 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
 
 
     const archivePost = async () => {
+        let tempPostsArray = allPosts.slice();
+        let position = tempPostsArray.map(post => post.post_id).indexOf(postIndex.id)
+        console.log(postIndex, position)
+
         try {
             const result = await axiosPrivate.put(`/posts/update-post/${postIndex.id}`, 
                 JSON.stringify({
-                    body: allPosts[postIndex.index].body,
-                    theme_id: allPosts[postIndex.index].theme_id,
-                    title: allPosts[postIndex.index].title,
-                    date_updated: allPosts[postIndex.index].date_updated,
-                    likes: allPosts[postIndex.index].likes,
-                    show_likes: allPosts[postIndex.index].show_likes,
-                    archived: (allPosts[postIndex.index].archived) ? false : true
+                    body: allPosts[position].body,
+                    theme_id: allPosts[position].theme_id,
+                    title: allPosts[position].title,
+                    date_updated: allPosts[position].date_updated,
+                    likes: allPosts[position].likes,
+                    show_likes: allPosts[position].show_likes,
+                    archived: (allPosts[position].archived) ? false : true
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -79,37 +83,30 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
 
             console.log(result) 
             if (result) {
-                let tempPostsArray = allPosts.slice();
-                tempPostsArray[postIndex.index].archived = (allPosts[postIndex.index].archived) ? false : true;
+                tempPostsArray[position].archived = (allPosts[position].archived) ? false : true;
                 setAllPosts(tempPostsArray);
-                return navigate('/fishstagram/allposts')
+                setPostIndex(null);
+                onHide();
             }
         } catch (error) {
-            if (error.response.status === 500) {
-                setErrMsg("Database Error");
-            } else if (error.response.status === 401) {
-                setErrMsg("Unauthorized");
-            } else {
-                setErrMsg("Failed")
-            }
-
             console.log("updatePost", error);
         }
    }
 
     const hideLikes = async () => {
-        const time = new Date().toISOString();
+        let tempPostsArray = allPosts.slice();
+        let position = tempPostsArray.map(post => post.post_id).indexOf(postIndex.id)
 
         try {
             const result = await axiosPrivate.put(`/posts/update-post/${postIndex.id}`, 
                 JSON.stringify({
-                    body: allPosts[postIndex.index].body,
-                    theme_id: allPosts[postIndex.index].theme_id,
-                    title: allPosts[postIndex.index].title,
-                    date_updated: allPosts[postIndex.index].date_updated,
-                    likes: allPosts[postIndex.index].likes,
-                    show_likes: (allPosts[postIndex.index].show_likes) ? false : true,
-                    archived: allPosts[postIndex.index].archived
+                    body: allPosts[position].body,
+                    theme_id: allPosts[position].theme_id,
+                    title: allPosts[position].title,
+                    date_updated: allPosts[position].date_updated,
+                    likes: allPosts[position].likes,
+                    show_likes: (allPosts[position].show_likes) ? false : true,
+                    archived: allPosts[position].archived
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -119,20 +116,11 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
 
             console.log(result)
             if (result) {
-                let tempPostsArray = allPosts.slice();
-                tempPostsArray[postIndex.index].show_likes = (allPosts[postIndex.index].show_likes) ? false : true;
+                tempPostsArray[position].show_likes = (allPosts[position].show_likes) ? false : true;
                 setAllPosts(tempPostsArray);
-                return navigate('/fishstagram/allposts')
+                onHide();
             }
         } catch (error) {
-            if (error.response.status === 500) {
-                setErrMsg("Database Error");
-            } else if (error.response.status === 401) {
-                setErrMsg("Unauthorized");
-            } else {
-                setErrMsg("Failed")
-            }
-
             console.log("updatePost", error);
         }
    }
@@ -168,11 +156,11 @@ export function ExistingPostModal({onHide, showModal, postIndex, setPostIndex, a
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => archivePost()}>{(!postIndex) ? 'Archive' : (allPosts[postIndex.index].archived) ? 'Unarchive' : 'Archive'}</button>
+                    <button className="modalButton" onClick={() => archivePost()}>{(!postIndex) ? 'Archive' : (allPosts[allPosts.map(post => post.post_id).indexOf(postIndex.id)].archived) ? 'Unarchive' : 'Archive'}</button>
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => hideLikes()}>{(!postIndex) ? 'Hide Like Count' : (allPosts[postIndex.index].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
+                    <button className="modalButton" onClick={() => hideLikes()}>{(!postIndex) ? 'Hide Like Count' : (allPosts[allPosts.map(post => post.post_id).indexOf(postIndex.id)].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
                     <div className="modalButtonBottomBar"></div>
                 </div>
             </div>}

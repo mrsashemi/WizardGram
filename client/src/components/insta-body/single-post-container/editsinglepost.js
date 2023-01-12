@@ -1,7 +1,6 @@
 export function EditSinglePost({post, setMessage, message}) {
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
-        console.log(e.target.value);
     }
     
     return (
@@ -38,7 +37,7 @@ export function EditSinglePost({post, setMessage, message}) {
                 </div>
                 <div className="scrollPostLikesAndComment">
                     <div className="postCommentEdit">
-                        <textarea className="postCommentBody" onChange={handleMessageChange} value={post.body}></textarea>
+                        <textarea className="postCommentBody" onChange={handleMessageChange} defaultValue={post.body}></textarea>
                     </div>
                 </div>
             </div>

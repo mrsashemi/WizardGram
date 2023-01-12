@@ -1,4 +1,43 @@
-export function SingleInstaPost({post}) {
+import axios from "../../../api/axios";
+
+export function SingleInstaPost({post, allPosts, setAllPosts, selectedIndex, onShow, setPostIndex, setSelectedIndex}) {
+    const openModal = (postId, postIndex) => {
+        setSelectedIndex(postIndex);
+        setPostIndex({id: postId, index: postIndex});
+        onShow();
+    } 
+
+    const incrementLikes = async (e, index, post) => {
+        console.log(index)
+
+        try {
+            const result = await axios.put(`/posts/update-post/${post.post_id}`, 
+                JSON.stringify({
+                    body: post.body,
+                    theme_id: post.theme_id,
+                    title: post.title,
+                    date_updated: post.date_updated,
+                    likes: (e.target.style.background === 'white') ? post.likes+1 : post.likes-1,
+                    show_likes: post.show_likes,
+                    archived: post.archived
+                }),
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
+            );
+
+            console.log(result)
+            if (result) {
+                let tempPostsArray = allPosts.slice();
+                tempPostsArray[index].likes = (e.target.style.background === 'white') ? post.likes+1 : post.likes-1;
+                e.target.style.background = (e.target.style.background === 'white') ? 'red' : 'white';
+                setAllPosts(tempPostsArray);
+            }
+        } catch (error) {
+            console.log("updatePost", error);
+        }
+    }
     
     return (
         <div className="instaScroll">
@@ -8,7 +47,7 @@ export function SingleInstaPost({post}) {
                         <div className="individualPostProfilePic"></div>
                         <h4 className="usernameHeader">Username</h4>
                     </div>
-                    <button className="editPost">...</button>
+                    <button className="editPost" onClick={() => {openModal(post.post_id, allPosts.map(p => p.post_id).indexOf(post.post_id))}}>...</button>
                 </div>
                 <div className="scrollImageContainer">
                     <img 
@@ -33,10 +72,10 @@ export function SingleInstaPost({post}) {
                         </div>}
                 </div>
                 <div className="scrollPostLikesAndComment">
-                    <div className="postLikes">
-                        <button>Heart</button>
-                        <div>100 Likes</div>
-                    </div>
+                    {post.show_likes && <div className="postLikes">
+                        <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, allPosts.map(p => p.post_id).indexOf(post.post_id), post)}}>Heart</button>
+                        <div>{post.likes} Likes</div>
+                    </div>}
                     {post.body && <div className="postComment">
                         <h4 className="usernameHeader">Username</h4>
                         <p className="usernameHeader">{post.body}</p>

@@ -28,8 +28,22 @@ export function PostScrollBody() {
     return (
         <div id="instaUserDashboard">
             <PostScrollHeader />
-            <AllPostsScroll allPosts={allPosts} setAllPosts={setAllPosts} selectedIndex={selectedIndex} onShow={showPostModal} setPostIndex={setPostIndex} setSelectedIndex={setSelectedIndex} />
-            <ExistingPostModal onHide={hidePostModal} showModal={showModal} postIndex={postIndex} setPostIndex={setPostIndex} allPosts={allPosts} setAllPosts={setAllPosts} setEditing={setEditing} />
+            <AllPostsScroll 
+                allPosts={allPosts} 
+                setAllPosts={setAllPosts} 
+                selectedIndex={selectedIndex} 
+                onShow={showPostModal} 
+                setPostIndex={setPostIndex} 
+                setSelectedIndex={setSelectedIndex} />
+            <ExistingPostModal 
+                onHide={hidePostModal} 
+                showModal={showModal} 
+                postIndex={postIndex} 
+                setPostIndex={setPostIndex} 
+                allPosts={allPosts} 
+                setAllPosts={setAllPosts} 
+                setEditing={setEditing} 
+                editing={editing}/>
         </div>
     )
 }

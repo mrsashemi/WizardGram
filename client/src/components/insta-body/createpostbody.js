@@ -12,7 +12,8 @@ export function CreatePostBody() {
         expandImage, 
         singlePost, 
         selectedIndex, setSelectedIndex, 
-        editing, setEditing] = useOutletContext();
+        editing, setEditing
+    ] = useOutletContext();
     const [message, setMessage] = useState("");
 
     return (
