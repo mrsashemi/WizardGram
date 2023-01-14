@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { axiosPrivate } from "../../../api/axios";
 
-export function SingleEditHeader({post, message, allPosts, setAllPosts, selectedIndex}) {
+export function SingleEditHeader({post, message, hashMap, setHashMap}) {
     const navigate = useNavigate();
     const [errMsg, setErrMsg] = useState(null);
 
@@ -30,12 +30,10 @@ export function SingleEditHeader({post, message, allPosts, setAllPosts, selected
                 }
             );
 
-            console.log(result)
             if (result) {
-                let tempPostsArray = allPosts.slice();
-                tempPostsArray[selectedIndex].body = message;
-                setAllPosts(tempPostsArray);
-                return navigate(-1)
+                let tempArray = hashMap.get(post.post_id);
+                tempArray[0].body = message;
+                setHashMap(new Map(hashMap.set(post.post_id, tempArray)));
             }
         } catch (error) {
             if (error.response.status === 500) {

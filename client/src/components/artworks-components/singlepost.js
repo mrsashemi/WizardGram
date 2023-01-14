@@ -10,7 +10,7 @@ export function SinglePost() {
     const [message, setMessage] = useState(null);
     const [postId, setPostId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const { allPosts, setAllPosts, singlePost, selectedIndex, setSelectedIndex, editing, setEditing } = useOutletContext();
+    const { singlePost, selectedIndex, setSelectedIndex, editing, setEditing, hashMap, setHashMap } = useOutletContext();
 
     function showPostModal() {
         setShowModal(true);
@@ -28,22 +28,20 @@ export function SinglePost() {
             {editing
             ? <div id="instaUserDashboard">
                 <SingleEditHeader 
-                    post={allPosts[selectedIndex]} 
+                    post={hashMap.get([...hashMap.keys()][selectedIndex])[0]} 
                     message={message} 
-                    allPosts={allPosts} 
-                    setAllPosts={setAllPosts} 
-                    selectedIndex={selectedIndex} />
+                    hashMap={hashMap}
+                    setHashMap={setHashMap} />
                 <SingleModify
-                    post={allPosts[selectedIndex]} 
-                    setMessage={setMessage} 
-                    message={message} />
+                    post={hashMap.get([...hashMap.keys()][selectedIndex])[0]} 
+                    setMessage={setMessage} />
                 <ExistingModal 
                     onHide={hidePostModal} 
                     showModal={showModal} 
                     postId={postId} 
                     setPostId={setPostId} 
-                    allPosts={allPosts} 
-                    setAllPosts={setAllPosts} 
+                    hashMap={hashMap}
+                    setHashMap={hashMap}
                     setEditing={setEditing}
                     editing={editing} />
             </div>
@@ -51,18 +49,18 @@ export function SinglePost() {
                 <AllHeader />
                 <SingleDisplay
                     post={singlePost}
-                    allPosts={allPosts} 
-                    setAllPosts={setAllPosts}
                     onShow={showPostModal} 
                     setPostId={setPostId} 
-                    setSelectedIndex={setSelectedIndex} />
+                    setSelectedIndex={setSelectedIndex}
+                    hashMap={hashMap}
+                    setHashMap={setHashMap} />
                 <ExistingModal 
                     onHide={hidePostModal} 
                     showModal={showModal} 
                     postId={postId} 
                     setPostId={setPostId} 
-                    allPosts={allPosts} 
-                    setAllPosts={setAllPosts} 
+                    hashMap={hashMap}
+                    setHashMap={hashMap}
                     setEditing={setEditing}
                     editing={editing} />
             </div>}

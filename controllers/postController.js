@@ -61,7 +61,49 @@ exports.createPost = async (req, res) => {
     }
 }
 
-//get post from postgres
+// Add additional images/classes to relational table
+exports.addImagesToPost = async (req, res) => {
+    const cookies = req.cookies;
+    if(!cookies.jwt) return res.sendStatus(401);
+    const refreshToken = cookies.jwt;
+    const { img_id, post_id, class_id } = req.body
+
+    try {
+        const udata = await pool.query(`SELECT * FROM users WHERE refresh_token = $1;`, [refreshToken]);
+        const user = udata.rows;
+
+        if (user.length === 0) {
+            res.status(401).json({
+                error: "Unauthorized, please log back in"
+            });
+        } else {
+            const post = {
+                img_id,
+                post_id,
+                class_id
+            }
+    
+            pool.query(`INSERT INTO posts_images (img_id, post_id, class_id) VALUES ($1, $2, $3) RETURNING post_id;`, 
+            [post.img_id, post.post_id, post.class_id], (error, results) => {
+                if (error) {
+                    console.log(error);
+                }
+
+                res.status(200).json({
+                    message: "Images and Classes added to Post Relational Table",
+                    post_id: results.rows[0].post_id
+                })
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Database error while creating post"
+        })
+    }
+}
+
+// get post from postgres
 exports.getPost = async (req, res) => {
     const post_id = parseInt(req.params.id);
 

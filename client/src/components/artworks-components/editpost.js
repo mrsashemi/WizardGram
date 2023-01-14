@@ -13,10 +13,16 @@ export function EditPost() {
 
     useEffect(() => {
         if (!useFilter) {
-            setNewImage({
-                ...newImage,
-                filter: "no-filter"
-            })
+            if (multiples) {
+                let temporaryMultiples = multiples.slice();
+                temporaryMultiples[current].filter = "no-filter";
+                setMultiples(temporaryMultiples);
+            } else {
+                setNewImage({
+                    ...newImage,
+                    filter: "no-filter"
+                })
+            }
         }
     }, [useFilter])
 
@@ -31,8 +37,9 @@ export function EditPost() {
                 useFilter={useFilter}
                 multiples={multiples}
                 current={current}
-                setCurrent={setCurrent} />
-            {useFilter 
+                setCurrent={setCurrent}
+                setUseFilter={setUseFilter} />    
+            {useFilter
                 ?<EditFilters 
                     newImage={newImage}
                     setNewImage={setNewImage}

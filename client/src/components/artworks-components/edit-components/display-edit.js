@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { PostSlider } from "../sliders/post-slider";
 
-export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multiples, current, setCurrent}) {
+export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multiples, current, setCurrent, setUseFilter}) {
     const [start, setStart] = useState(10);
     const [startTimer, setStartTimer] = useState(false);
     const [tile, setTile] = useState("");
@@ -61,7 +61,7 @@ export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multi
         <div className="newPostFileContainer">
             {
             multiples ? 
-            <PostSlider multiples={multiples} useFilter={useFilter} current={current} setCurrent={setCurrent}/>
+            <PostSlider multiples={multiples} useFilter={useFilter} current={current} setCurrent={setCurrent} setUseFilter={setUseFilter}/>
             : 
             <img 
                 className={`newPostFile ${newImage.fit} ${newImage.filter}`}

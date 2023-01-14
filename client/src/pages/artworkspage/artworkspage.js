@@ -14,7 +14,7 @@ export function ArtworkGallery() {
     const [delay, setDelay] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [singlePost, setSinglePost] = useState(null);
-    const [allPosts, setAllPosts] = useState(null);
+    const [hashMap, setHashMap] = useState(null);
     const [postMultiple, setPostMultiple] = useState(false);
     const [multiples, setMultiples] = useState(null);
     const [newImage, setNewImage] = useState({
@@ -82,7 +82,22 @@ export function ArtworkGallery() {
                     headers: {'Content-Type': 'application/json'},
                     withCredentials: true,
                 });
-                setAllPosts(result.data.postList.slice(0).reverse());
+
+                if (result) {
+                    let all = result.data.postList.slice(0).reverse()
+                    let hash = new Map();
+
+                    for (let i = 0; i < all.length; i++) {
+                        let key = all[i].post_id
+                        if (hash.get(key)) {
+                            setHashMap(hash.set(key, [...hash.get(key), all[i]]));
+                        } else {
+                            setHashMap(hash.set(key, [all[i]]));
+                        }
+                    }
+
+                    return setHashMap(hash);
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -90,6 +105,8 @@ export function ArtworkGallery() {
 
         getAllPosts();
     }, []);
+
+
 
     // useEffect to create a custom delay to differentiate between the mousedown event that shrinks the posts as it is pressed and the custom longpressevents 
     // without this expand functionality automatically closes upon opening
@@ -134,7 +151,7 @@ export function ArtworkGallery() {
 
     // go to individual post by clicking on expanded image
     const goToPost = (id) => {
-        setSinglePost(allPosts.filter(post => !post.archived)[selectedIndex]);
+        setSinglePost(hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex]));
         setIsExpanded(false);
         setSelectedIndex(null)
         setDelay(false);
@@ -148,20 +165,20 @@ export function ArtworkGallery() {
                 <TopNavBar />
                 <Outlet context={{
                     newImage, setNewImage, 
-                    allPosts, setAllPosts, 
                     isExpanded, 
                     expandPost, 
                     singlePost, 
                     selectedIndex, setSelectedIndex,
                     editing, setEditing,
                     postMultiple, setPostMultiple,
-                    multiples, setMultiples}} />
+                    multiples, setMultiples,
+                    hashMap, setHashMap}} />
             </div>
             {isExpanded && 
             <div className="expandedPostContainer" 
             ref={postRef} 
-            key={allPosts.filter(post => !post.archived)[selectedIndex].post_id} 
-            onClick={() => {goToPost(allPosts.filter(post => !post.archived)[selectedIndex].post_id)}}>
+            key={hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].post_id} 
+            onClick={() => {goToPost(hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].post_id)}}>
                 <div className="expandedHeader">
                     <div className="individualPostProfilePic"></div>
                     <h4 className="usernameHeader">Username</h4>
@@ -169,28 +186,28 @@ export function ArtworkGallery() {
                 <div className="expandedPost">
                     <img
                         alt="photography"
-                        src={allPosts.filter(post => !post.archived)[selectedIndex].img_location} 
-                        className={`expandPage ${allPosts.filter(post => !post.archived)[selectedIndex].filter_class} ${allPosts.filter(post => !post.archived)[selectedIndex].fit_class}`}
+                        src={hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].img_location} 
+                        className={`expandPage ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].filter_class} ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].fit_class}`}
                         style={{
-                            transform:  `scale(${allPosts.filter(post => !post.archived)[selectedIndex].scale}) 
-                                        translateX(${allPosts.filter(post => !post.archived)[selectedIndex].position_x}%) 
-                                        translateY(${allPosts.filter(post => !post.archived)[selectedIndex].position_y}%)
-                                        rotate(${allPosts.filter(post => !post.archived)[selectedIndex].rotate}deg)`, 
-                            opacity: `${allPosts.filter(post => !post.archived)[selectedIndex].opacity}%`,
-                            filter: allPosts.filter(post => !post.archived)[selectedIndex].filter_class === "no-filter" && 
-                                    `brightness(${allPosts.filter(post => !post.archived)[selectedIndex].brightness}%) 
-                                    contrast(${allPosts.filter(post => !post.archived)[selectedIndex].contrast}%) 
-                                    saturate(${allPosts.filter(post => !post.archived)[selectedIndex].saturate}%) 
-                                    grayscale(${allPosts.filter(post => !post.archived)[selectedIndex].grayscale}%)
-                                    sepia(${allPosts.filter(post => !post.archived)[selectedIndex].sepia}%)
-                                    hue-rotate(${allPosts.filter(post => !post.archived)[selectedIndex].hue}deg)
-                                    blur(${allPosts.filter(post => !post.archived)[selectedIndex].blur}px)`}}>
+                            transform:  `scale(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].scale}) 
+                                        translateX(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].position_x}%) 
+                                        translateY(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].position_y}%)
+                                        rotate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].rotate}deg)`, 
+                            opacity: `${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].opacity}%`,
+                            filter: hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].filter_class === "no-filter" && 
+                                    `brightness(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].brightness}%) 
+                                    contrast(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].contrast}%) 
+                                    saturate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].saturate}%) 
+                                    grayscale(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].grayscale}%)
+                                    sepia(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].sepia}%)
+                                    hue-rotate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].hue}deg)
+                                    blur(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].blur}px)`}}>
                     </img>
                     {
-                    allPosts.filter(post => !post.archived)[selectedIndex].vignette &&
+                    hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].vignette &&
                     <div 
                         className="vignette" 
-                        style={{boxShadow: `inset 0px 0px ${allPosts.filter(post => !post.archived)[selectedIndex].vignette_blur}px ${allPosts.filter(post => !post.archived)[selectedIndex].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
+                        style={{boxShadow: `inset 0px 0px ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].vignette_blur}px ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
                     </div>
                     }
                 </div>

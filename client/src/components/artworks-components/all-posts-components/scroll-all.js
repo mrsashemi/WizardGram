@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import axios, { axiosPrivate } from "../../../api/axios";
 
-export function AllScroll({allPosts, setAllPosts, selectedIndex, onShow, setPostId, setSelectedIndex}) {    
+export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, hashMap, setHashMap}) {    
     // scroll to selected post upon loading page
     const scrollToPost = (e, index) => {
         if (index === selectedIndex) e.target.scrollIntoView();
@@ -34,10 +34,10 @@ export function AllScroll({allPosts, setAllPosts, selectedIndex, onShow, setPost
             );
 
             if (result) {
-                let tempPostsArray = allPosts.slice();
-                tempPostsArray[index].likes = (e.target.style.background === 'white') ? post.likes+1 : post.likes-1;
+                let tempArray = hashMap.get(post.post_id);
+                tempArray[0].likes = (e.target.style.background === 'white') ? post.likes+1 : post.likes-1;
                 e.target.style.background = (e.target.style.background === 'white') ? 'red' : 'white';
-                setAllPosts(tempPostsArray);
+                setHashMap(new Map(hashMap.set(post.post_id, tempArray)));
             }
         } catch (error) {
             console.log("updatePost", error);
@@ -46,9 +46,9 @@ export function AllScroll({allPosts, setAllPosts, selectedIndex, onShow, setPost
 
     return (
         <div className="instaScroll">
-            {allPosts && allPosts.filter(post => post.archived === false).map((post, index) => 
+            {hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false).map((k, index) => 
                 <div 
-                key={post.post_id} 
+                key={hashMap.get(k)[0].post_id} 
                 className='scrollPostContainer'
                 id={index}
                 onLoad={(e) => {scrollToPost(e, index)}}>
@@ -57,38 +57,38 @@ export function AllScroll({allPosts, setAllPosts, selectedIndex, onShow, setPost
                             <div className="individualPostProfilePic"></div>
                             <h4 className="usernameHeader">Username</h4>
                         </div>
-                        <button className="editPost" onClick={() => {openModal(post.post_id, index)}}>...</button>
+                        <button className="editPost" onClick={() => {openModal(hashMap.get(k)[0].post_id, index)}}>...</button>
                     </div>
                     <div className="scrollImageContainer">
                         <img 
-                                src={post.img_location} 
-                                className={`scrollPage ${post.filter_class} ${post.fit_class}`}
-                                style={{transform:  `scale(${post.scale}) 
-                                                translateX(${post.position_x}%) 
-                                                translateY(${post.position_y}%)
-                                                rotate(${post.rotate}deg)`, 
-                                        opacity: `${post.opacity}%`,
-                                        filter: post.filter_class === "no-filter" && 
-                                            `brightness(${post.brightness}%) 
-                                            contrast(${post.contrast}%) 
-                                            saturate(${post.saturate}%) 
-                                            grayscale(${post.grayscale}%)
-                                            sepia(${post.sepia}%)
-                                            hue-rotate(${post.hue}deg)
-                                            blur(${post.blur}px)`}}>
+                                src={hashMap.get(k)[0].img_location} 
+                                className={`scrollPage ${hashMap.get(k)[0].filter_class} ${hashMap.get(k)[0].fit_class}`}
+                                style={{transform:  `scale(${hashMap.get(k)[0].scale}) 
+                                                translateX(${hashMap.get(k)[0].position_x}%) 
+                                                translateY(${hashMap.get(k)[0].position_y}%)
+                                                rotate(${hashMap.get(k)[0].rotate}deg)`, 
+                                        opacity: `${hashMap.get(k)[0].opacity}%`,
+                                        filter: hashMap.get(k)[0].filter_class === "no-filter" && 
+                                            `brightness(${hashMap.get(k)[0].brightness}%) 
+                                            contrast(${hashMap.get(k)[0].contrast}%) 
+                                            saturate(${hashMap.get(k)[0].saturate}%) 
+                                            grayscale(${hashMap.get(k)[0].grayscale}%)
+                                            sepia(${hashMap.get(k)[0].sepia}%)
+                                            hue-rotate(${hashMap.get(k)[0].hue}deg)
+                                            blur(${hashMap.get(k)[0].blur}px)`}}>
                             </img>
-                            {post.vignette &&
-                            <div className="vignette" style={{boxShadow: `inset 0px 0px ${post.vignette_blur}px ${post.vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
+                            {hashMap.get(k)[0].vignette &&
+                            <div className="vignette" style={{boxShadow: `inset 0px 0px ${hashMap.get(k)[0].vignette_blur}px ${hashMap.get(k)[0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
                             </div>}
                     </div>
                     <div className="scrollPostLikesAndComment">
-                        {post.show_likes && <div className="postLikes">
-                            <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, index, post)}}>Heart</button>
-                            <div>{post.likes} likes</div>
+                        {hashMap.get(k)[0].show_likes && <div className="postLikes">
+                            <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, index, hashMap.get(k)[0])}}>Heart</button>
+                            <div>{hashMap.get(k)[0].likes} likes</div>
                         </div>}
-                        {post.body && <div className="postComment">
+                        {hashMap.get(k)[0].body && <div className="postComment">
                             <h4 className="usernameHeader">Username</h4>
-                            <p className="usernameHeader">{post.body}</p>
+                            <p className="usernameHeader">{hashMap.get(k)[0].body}</p>
                         </div>}
                     </div>
                 </div>

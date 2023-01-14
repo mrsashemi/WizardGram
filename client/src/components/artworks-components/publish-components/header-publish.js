@@ -4,12 +4,173 @@ import { axiosPrivate } from "../../../api/axios";
 const SAVE_CLASS_URL = "/classes/create-class";
 const SHARE_POST_URL = "/posts/create-post"
 
-export function PublishHeader({newImage, setNewImage, message}) {
+export function PublishHeader({newImage, setNewImage, message, multiples}) {
     const [classId, setClassId] = useState(null);
     const [errMsg, setErrMsg] = useState(null);
+    const [multiplePosts, setMultiplePosts] = useState([]);
+    const [current, setCurrent] = useState(null);
+
+    const [postId, setPostId] = useState(null);
+    const [createMultiplePost, setCreateMultiplePost] = useState(false);
     const [postType] = useState("fishstagram");
     const [postTitle] = useState("Fishstagram");
     const navigate = useNavigate();
+
+    const uploadPost = () => {
+        if (multiples) {
+            shareMultiple();
+        } else {
+            sharePost();
+        }
+    }
+
+    const shareMultiple = async () => {
+        if (multiples) {
+            for (let i = 0; i < multiples.length; i++) {
+                try {
+                    const result = await axiosPrivate.post(SAVE_CLASS_URL,
+                        JSON.stringify({
+                            filter_class: multiples[i].filter, 
+                            fit_class: multiples[i].fit, 
+                            position_x: multiples[i].posX, 
+                            position_y: multiples[i].posY, 
+                            scale: multiples[i].scale, 
+                            brightness: multiples[i].brightness, 
+                            contrast: multiples[i].contrast, 
+                            saturate: multiples[i].saturate, 
+                            grayscale: multiples[i].grayscale, 
+                            sepia: multiples[i].sepia, 
+                            hue: multiples[i].hue, 
+                            opacity: multiples[i].opacity, 
+                            blur: multiples[i].blur, 
+                            rotate: multiples[i].rotate, 
+                            vignette: multiples[i].vignette, 
+                            vignette_class: multiples[i].vignetteClass, 
+                            vignette_blur: multiples[i].vignetteBlur, 
+                            vignette_spread: multiples[i].vignetteSpread,
+                            unedited: multiples[i].original
+                        }), 
+                        {
+                            headers: {'Content-Type': 'application/json'},
+                            withCredentials: true
+                        }
+                    );
+
+                    const class_id = result.data.class_id
+                    setCurrent({index: i, classId: class_id});
+
+                    if (i >= multiples.length-1) {
+                        return setCreateMultiplePost(true);
+                    }
+                } catch (error) {
+                    if (error.response.status === 303) {
+                        const class_id = error.response.data.class_id;
+                        setCurrent({index: i, classId: class_id});
+
+                        if (i >= multiples.length-1) {
+                            return setCreateMultiplePost(true);
+                        }
+                    } else if (!error.response) {
+                        setErrMsg('No Server Response')
+                    } else if (error.response.status === 500) {
+                        setErrMsg("Database Error");
+                    } else if (error.response.status === 401) {
+                        setErrMsg("Unauthorized");
+                    } else {
+                        setErrMsg("Failed")
+                    }
+        
+                    console.log("shareMultiple Error", error);
+                }
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (current) setMultiplePosts([...multiplePosts, [multiples[current.index].id, current.classId]])
+    }, [current])
+
+    useEffect(() => {
+        if (createMultiplePost && !postId) {
+            const createMultiple = async () => {
+                try {
+                    const result = await axiosPrivate.post(SHARE_POST_URL,
+                        JSON.stringify({
+                            post_type: postType,
+                            title: postTitle,
+                            body: message,
+                            img_id: multiplePosts[0][0],
+                            class_id: multiplePosts[0][1]
+                        }), 
+                        {
+                            headers: {'Content-Type': 'application/json'},
+                            withCredentials: true
+                        }
+                    );
+        
+                    const post_id = result.data.post_id
+                    setPostId(post_id);
+                    return setCreateMultiplePost(false);
+                } catch (error) {
+                    if (!error.response) {
+                        setErrMsg('No Server Response')
+                    } else if (error.response.status === 500) {
+                        setErrMsg("Database Error");
+                    } else if (error.response.status === 401) {
+                        setErrMsg("Unauthorized");
+                    } else {
+                        setErrMsg("Failed")
+                    }
+        
+        
+                    console.log("createMultiple error", error);
+                }
+            }
+
+            createMultiple();
+        } 
+
+    }, [createMultiplePost]);
+
+    useEffect(() => {
+        if (postId) {
+            const addMultipleToRelationalTable = async () => {
+                for (let i = 1; i < multiplePosts.length; i++) {
+                    try {
+                        const result = await axiosPrivate.post(`/posts/add-images-classes-to-post/`, 
+                            JSON.stringify({
+                                img_id: multiplePosts[i][0],
+                                post_id: postId,
+                                class_id: multiplePosts[i][1]
+                            }), 
+                            {
+                                headers: {'Content-Type': 'application/json'},
+                                withCredentials: true
+                            }
+                        );
+
+                        console.log(result);
+                    } catch (error) {
+                        if (!error.response) {
+                            setErrMsg('No Server Response')
+                        } else if (error.response.status === 500) {
+                            setErrMsg("Database Error");
+                        } else {
+                            setErrMsg("Failed")
+                        }
+            
+            
+                        console.log("addToRelational error", error);
+                    }
+                }
+
+                return navigate("/fishstagram");
+            }
+
+            addMultipleToRelationalTable();
+        }
+    }, [postId])
+
 
     const sharePost = async () => {
         try {
@@ -56,7 +217,7 @@ export function PublishHeader({newImage, setNewImage, message}) {
                 setErrMsg("Failed")
             }
 
-            console.log("sharePost", error);
+            console.log("sharePost error", error);
         }
     }
 
@@ -132,7 +293,7 @@ export function PublishHeader({newImage, setNewImage, message}) {
                 <button className="closeNewPost">{`<`}</button>
             </Link>
             <h2>New Post</h2>
-            <button className="shareButton" onClick={sharePost}>Share</button>
+            <button className="shareButton" onClick={uploadPost}>Share</button>
         </div>
     )
 }

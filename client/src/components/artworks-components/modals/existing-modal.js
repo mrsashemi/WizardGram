@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios";
 
-export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, setAllPosts, setEditing, editing}) {
+export function ExistingModal({onHide, showModal, postId, setPostId, setEditing, editing, hashMap, setHashMap}) {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const modalRef = useRef(null);
     const navigate = useNavigate();
@@ -29,9 +29,6 @@ export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, s
     }, [onHide]);
 
     const deletePost = async () => {
-        let tempPostsArray = allPosts.slice();
-        let position = tempPostsArray.map(post => post.post_id).indexOf(postId)
-
         try {
             const result = await axiosPrivate.delete(`/posts/delete-post/${postId}`,
                 {
@@ -42,8 +39,7 @@ export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, s
 
             console.log(result)
             if (result) {
-                tempPostsArray.splice(position, 1);
-                setAllPosts(tempPostsArray)
+                setHashMap(new Map(hashMap.delete(postId)))
                 if (!editing) {
                     onHide();
                 } else {
@@ -59,19 +55,16 @@ export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, s
 
 
     const archivePost = async () => {
-        let tempPostsArray = allPosts.slice();
-        let position = tempPostsArray.map(post => post.post_id).indexOf(postId)
-
         try {
             const result = await axiosPrivate.put(`/posts/update-post/${postId}`, 
                 JSON.stringify({
-                    body: allPosts[position].body,
-                    theme_id: allPosts[position].theme_id,
-                    title: allPosts[position].title,
-                    date_updated: allPosts[position].date_updated,
-                    likes: allPosts[position].likes,
-                    show_likes: allPosts[position].show_likes,
-                    archived: (allPosts[position].archived) ? false : true
+                    body: hashMap.get(postId)[0].body,
+                    theme_id: hashMap.get(postId)[0].theme_id,
+                    title: hashMap.get(postId)[0].title,
+                    date_updated: hashMap.get(postId)[0].date_updated,
+                    likes: hashMap.get(postId)[0].likes,
+                    show_likes: hashMap.get(postId)[0].show_likes,
+                    archived: (hashMap.get(postId)[0].archived) ? false : true
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -81,8 +74,9 @@ export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, s
 
             console.log(result) 
             if (result) {
-                tempPostsArray[position].archived = (allPosts[position].archived) ? false : true;
-                setAllPosts(tempPostsArray);
+                let tempArray = hashMap.get(postId);
+                tempArray[0].archived = (hashMap.get(postId)[0].archived) ? false : true;
+                setHashMap(new Map(hashMap.set(postId, tempArray)));
                 setPostId(null);
                 onHide();
             }
@@ -91,20 +85,17 @@ export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, s
         }
    }
 
-    const hideLikes = async () => {
-        let tempPostsArray = allPosts.slice();
-        let position = tempPostsArray.map(post => post.post_id).indexOf(postId)
-
+    const hideLikes = async () => {   
         try {
             const result = await axiosPrivate.put(`/posts/update-post/${postId}`, 
                 JSON.stringify({
-                    body: allPosts[position].body,
-                    theme_id: allPosts[position].theme_id,
-                    title: allPosts[position].title,
-                    date_updated: allPosts[position].date_updated,
-                    likes: allPosts[position].likes,
-                    show_likes: (allPosts[position].show_likes) ? false : true,
-                    archived: allPosts[position].archived
+                    body: hashMap.get(postId)[0].body,
+                    theme_id: hashMap.get(postId)[0].theme_id,
+                    title: hashMap.get(postId)[0].title,
+                    date_updated: hashMap.get(postId)[0].date_updated,
+                    likes: hashMap.get(postId)[0].likes,
+                    show_likes: (hashMap.get(postId)[0].show_likes) ? false : true,
+                    archived: hashMap.get(postId)[0].archived
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -114,8 +105,9 @@ export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, s
 
             console.log(result)
             if (result) {
-                tempPostsArray[position].show_likes = (allPosts[position].show_likes) ? false : true;
-                setAllPosts(tempPostsArray);
+                let tempArray = hashMap.get(postId);
+                tempArray[0].show_likes = (hashMap.get(postId)[0].show_likes) ? false : true;
+                setHashMap(new Map(hashMap.set(postId, tempArray)));
                 onHide();
             }
         } catch (error) {
@@ -154,11 +146,11 @@ export function ExistingModal({onHide, showModal, postId, setPostId, allPosts, s
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => archivePost()}>{(!postId) ? 'Archive' : (allPosts[allPosts.map(post => post.post_id).indexOf(postId)].archived) ? 'Unarchive' : 'Archive'}</button>
+                    <button className="modalButton" onClick={() => archivePost()}>{(!postId) ? 'Archive' : (hashMap.get(postId)[0].archived) ? 'Unarchive' : 'Archive'}</button> 
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => hideLikes()}>{(!postId) ? 'Hide Like Count' : (allPosts[allPosts.map(post => post.post_id).indexOf(postId)].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
+                    <button className="modalButton" onClick={() => hideLikes()}>{(!postId) ? 'Hide Like Count' : (hashMap.get(postId)[0].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
                     <div className="modalButtonBottomBar"></div>
                 </div>
             </div>}

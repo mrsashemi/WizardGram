@@ -1,4 +1,4 @@
-export function SingleModify({post, setMessage, message}) {
+export function SingleModify({post, setMessage}) {
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
     }

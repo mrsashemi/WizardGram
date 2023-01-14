@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import useLongPress from "../../../hooks/uselongpress"
 
-export function ArtworksHomeGrid({allPosts, expandPost, isExpanded}) {
+export function ArtworksHomeGrid({expandPost, isExpanded, hashMap}) {
     const [imgIndex, setImgIndex] = useState(null);
     const [imgInfo, setImgInfo] = useState(null);
     const [pressing, setPressing] = useState(false);
@@ -87,42 +87,42 @@ export function ArtworksHomeGrid({allPosts, expandPost, isExpanded}) {
             </div>
             <div className="instaGrid">
                 {
-                allPosts && allPosts.filter(post => post.archived === false).map((post, index) => 
+                hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false).map((k, index) => 
                     <div 
-                        key={post.post_id} 
+                        key={hashMap.get(k)[0].post_id} 
                         className="gridImageContainer" 
                         onMouseEnter={() => {onHover(index)}}
                         {...longPressEvent}>
                         <img
                             alt="photography"
-                            onMouseDown={(e) => {onPressingImage(e, post)}}
-                            onMouseUp={(e) => {onReleaseImage(e, post)}}
-                            src={post.img_location}
-                            id={`gridimg-${post.post_id}`} 
-                            className={`gridPage ${post.filter_class}`}
+                            onMouseDown={(e) => {onPressingImage(e, hashMap.get(k)[0])}}
+                            onMouseUp={(e) => {onReleaseImage(e, hashMap.get(k)[0])}}
+                            src={hashMap.get(k)[0].img_location}
+                            id={`gridimg-${hashMap.get(k)[0].post_id}`} 
+                            className={`gridPage ${hashMap.get(k)[0].filter_class}`}
                             style={{
-                                transform: `scale(${post.scale}) 
-                                            translateX(${post.position_x}%) 
-                                            translateY(${post.position_y}%)
-                                            rotate(${post.rotate}deg)`, 
-                                opacity: `${post.opacity}%`,
-                                filter: post.filter_class === "no-filter" && 
-                                        `brightness(${post.brightness}%) 
-                                        contrast(${post.contrast}%) 
-                                        saturate(${post.saturate}%) 
-                                        grayscale(${post.grayscale}%)
-                                        sepia(${post.sepia}%)
-                                        hue-rotate(${post.hue}deg)
-                                        blur(${post.blur}px)`}} >
+                                transform: `scale(${hashMap.get(k)[0].scale}) 
+                                            translateX(${hashMap.get(k)[0].position_x}%) 
+                                            translateY(${hashMap.get(k)[0].position_y}%)
+                                            rotate(${hashMap.get(k)[0].rotate}deg)`, 
+                                opacity: `${hashMap.get(k)[0].opacity}%`,
+                                filter: hashMap.get(k)[0].filter_class === "no-filter" && 
+                                        `brightness(${hashMap.get(k)[0].brightness}%) 
+                                        contrast(${hashMap.get(k)[0].contrast}%) 
+                                        saturate(${hashMap.get(k)[0].saturate}%) 
+                                        grayscale(${hashMap.get(k)[0].grayscale}%)
+                                        sepia(${hashMap.get(k)[0].sepia}%)
+                                        hue-rotate(${hashMap.get(k)[0].hue}deg)
+                                        blur(${hashMap.get(k)[0].blur}px)`}} >
                         </img>
                         {
-                        post.vignette &&
+                        hashMap.get(k)[0].vignette &&
                         <div 
-                            onMouseDown={(e) => {onPressingImage(e, post)}}
-                            onMouseUp={(e) => {onReleaseImage(e, post)}}
+                            onMouseDown={(e) => {onPressingImage(e, hashMap.get(k)[0])}}
+                            onMouseUp={(e) => {onReleaseImage(e, hashMap.get(k)[0])}}
                             className="vignette" 
                             style={{
-                                boxShadow: `inset 0px 0px ${post.vignette_blur/2.5}px ${post.vignette_spread/2.5}px rgba(0, 0, 0, 0.5)`}} >
+                                boxShadow: `inset 0px 0px ${hashMap.get(k)[0].vignette_blur/2.5}px ${hashMap.get(k)[0].vignette_spread/2.5}px rgba(0, 0, 0, 0.5)`}} >
                         </div>
                         }
                     </div>)
