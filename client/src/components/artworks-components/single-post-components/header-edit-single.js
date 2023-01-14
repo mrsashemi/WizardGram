@@ -44,7 +44,7 @@ export function SingleEditHeader({post, message, hashMap, setHashMap}) {
                 setErrMsg("Failed")
             }
 
-            console.log("updatePost", error);
+            console.log("updatePost", errMsg, error);
         }
     }
 

@@ -1,61 +1,53 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PostSlider } from "../sliders/post-slider";
 
 export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multiples, current, setCurrent, setUseFilter}) {
-    const [start, setStart] = useState(10);
-    const [startTimer, setStartTimer] = useState(false);
     const [tile, setTile] = useState("");
-    const [scaleReminder, setScaleReminder] = useState(null);
-    let timer = undefined;
+    const scaleReminder = useRef(null);
+    const timer = useRef(null);
+    const start = useRef(10);
+    const startTimer = useRef(false);
 
-    useEffect(() => {
-        setScaleReminder(newImage.scale)
-    }, []);
-
-    useEffect(() => {
-        if (startTimer) timer = setTimeout(repeatEvent, start);
-    }, [newImage.scale]);
-
-    const adjustPos = (e) => {
-        if (tile === "middleMiddle") {
-            setNewImage({
-                ...newImage,
-                scale: newImage.scale+0.01
-            })
-        };
-
-        if (tile === "middleLeft") {
-            setNewImage({
-                ...newImage,
-                scale: newImage.scale-0.01
-            });
-        };
-
-        if (tile === "middleRight") {
-            setNewImage({
-                ...newImage,
-                scale: scaleReminder
-            });
-        };
-    };
-    
-
-    const repeatEvent = (e) => {
-        adjustPos(e);
-    };
-    
     const mouseDownEvent = (e) => {
-        setStartTimer(true);
+        startTimer.current = true;
         setTile(e.target.className);
         repeatEvent(e); 
     };
 
     const mouseUpEvent = () => {
-        setStartTimer(false);
-        clearTimeout(timer);
-        setStart(10);
+        startTimer.current = false;
+        clearTimeout(timer.current);
+        start.current = 10;
     };
 
+    const repeatEvent = useCallback((e) => {
+        if (tile === "middleMiddle") {
+            setNewImage(n => ({
+                ...n,
+                scale: newImage.scale+0.01
+            }))
+        };
+
+        if (tile === "middleLeft") {
+            setNewImage(n => ({
+                ...n,
+                scale: newImage.scale-0.01
+            }));
+        };
+
+        if (tile === "middleRight") {
+            setNewImage(n => ({
+                ...n,
+                scale: scaleReminder.current
+            }));
+        };
+    },[tile, setNewImage, newImage.scale]);
+    
+
+    useEffect(() => {
+        if (startTimer) timer.current = setTimeout(repeatEvent, start.current);
+    }, [repeatEvent]);
+    
 
     return (
         <div className="newPostFileContainer">
@@ -64,8 +56,10 @@ export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multi
             <PostSlider multiples={multiples} useFilter={useFilter} current={current} setCurrent={setCurrent} setUseFilter={setUseFilter}/>
             : 
             <img 
+                alt="editing display"
                 className={`newPostFile ${newImage.fit} ${newImage.filter}`}
                 src={newImage.url} 
+                onLoad={() => {scaleReminder.current = newImage.scale}}
                 style={{transform:  `scale(${newImage.scale}) 
                                     translateX(${newImage.posX}%) 
                                     translateY(${newImage.posY}%)

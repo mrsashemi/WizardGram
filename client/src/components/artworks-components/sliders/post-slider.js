@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 export function PostSlider({multiples, useFilter, current, setCurrent, setUseFilter}) {
     const length = multiples.length;
 
@@ -32,6 +30,7 @@ export function PostSlider({multiples, useFilter, current, setCurrent, setUseFil
                 )}
             </div>
             <img 
+                alt={multiples[current].url}
                 className={`newPostFile ${multiples[current].fit} ${multiples[current].filter}`}
                 src={multiples[current].url} 
                 style={{transform:  `scale(${multiples[current].scale}) 

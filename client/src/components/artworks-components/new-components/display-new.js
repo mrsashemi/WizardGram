@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 export function NewDisplay({newImage, setNewImage, postMultiple, setPostMultiple}) {
-    const [start, setStart] = useState(10);
-    const [startTimer, setStartTimer] = useState(false);
     const [tile, setTile] = useState("");
-    let timer = undefined;
+    const startTimer = useRef(false);
+    const start = useRef(10);
+    const timer = useRef(null); 
 
     const handleFit = () => {
         setNewImage({
@@ -21,105 +21,102 @@ export function NewDisplay({newImage, setNewImage, postMultiple, setPostMultiple
         else setPostMultiple(true);
     }
 
-    useEffect(() => {
-        if (startTimer) timer = setTimeout(repeatEvent, start);
-    }, [newImage.posX, newImage.posY, newImage.scale])
-
-    const adjustPos = (e) => {
+    const repeatEvent = useCallback((e) => {
         if (tile === "middleMiddle") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 scale: newImage.scale+0.01
-            })
+            }))
         }
 
         if (tile === "middleLeft") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posX: newImage.posX-0.25
-            })
+            }))
         }
 
         if (tile === "middleRight") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posX: newImage.posX+0.25
-            })
+            }))
         }
 
         if (tile === "topMiddle") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posY: newImage.posY-0.25
-            })
+            }))
         }
 
         if (tile === "bottomMiddle") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posY: newImage.posY+0.25
-            })
+            }))
         }
 
         if (tile === "topLeft") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posY: newImage.posY-0.25,
                 posX: newImage.posX-0.25
-            })
+            }))
         }
 
         if (tile === "topRight") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posY: newImage.posY-0.25,
                 posX: newImage.posX+0.25
-            })
+            }))
         }
 
         if (tile === "bottomLeft") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posY: newImage.posY+0.25,
                 posX: newImage.posX-0.25
-            })
+            }))
         }
 
         if (tile === "bottomRight") {
-            setNewImage({
-                ...newImage,
+            setNewImage(n => ({
+                ...n,
                 posY: newImage.posY+0.25,
                 posX: newImage.posX+0.25
-            })
+            }))
         }
-    }
-    
+    }, [newImage.posX, newImage.posY, newImage.scale, setNewImage, tile])
 
-    const repeatEvent = (e) => {
-        adjustPos(e);
-    }
+    useEffect(() => {
+        if (startTimer.current) timer.current = setTimeout(repeatEvent, start.current);
+    }, [repeatEvent])
+
     
     const mouseDownEvent = (e) => {
-        setStartTimer(true);
+        startTimer.current = true;
         setTile(e.target.className);
         repeatEvent(e); 
     }
 
     const mouseUpEvent = () => {
-        setStartTimer(false);
-        clearTimeout(timer);
-        setStart(10);
+        startTimer.current = false;
+        clearTimeout(timer.current);
+        start.current = 10;
     }
 
     return (
         <div className="newPostFileContainer">
             {newImage.url
                 ? <img 
+                    alt="selected file display"
                     className={`newPostFile ${newImage.fit}`}
                     src={newImage.url} 
                     style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}%) translateY(${newImage.posY}%)`}} 
                     draggable={false}></img>
-                : <img className="newPostFile"></img>
+                : <img alt="selected file display" className="newPostFile"></img>
             }
             <div className="invisibleGrid">
                 <div className="topLeft" onMouseDown={mouseDownEvent} onMouseUp={mouseUpEvent}></div>

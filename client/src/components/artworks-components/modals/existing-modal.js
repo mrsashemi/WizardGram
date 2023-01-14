@@ -16,7 +16,6 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
         const handleHide = (e) => {
             if (modalRef.current && !modalRef.current.contains(e.target)) {
                 onHide && onHide();
-                setPostId(null)
                 setConfirmDelete(false)
             }
         };

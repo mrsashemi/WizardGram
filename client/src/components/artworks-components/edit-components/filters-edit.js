@@ -66,12 +66,14 @@ export function EditFilters({newImage, setNewImage, multiples, setMultiples, cur
                         {
                         multiples ?
                         <img 
+                            alt={`filter ${filter[0]}`}
                             className={`filterSquare ${multiples[current].fit} ${filter[1]}`}
                             style={{transform: `scale(${multiples[current].scale}) translateX(${multiples[current].posX}px) translateY(${multiples[current].posY}px)`}} 
                             src={multiples[current].url}
                             onClick={() => {handleSaveFilter(filter[1])}}></img>
                         :
                         <img 
+                            alt={`filter ${filter[0]}`}
                             className={`filterSquare ${newImage.fit} ${filter[1]}`}
                             style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}px) translateY(${newImage.posY}px)`}} 
                             src={newImage.url}

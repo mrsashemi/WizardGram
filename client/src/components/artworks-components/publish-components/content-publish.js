@@ -8,6 +8,7 @@ export function PublishContent({newImage, setMessage}) {
         <div className="createContentContainer">
             <div className="contentImageContainer">
                 <img 
+                        alt="content to be posted"
                         className={`contentImage ${newImage.fit} ${newImage.filter}`}
                         src={newImage.url} 
                         style={{transform:  `scale(${newImage.scale}) 

@@ -9,8 +9,9 @@ export function EditPost() {
     const [current, setCurrent] = useState(0);
     const [useFilter, setUseFilter] = useState(true);
     const [editRotate, setEditRotate] = useState(false);
-    const { newImage, setNewImage, postMultiple, multiples, setMultiples } = useOutletContext();
+    const { newImage, setNewImage, multiples, setMultiples } = useOutletContext();
 
+    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
         if (!useFilter) {
             if (multiples) {
@@ -18,13 +19,13 @@ export function EditPost() {
                 temporaryMultiples[current].filter = "no-filter";
                 setMultiples(temporaryMultiples);
             } else {
-                setNewImage({
-                    ...newImage,
+                setNewImage(n => ({
+                    ...n,
                     filter: "no-filter"
-                })
+                }))
             }
         }
-    }, [useFilter])
+    }, [useFilter, current, multiples, setMultiples])
 
 
     return (

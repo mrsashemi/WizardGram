@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios";
 const SAVE_CLASS_URL = "/classes/create-class";
@@ -9,7 +9,6 @@ export function PublishHeader({newImage, setNewImage, message, multiples}) {
     const [errMsg, setErrMsg] = useState(null);
     const [multiplePosts, setMultiplePosts] = useState([]);
     const [current, setCurrent] = useState(null);
-
     const [postId, setPostId] = useState(null);
     const [createMultiplePost, setCreateMultiplePost] = useState(false);
     const [postType] = useState("fishstagram");
@@ -57,7 +56,7 @@ export function PublishHeader({newImage, setNewImage, message, multiples}) {
                     );
 
                     const class_id = result.data.class_id
-                    setCurrent({index: i, classId: class_id});
+                    setCurrent({id: multiples[i].id, classId: class_id});
 
                     if (i >= multiples.length-1) {
                         return setCreateMultiplePost(true);
@@ -65,7 +64,7 @@ export function PublishHeader({newImage, setNewImage, message, multiples}) {
                 } catch (error) {
                     if (error.response.status === 303) {
                         const class_id = error.response.data.class_id;
-                        setCurrent({index: i, classId: class_id});
+                        setCurrent({id: multiples[i].id, classId: class_id});
 
                         if (i >= multiples.length-1) {
                             return setCreateMultiplePost(true);
@@ -80,97 +79,98 @@ export function PublishHeader({newImage, setNewImage, message, multiples}) {
                         setErrMsg("Failed")
                     }
         
-                    console.log("shareMultiple Error", error);
+                    console.log("shareMultiple Error", errMsg, error);
                 }
             }
         }
     }
 
     useEffect(() => {
-        if (current) setMultiplePosts([...multiplePosts, [multiples[current.index].id, current.classId]])
-    }, [current])
+        if (current) setMultiplePosts(n => [...n, [current.id, current.classId]])
+    }, [current]);
 
-    useEffect(() => {
-        if (createMultiplePost && !postId) {
-            const createMultiple = async () => {
-                try {
-                    const result = await axiosPrivate.post(SHARE_POST_URL,
-                        JSON.stringify({
-                            post_type: postType,
-                            title: postTitle,
-                            body: message,
-                            img_id: multiplePosts[0][0],
-                            class_id: multiplePosts[0][1]
-                        }), 
-                        {
-                            headers: {'Content-Type': 'application/json'},
-                            withCredentials: true
-                        }
-                    );
-        
-                    const post_id = result.data.post_id
-                    setPostId(post_id);
-                    return setCreateMultiplePost(false);
-                } catch (error) {
-                    if (!error.response) {
-                        setErrMsg('No Server Response')
-                    } else if (error.response.status === 500) {
-                        setErrMsg("Database Error");
-                    } else if (error.response.status === 401) {
-                        setErrMsg("Unauthorized");
-                    } else {
-                        setErrMsg("Failed")
-                    }
-        
-        
-                    console.log("createMultiple error", error);
+    const postMultiple = useCallback(async () => {
+        try {
+            const result = await axiosPrivate.post(SHARE_POST_URL,
+                JSON.stringify({
+                    post_type: postType,
+                    title: postTitle,
+                    body: message,
+                    img_id: multiplePosts[0][0],
+                    class_id: multiplePosts[0][1]
+                }), 
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
                 }
+            );
+
+            const post_id = result.data.post_id
+            setPostId(post_id);
+        } catch (error) {
+            let errMsg;
+            if (!error.response) {
+                errMsg = 'No Server Response'
+            } else if (error.response.status === 500) {
+                errMsg = "Database Error"
+            } else if (error.response.status === 401) {
+                errMsg = "Unauthorized"
+            } else {
+                errMsg = "failed"
             }
 
-            createMultiple();
-        } 
 
-    }, [createMultiplePost]);
+            console.log("createMultiple error", errMsg, error);
+        }
+    }, [message, multiplePosts, postTitle, postType])
+
+    useEffect(() => {
+        if (createMultiplePost) {
+            setCreateMultiplePost(false);
+            postMultiple();
+        }
+    }, [postMultiple, createMultiplePost]);
+
+    const addMultipleToRelationalTable = useCallback(async () => {
+        for (let i = 1; i < multiplePosts.length; i++) {
+            try {
+                const result = await axiosPrivate.post(`/posts/add-images-classes-to-post/`, 
+                    JSON.stringify({
+                        img_id: multiplePosts[i][0],
+                        post_id: postId,
+                        class_id: multiplePosts[i][1]
+                    }), 
+                    {
+                        headers: {'Content-Type': 'application/json'},
+                        withCredentials: true
+                    }
+                );
+
+                console.log(result);
+            } catch (error) {
+                let errMsg;
+
+                if (!error.response) {
+                    errMsg = 'No Server Response'
+                } else if (error.response.status === 500) {
+                    errMsg = "Database Error"
+                } else {
+                    errMsg = "Failed"
+                }
+    
+    
+                console.log("addToRelational error", errMsg, error);
+            }
+        }
+
+        return navigate("/fishstagram");
+    }, [multiplePosts, navigate, postId])
 
     useEffect(() => {
         if (postId) {
-            const addMultipleToRelationalTable = async () => {
-                for (let i = 1; i < multiplePosts.length; i++) {
-                    try {
-                        const result = await axiosPrivate.post(`/posts/add-images-classes-to-post/`, 
-                            JSON.stringify({
-                                img_id: multiplePosts[i][0],
-                                post_id: postId,
-                                class_id: multiplePosts[i][1]
-                            }), 
-                            {
-                                headers: {'Content-Type': 'application/json'},
-                                withCredentials: true
-                            }
-                        );
-
-                        console.log(result);
-                    } catch (error) {
-                        if (!error.response) {
-                            setErrMsg('No Server Response')
-                        } else if (error.response.status === 500) {
-                            setErrMsg("Database Error");
-                        } else {
-                            setErrMsg("Failed")
-                        }
-            
-            
-                        console.log("addToRelational error", error);
-                    }
-                }
-
-                return navigate("/fishstagram");
-            }
-
             addMultipleToRelationalTable();
         }
-    }, [postId])
-
+    }, [addMultipleToRelationalTable, postId])
 
     const sharePost = async () => {
         try {
@@ -221,70 +221,68 @@ export function PublishHeader({newImage, setNewImage, message, multiples}) {
         }
     }
 
-    useEffect(() => {
-        if (classId) {
-            const createPost = async () => {
-                try {
-                    const result = await axiosPrivate.post(SHARE_POST_URL,
-                        JSON.stringify({
-                            post_type: postType,
-                            title: postTitle,
-                            body: message,
-                            img_id: newImage.id,
-                            class_id: classId
-                        }), 
-                        {
-                            headers: {'Content-Type': 'application/json'},
-                            withCredentials: true
-                        }
-                    );
-        
-                    console.log(result)
-                    setClassId(null)
-                    if (newImage) {
-                        setNewImage({
-                            ...newImage,
-                            posX: 0,
-                            posY: 0,
-                            scale: 1,
-                            fit: "coverImg",
-                            filter: "no-filter",
-                            brightness: 100,
-                            contrast: 100,
-                            saturate: 100,
-                            grayscale: 0,
-                            sepia: 0,
-                            hue: 0,
-                            opacity: 100,
-                            blur: 0,
-                            rotate: 0,
-                            vignette: false,
-                            vignetteClass: "vignette",
-                            vignetteBlur: 0,
-                            vignetteSpread: 0,
-                            original: true
-                        })
-                    }
-                    return navigate("/fishstagram")
-                } catch (error) {
-                    if (!error.response) {
-                        setErrMsg('No Server Response')
-                    } else if (error.response.status === 500) {
-                        setErrMsg("Database Error");
-                    } else if (error.response.status === 401) {
-                        setErrMsg("Unauthorized");
-                    } else {
-                        setErrMsg("Failed")
-                    }
-        
-        
-                    console.log("createPost error", error);
+    const createPost = useCallback(async () => {
+        try {
+            const result = await axiosPrivate.post(SHARE_POST_URL,
+                JSON.stringify({
+                    post_type: postType,
+                    title: postTitle,
+                    body: message,
+                    img_id: newImage.id,
+                    class_id: classId
+                }), 
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
                 }
+            );
+
+            console.log(result)
+            setClassId(null)
+            setNewImage(n => ({
+                ...n,
+                posX: 0,
+                posY: 0,
+                scale: 1,
+                fit: "coverImg",
+                filter: "no-filter",
+                brightness: 100,
+                contrast: 100,
+                saturate: 100,
+                grayscale: 0,
+                sepia: 0,
+                hue: 0,
+                opacity: 100,
+                blur: 0,
+                rotate: 0,
+                vignette: false,
+                vignetteClass: "vignette",
+                vignetteBlur: 0,
+                vignetteSpread: 0,
+                original: true
+            }))
+            return navigate("/fishstagram")
+        } catch (error) {
+            let errMsg;
+
+            if (!error.response) {
+                errMsg = 'No Server Response'
+            } else if (error.response.status === 500) {
+                errMsg = "Database Error"
+            } else if (error.response.status === 401) {
+                errMsg = "Unauthorized"
+            } else {
+                errMsg = "Failed"
             }
 
-            createPost();
+
+            console.log("createPost error", errMsg, error);
         }
-    }, [classId])
+    }, [classId, message, navigate, newImage.id, postTitle, postType, setNewImage])
+
+    useEffect(() => {
+        if (classId) createPost();
+    }, [createPost, classId])
 
 
     return (

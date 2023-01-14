@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 
 export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMultiple, multiples, setMultiples}) {
     const handleCurrentImage = (img_location, img_id) => {
@@ -9,7 +9,7 @@ export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMul
         })
     }
 
-    useEffect(() => {
+    const incrementMultiples = () => {
         let indexCheck;
         if (postMultiple && multiples) indexCheck = multiples.map(post => post.id).indexOf(newImage.id)
 
@@ -18,14 +18,18 @@ export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMul
         } else if (indexCheck >= 0) {
             setMultiples([...multiples.slice(0, indexCheck), ...multiples.slice(indexCheck+1)])
         }
-    }, [newImage])
+    }
 
-    useEffect(() => {
+    const cancelMultiples = useCallback(() => {
         if (multiples && multiples.length === 0) {
             setMultiples(null);
             setPostMultiple(false);
         }
-    }, [multiples])
+    }, [multiples, setMultiples, setPostMultiple]);
+
+    useEffect(() => {
+        cancelMultiples();
+    }, [cancelMultiples])
 
     return (
         <div className="instaGridContainer" >
@@ -34,7 +38,8 @@ export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMul
                     <div 
                         className="newGridContainer" 
                         key={img && img.img_id}
-                        onClick={() => {handleCurrentImage(img.img_location, img.img_id)}}>
+                        onMouseOver={() => {handleCurrentImage(img.img_location, img.img_id)}}
+                        onClick={incrementMultiples}>
                         <img 
                             alt="photography"
                             src={img.img_location} 

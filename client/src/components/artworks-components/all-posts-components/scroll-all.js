@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import axios, { axiosPrivate } from "../../../api/axios";
+import axios from "../../../api/axios";
 
 export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, hashMap, setHashMap}) {    
     // scroll to selected post upon loading page
@@ -60,7 +59,7 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, h
                         <button className="editPost" onClick={() => {openModal(hashMap.get(k)[0].post_id, index)}}>...</button>
                     </div>
                     <div className="scrollImageContainer">
-                        <img 
+                        <img    alt={hashMap.get(k)[0].title}
                                 src={hashMap.get(k)[0].img_location} 
                                 className={`scrollPage ${hashMap.get(k)[0].filter_class} ${hashMap.get(k)[0].fit_class}`}
                                 style={{transform:  `scale(${hashMap.get(k)[0].scale}) 

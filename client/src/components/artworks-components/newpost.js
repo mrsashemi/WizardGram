@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NewDisplay } from "./new-components/display-new";
 import { NewGrid } from "./new-components/grid-new";
 import { NewHeader } from "./new-components/header-new";
@@ -16,7 +16,7 @@ export function NewPost() {
     const axiosPrivate = useAxiosPrivate();
     const { newImage, setNewImage, postMultiple, setPostMultiple, multiples, setMultiples } = useOutletContext();
 
-    useEffect(() => {
+    const loadImages = useCallback(() => {
         const formData = new FormData();
         formData.append("image", selectedImage);
    
@@ -28,11 +28,11 @@ export function NewPost() {
                             headers: {'Content-Type': 'multipart/form-data'},
                             withCredentials: true,
                         });
-                        setNewImage({
-                            ...newImage,
+                        setNewImage(n => ({
+                            ...n,
                             url: result.data.img_location,
                             id: result.data.img_id
-                        })
+                        }))
                         setSelectedImage("");       
                 } catch (error) {
                     console.error(error);
@@ -40,37 +40,46 @@ export function NewPost() {
             }
 
             createImg();
-        }
-
-        const getAllImg = async () => {
-            try {
-                const result = await axiosPrivate.get(GET_ALL_IMG_URL, {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true,
-                });
-                setAllImg(result.data.imageList.slice(0).reverse());
-                if (newImage) {
-                    setNewImage({
-                        ...newImage,
+        } else {
+            const getAllImg = async () => {
+                try {
+                    const result = await axiosPrivate.get(GET_ALL_IMG_URL, {
+                        headers: {'Content-Type': 'application/json'},
+                        withCredentials: true,
+                    });
+                    setAllImg(result.data.imageList.slice(0).reverse());
+                    setNewImage(n => ({
+                        ...n,
                         url: result.data.imageList.slice(0).reverse()[0].img_location,
                         id: result.data.imageList.slice(0).reverse()[0].img_id
-                    })
+                    }))
+                    
+                } catch (error) {
+                    console.error(error);
                 }
-            } catch (error) {
-                console.error(error);
             }
+
+            getAllImg();
         }
+    }, [axiosPrivate, selectedImage, setNewImage]);
 
-        getAllImg();
-    }, [selectedImage])
-
-    useEffect(() => {
+    const createMultiplesArray = useCallback(() => {
         if (postMultiple) {
             if (!multiples) setMultiples([newImage]);
         } else {
             setMultiples(null);
         }
-    }, [postMultiple])
+    }, [postMultiple, multiples, setMultiples, newImage])
+
+    useEffect(() => {
+        loadImages();
+    }, [loadImages])
+
+
+
+    useEffect(() => {
+        createMultiplesArray();
+    }, [createMultiplesArray])
 
     return (
         <div id="instaUserDashboard">
