@@ -53,15 +53,15 @@ export function ArtworkGallery() {
             && newImage.hue === 0
             && newImage.blur === 0
             && newImage.fit === "coverImg") {
-                setNewImage({
-                    ...newImage,
+                setNewImage(n => ({
+                    ...n,
                     original: true
-                })
+                }))
             } else {
-                setNewImage({
-                    ...newImage,
+                setNewImage(n => ({
+                    ...n,
                     original: false
-                })
+                }))
             }
     }, [
         newImage.filter, 

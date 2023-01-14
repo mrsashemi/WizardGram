@@ -39,7 +39,11 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
 
             console.log(result)
             if (result) {
-                setHashMap(new Map(hashMap.delete(postId)))
+                setHashMap((prevMap) => {
+                    const newMap = new Map(prevMap);
+                    newMap.delete(postId);
+                    return newMap;
+                })
                 if (!editing) {
                     onHide();
                 } else {
