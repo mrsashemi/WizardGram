@@ -4,7 +4,7 @@ import useLongPress from "../../../hooks/uselongpress"
 
 export function ArtworksHomeGrid({expandPost, isExpanded, hashMap}) {
     const [imgIndex, setImgIndex] = useState(null);
-    const [imgInfo, setImgInfo] = useState(null);
+    const imgInfo = useRef(null);
     const [pressing, setPressing] = useState(false);
     const navigate = useNavigate();
     let interval = useRef();
@@ -13,19 +13,19 @@ export function ArtworksHomeGrid({expandPost, isExpanded, hashMap}) {
     useEffect(() => {
         if (pressing && !isExpanded) {
             let i = 1;
-            let newScale = imgInfo.scale;
+            let newScale = imgInfo.current.scale;
             interval.current = setInterval(function() {
                 if (i === 50) {
                     clearInterval(interval.current);
-                    document.getElementById(`gridimg-${imgInfo.id}`).style.transform = `scale(${imgInfo.scale})`;
+                    document.getElementById(`gridimg-${imgInfo.current.id}`).style.transform = `scale(${imgInfo.current.scale})`;
                 };
                 i++;
                 newScale = newScale - 0.01;
-                document.getElementById(`gridimg-${imgInfo.id}`).style.transform = `scale(${newScale})`;
+                document.getElementById(`gridimg-${imgInfo.current.id}`).style.transform = `scale(${newScale})`;
             }, 50);
         } else if (!pressing && isExpanded) {
-            document.getElementById(`gridimg-${imgInfo.id}`).style.transform = `scale(${imgInfo.scale})`;
-            setImgInfo(null);
+            document.getElementById(`gridimg-${imgInfo.current.id}`).style.transform = `scale(${imgInfo.current.scale})`;
+            imgInfo.current = null;
             clearInterval(interval.current);
         }
     }, [pressing, isExpanded]);
@@ -35,7 +35,7 @@ export function ArtworksHomeGrid({expandPost, isExpanded, hashMap}) {
         e.preventDefault();
 
         if (!isExpanded) {
-            setImgInfo({id: post.post_id, scale: post.scale});
+            imgInfo.current = {id: post.post_id, scale: post.scale}
             setPressing(true);
         };
     }
@@ -63,7 +63,7 @@ export function ArtworksHomeGrid({expandPost, isExpanded, hashMap}) {
     // Custom hook also takes normal click to proceed to the scroll page
     const onNormalPress = () => {
         setPressing(false);
-        document.getElementById(`gridimg-${imgInfo.id}`).style.transform = `scale(${imgInfo.scale})`;
+        document.getElementById(`gridimg-${imgInfo.current.id}`).style.transform = `scale(${imgInfo.current.scale})`;
         if (!isExpanded) {
             expandPost(false, imgIndex);
             return navigate('/fishstagram/allposts');

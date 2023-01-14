@@ -1,7 +1,7 @@
 export function ArtworksHomeProfilePic() {
     return (
         <div className="instaProfileImg">
-            <img className="instaProfilePic"></img>
+            <img alt="profilepic" className="instaProfilePic"></img>
             <div className="instaProfileStats">
                 <div className="profileStats">
                     <h4>63</h4>
