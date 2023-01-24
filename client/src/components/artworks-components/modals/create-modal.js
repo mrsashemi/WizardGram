@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export function CreateModal({onHide, showModal}) {
+export function CreateModal({onHide, showModal, setPostType}) {
     const modalRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleHide = (e) => {
@@ -18,24 +19,32 @@ export function CreateModal({onHide, showModal}) {
 
     }, [onHide]);
 
+    const postPhotography = () => {
+        setPostType("photograph")
+        return navigate("/fishstagram/newpost");
+    }
+
+    const postArtworks = () => {
+        setPostType("artwork")
+        return navigate("/fishstagram/newpost");
+    }
+
     return (
         <div id="postModalContainer" className={`postModalContainer ${showModal ? 'showModal' : ''}`} ref={modalRef}>
             <div className="modalTitleContainer">
                 <div className="modalHideDragBar" onClick={onHide}></div>
-                <h3 className="modalTitle">Create</h3>
+                <h3 className="modalTitle">Create New Post</h3>
             </div>
             <div className="modalButtonContainer">
-                <Link to="/fishstagram/newpost">
-                    <button className="modalButton">Post</button>
-                </Link>
+                <button className="modalButton" onClick={postPhotography}>Photography</button>
                 <div className="modalButtonBottomBar"></div>
             </div>
             <div className="modalButtonContainer">
-                <button className="modalButton">Reel</button>
+                <button className="modalButton" onClick={postArtworks}>Artworks</button>
                 <div className="modalButtonBottomBar"></div>
             </div>
             <div className="modalButtonContainer">
-                <button className="modalButton">Highlight</button>
+                <button className="modalButton">Generative</button>
                 <div className="modalButtonBottomBar"></div>
             </div>
         </div>

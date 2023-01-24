@@ -21,6 +21,10 @@ export function NewDisplay({newImage, setNewImage, postMultiple, setPostMultiple
         else setPostMultiple(true);
     }
 
+    useEffect(() => {
+        console.log(postMultiple)
+    }, [postMultiple])
+
     const repeatEvent = useCallback((e) => {
         if (tile === "middleMiddle") {
             setNewImage(n => ({

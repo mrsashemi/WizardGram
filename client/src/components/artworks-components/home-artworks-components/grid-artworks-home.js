@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import useLongPress from "../../../hooks/uselongpress"
 
-export function ArtworksHomeGrid({expandPost, isExpanded, hashMap}) {
+export function ArtworksHomeGrid({expandPost, isExpanded, hashMap, currentGrid, setCurrentGrid}) {
     const [imgIndex, setImgIndex] = useState(null);
-    const imgInfo = useRef(null);
     const [pressing, setPressing] = useState(false);
     const navigate = useNavigate();
+    const imgInfo = useRef(null);
     let interval = useRef();
 
     // simulate pressing shrinking effect on post with intervals
@@ -81,13 +81,13 @@ export function ArtworksHomeGrid({expandPost, isExpanded, hashMap}) {
     return (
         <div className="instaGridContainer">
             <div className="gridSwitch">
-                <button>photography</button>
-                <button>artworks</button>
-                <button>generative</button>
+                <button onClick={() => {setCurrentGrid("artwork")}}>artworks</button>
+                <button onClick={() => {setCurrentGrid("photograph")}}>photography</button>
+                <button onClick={() => {setCurrentGrid("generative")}}>generative</button>
             </div>
             <div className="instaGrid">
                 {
-                hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false).map((k, index) => 
+                hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created)).map((k, index) => 
                     <div 
                         key={hashMap.get(k)[0].post_id} 
                         className="gridImageContainer" 

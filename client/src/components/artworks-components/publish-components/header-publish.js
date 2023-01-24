@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios";
 const SAVE_CLASS_URL = "/classes/create-class";
 const SHARE_POST_URL = "/posts/create-post"
 
-export function PublishHeader({newImage, setNewImage, message, multiples}) {
+export function PublishHeader({newImage, setNewImage, message, multiples, postType, postTitle}) {
     const [classId, setClassId] = useState(null);
     const [errMsg, setErrMsg] = useState(null);
     const [multiplePosts, setMultiplePosts] = useState([]);
     const [current, setCurrent] = useState(null);
     const [postId, setPostId] = useState(null);
     const [createMultiplePost, setCreateMultiplePost] = useState(false);
-    const [postType] = useState("fishstagram");
-    const [postTitle] = useState("Fishstagram");
     const navigate = useNavigate();
 
     const uploadPost = () => {
@@ -284,12 +282,14 @@ export function PublishHeader({newImage, setNewImage, message, multiples}) {
         if (classId) createPost();
     }, [createPost, classId])
 
+    const returnToPreviousPage = () => {
+        if (postType === "photograph") navigate('/fishstagram/editpost')
+        else navigate('/fishstagram/newpost')
+    }
 
     return (
         <div className="instaUserHeader">
-            <Link to='/fishstagram/editpost'>
-                <button className="closeNewPost">{`<`}</button>
-            </Link>
+            <button className="closeNewPost" onClick={returnToPreviousPage}>{`<`}</button>
             <h2>New Post</h2>
             <button className="shareButton" onClick={uploadPost}>Share</button>
         </div>

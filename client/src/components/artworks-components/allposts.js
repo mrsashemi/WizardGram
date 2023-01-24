@@ -7,7 +7,7 @@ import { AllHeader } from "./all-posts-components/header-all";
 export function AllPosts() {
     const [postId, setPostId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const { selectedIndex, setSelectedIndex, editing, setEditing, hashMap, setHashMap } = useOutletContext();
+    const { selectedIndex, setSelectedIndex, editing, setEditing, hashMap, setHashMap, currentGrid } = useOutletContext();
 
     function showPostModal() {
         setShowModal(true);
@@ -22,6 +22,7 @@ export function AllPosts() {
         <div id="instaUserDashboard">
             <AllHeader />
             <AllScroll 
+                currentGrid={currentGrid}
                 selectedIndex={selectedIndex} 
                 onShow={showPostModal} 
                 setPostId={setPostId} 

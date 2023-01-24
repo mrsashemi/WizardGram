@@ -150,8 +150,7 @@ exports.getAllFishstaPosts = async (req, res) => {
             FROM posts_images 
             INNER JOIN posts ON posts.post_id = posts_images.post_id 
             INNER JOIN images ON posts_images.img_id = images.img_id 
-            INNER JOIN image_classes ON posts_images.class_id = image_classes.class_id 
-            WHERE posts.post_type = 'fishstagram';`);
+            INNER JOIN image_classes ON posts_images.class_id = image_classes.class_id;`);
         const posts = data.rows;
 
         if (posts.length === 0) {

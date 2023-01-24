@@ -53,7 +53,7 @@ export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multi
         <div className="newPostFileContainer">
             {
             multiples ? 
-            <PostSlider multiples={multiples} useFilter={useFilter} current={current} setCurrent={setCurrent} setUseFilter={setUseFilter}/>
+            <PostSlider multiples={multiples} useFilter={useFilter} current={current} setCurrent={setCurrent} setUseFilter={setUseFilter} existing={false}/>
             : 
             <img 
                 alt="editing display"

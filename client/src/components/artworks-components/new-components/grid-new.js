@@ -1,13 +1,15 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMultiple, multiples, setMultiples}) {
-    const handleCurrentImage = (img_location, img_id) => {
+    const incrementRef = useRef();
+
+    const handleCurrentImage = useCallback((img_location, img_id) => {
         setNewImage({
             ...newImage,
             url: img_location,
             id: img_id
         })
-    }
+    }, [setNewImage, newImage])
 
     const incrementMultiples = () => {
         let indexCheck;
@@ -19,6 +21,10 @@ export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMul
             setMultiples([...multiples.slice(0, indexCheck), ...multiples.slice(indexCheck+1)])
         }
     }
+
+    useEffect(() => {
+        incrementRef.current.click();
+    }, [handleCurrentImage])
 
     const cancelMultiples = useCallback(() => {
         if (multiples && multiples.length === 0) {
@@ -38,8 +44,7 @@ export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMul
                     <div 
                         className="newGridContainer" 
                         key={img && img.img_id}
-                        onMouseOver={() => {handleCurrentImage(img.img_location, img.img_id)}}
-                        onClick={incrementMultiples}>
+                        onClick={() => {handleCurrentImage(img.img_location, img.img_id)}}>
                         <img 
                             alt="photography"
                             src={img.img_location} 
@@ -53,6 +58,7 @@ export function NewGrid({allImg, newImage, setNewImage, postMultiple, setPostMul
                     </div>
                 )}
             </div>
+            <div ref={incrementRef} onClick={incrementMultiples} hidden></div>
         </div>
     )
 }

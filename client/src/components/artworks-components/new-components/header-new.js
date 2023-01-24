@@ -1,15 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export function NewHeader() {
+export function NewHeader({postType}) {
+    const navigate = useNavigate();
+
+    const toNextPage = () => {
+        if (postType === "photograph") navigate("/fishstagram/editpost")
+        else navigate("/fishstagram/createpost")
+    }
+
     return (
         <div className="instaUserHeader">
             <Link to='/fishstagram'>
                 <button className="closeNewPost">X</button>
             </Link>
             <h2>New Post</h2>
-            <Link to='/fishstagram/editpost'>
-                <button className="nextButton">Next</button>
-            </Link>
+            <button className="nextButton" onClick={toNextPage}>Next</button>
         </div>
     )
 }

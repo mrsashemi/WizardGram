@@ -11,7 +11,7 @@ const GET_ALL_POSTS_URL = '/posts/get-all-fishstaposts'
 
 export function ArtworksHome() {
     const [showModal, setShowModal] = useState(false);
-    const { isExpanded, expandPost, hashMap, setHashMap } = useOutletContext();
+    const { isExpanded, expandPost, hashMap, setHashMap, setPostType, currentGrid, setCurrentGrid } = useOutletContext();
 
     // fetch all posts from api
     useEffect(() => {
@@ -63,10 +63,13 @@ export function ArtworksHome() {
             <ArtworksHomeGrid 
                 expandPost={expandPost}
                 isExpanded={isExpanded}
-                hashMap={hashMap} />
+                hashMap={hashMap}
+                currentGrid={currentGrid}
+                setCurrentGrid={setCurrentGrid} />
             <CreateModal 
                 onHide={hidePostModal} 
-                showModal={showModal} />
+                showModal={showModal}
+                setPostType={setPostType} />
         </div>
     )
 }

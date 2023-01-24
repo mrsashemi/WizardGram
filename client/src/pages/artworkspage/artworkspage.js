@@ -17,6 +17,8 @@ export function ArtworkGallery() {
     const [hashMap, setHashMap] = useState(null);
     const [postMultiple, setPostMultiple] = useState(false);
     const [multiples, setMultiples] = useState(null);
+    const [postType, setPostType] = useState(null);
+    const [currentGrid, setCurrentGrid] = useState("artwork");
     const [newImage, setNewImage] = useState({
         id: "",
         url: null,
@@ -151,7 +153,7 @@ export function ArtworkGallery() {
 
     // go to individual post by clicking on expanded image
     const goToPost = (id) => {
-        setSinglePost(hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex]));
+        setSinglePost(hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex]));
         setIsExpanded(false);
         setSelectedIndex(null)
         setDelay(false);
@@ -172,13 +174,15 @@ export function ArtworkGallery() {
                     editing, setEditing,
                     postMultiple, setPostMultiple,
                     multiples, setMultiples,
-                    hashMap, setHashMap}} />
+                    postType, setPostType,
+                    hashMap, setHashMap,
+                    currentGrid, setCurrentGrid}} />
             </div>
             {isExpanded && 
             <div className="expandedPostContainer" 
             ref={postRef} 
-            key={hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].post_id} 
-            onClick={() => {goToPost(hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].post_id)}}>
+            key={hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].post_id} 
+            onClick={() => {goToPost(hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].post_id)}}>
                 <div className="expandedHeader">
                     <div className="individualPostProfilePic"></div>
                     <h4 className="usernameHeader">Username</h4>
@@ -186,28 +190,28 @@ export function ArtworkGallery() {
                 <div className="expandedPost">
                     <img
                         alt="photography"
-                        src={hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].img_location} 
-                        className={`expandPage ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].filter_class} ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].fit_class}`}
+                        src={hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].img_location} 
+                        className={`expandPage ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].filter_class} ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].fit_class}`}
                         style={{
-                            transform:  `scale(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].scale}) 
-                                        translateX(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].position_x}%) 
-                                        translateY(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].position_y}%)
-                                        rotate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].rotate}deg)`, 
-                            opacity: `${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].opacity}%`,
-                            filter: hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].filter_class === "no-filter" && 
-                                    `brightness(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].brightness}%) 
-                                    contrast(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].contrast}%) 
-                                    saturate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].saturate}%) 
-                                    grayscale(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].grayscale}%)
-                                    sepia(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].sepia}%)
-                                    hue-rotate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].hue}deg)
-                                    blur(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].blur}px)`}}>
+                            transform:  `scale(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].scale}) 
+                                        translateX(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].position_x}%) 
+                                        translateY(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].position_y}%)
+                                        rotate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].rotate}deg)`, 
+                            opacity: `${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].opacity}%`,
+                            filter: hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].filter_class === "no-filter" && 
+                                    `brightness(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].brightness}%) 
+                                    contrast(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].contrast}%) 
+                                    saturate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].saturate}%) 
+                                    grayscale(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].grayscale}%)
+                                    sepia(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].sepia}%)
+                                    hue-rotate(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].hue}deg)
+                                    blur(${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].blur}px)`}}>
                     </img>
                     {
-                    hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].vignette &&
+                    hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].vignette &&
                     <div 
                         className="vignette" 
-                        style={{boxShadow: `inset 0px 0px ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].vignette_blur}px ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false)[selectedIndex])[0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
+                        style={{boxShadow: `inset 0px 0px ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].vignette_blur}px ${hashMap.get([...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created))[selectedIndex])[0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
                     </div>
                     }
                 </div>

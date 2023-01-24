@@ -1,4 +1,5 @@
 import axios from "../../../api/axios";
+import { PostSlider } from "../sliders/post-slider";
 
 export function SingleDisplay({post, onShow, setPostId, setSelectedIndex, hashMap, setHashMap}) {
     const openModal = (postId, postIndex) => {
@@ -47,6 +48,9 @@ export function SingleDisplay({post, onShow, setPostId, setSelectedIndex, hashMa
                     </div>
                     <button className="editPost" onClick={() => {openModal(post[0].post_id, [...hashMap.keys()].indexOf(post[0].post_id))}}>...</button>
                 </div>
+                {post.length > 1 ? 
+                <PostSlider multiples={post} existing={true} />
+                :
                 <div className="scrollImageContainer">
                     <img 
                             alt="photography"
@@ -70,6 +74,7 @@ export function SingleDisplay({post, onShow, setPostId, setSelectedIndex, hashMa
                         <div className="vignette" style={{boxShadow: `inset 0px 0px ${post[0].vignette_blur}px ${post[0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
                         </div>}
                 </div>
+                }
                 <div className="scrollPostLikesAndComment">
                     {post[0].show_likes && <div className="postLikes">
                         <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, [...hashMap.keys()].indexOf(post[0].post_id), post[0])}}>Heart</button>

@@ -1,6 +1,7 @@
 import axios from "../../../api/axios";
+import { PostSlider } from "../sliders/post-slider";
 
-export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, hashMap, setHashMap}) {    
+export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, hashMap, setHashMap, currentGrid}) {    
     // scroll to selected post upon loading page
     const scrollToPost = (e, index) => {
         if (index === selectedIndex) e.target.scrollIntoView();
@@ -45,7 +46,7 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, h
 
     return (
         <div className="instaScroll">
-            {hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false).map((k, index) => 
+            {hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created)).map((k, index) => 
                 <div 
                 key={hashMap.get(k)[0].post_id} 
                 className='scrollPostContainer'
@@ -58,6 +59,9 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, h
                         </div>
                         <button className="editPost" onClick={() => {openModal(hashMap.get(k)[0].post_id, index)}}>...</button>
                     </div>
+                    {hashMap.get(k).length > 1 ?
+                    <PostSlider multiples={hashMap.get(k)} existing={true} />
+                    :
                     <div className="scrollImageContainer">
                         <img    alt={hashMap.get(k)[0].title}
                                 src={hashMap.get(k)[0].img_location} 
@@ -80,6 +84,7 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, h
                             <div className="vignette" style={{boxShadow: `inset 0px 0px ${hashMap.get(k)[0].vignette_blur}px ${hashMap.get(k)[0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
                             </div>}
                     </div>
+                    }               
                     <div className="scrollPostLikesAndComment">
                         {hashMap.get(k)[0].show_likes && <div className="postLikes">
                             <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, index, hashMap.get(k)[0])}}>Heart</button>

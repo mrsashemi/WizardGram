@@ -28,13 +28,28 @@ CREATE TABLE posts(
     title TEXT NOT NULL,
     body TEXT NOT NULL,
     users_id INT NOT NULL,
-    date_created DATE NOT NULL DEFAULT CURRENT_DATE,
-    date_updated DATE NOT NULL DEFAULT CURRENT_DATE,
+    date_created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    date_updated TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_theme
         FOREIGN KEY(theme_id)
             REFERENCES posts_themes(theme_id)
             ON UPDATE CASCADE,
     CONSTRAINT fk_user
+        FOREIGN KEY(users_id)
+            REFERENCES users(users_id)
+            ON UPDATE CASCADE
+            ON DELETE CASCADE
+);
+
+CREATE TABLE post_likes(
+    post_id INT NOT NULL,
+    users_id INT NOT NULL,
+    CONSTRAINT fk_post
+        FOREIGN KEY(post_id)
+            REFERENCES posts(post_id)
+            ON UPDATE CASCADE
+            ON DELETE CASCADE,
+    CONSTRAINT fk_users
         FOREIGN KEY(users_id)
             REFERENCES users(users_id)
             ON UPDATE CASCADE
@@ -113,6 +128,7 @@ CREATE TABLE posts_themes(
     theme_id SERIAL PRIMARY KEY,
     theme_name VARCHAR(50) NOT NULL UNIQUE
 );
+
 
 CREATE TABLE comments(
     comment_id SERIAL PRIMARY KEY,

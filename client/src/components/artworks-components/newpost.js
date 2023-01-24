@@ -14,7 +14,7 @@ export function NewPost() {
     const [allImg, setAllImg] = useState(null);
 
     const axiosPrivate = useAxiosPrivate();
-    const { newImage, setNewImage, postMultiple, setPostMultiple, multiples, setMultiples } = useOutletContext();
+    const { newImage, setNewImage, postMultiple, setPostMultiple, multiples, setMultiples, postType } = useOutletContext();
 
     const loadImages = useCallback(() => {
         const formData = new FormData();
@@ -75,15 +75,13 @@ export function NewPost() {
         loadImages();
     }, [loadImages])
 
-
-
     useEffect(() => {
         createMultiplesArray();
     }, [createMultiplesArray])
 
     return (
         <div id="instaUserDashboard">
-            <NewHeader />
+            <NewHeader postType={postType} />
             <NewDisplay
                 newImage={newImage}
                 setNewImage={setNewImage} 

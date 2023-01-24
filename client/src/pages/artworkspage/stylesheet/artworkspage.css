@@ -491,7 +491,7 @@
 
 .pickSlideButtonsContainer {
   position: absolute;
-  z-index: 26;
+  z-index: 46;
   bottom: 2.5%;
   width: 100%;
   height: fit-content;
@@ -529,7 +529,7 @@
 
 .postSliderButtons {
   position: absolute;
-  z-index: 25;
+  z-index: 45;
   top: 50%;
   width: 100%;
   height: fit-content;
@@ -738,7 +738,7 @@
   width: 100%;
   height: 100%;
   position: absolute;
-  z-index: 35;
+  z-index: 34;
   transform: scale(1.5);
   top: 0;
   border-radius: 20rem;
@@ -768,20 +768,41 @@
 }
 
 .contentImage {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .contentBox {
-    height: 100%;
-    width: 70%;
-    color: white;
-    background-color: black;
+  height: 100%;
+  width: 70%;
+  color: white;
+  background-color: black;
+}
+
+.titleBox {
+  height: 100%;
+  width: 100%;
+  color: white;
+  background-color: black;
 }
 
 .createPostLinksContainer {
-    width: 100%;
-    height: 50rem;
+  width: 100%;
+  height: 50rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 1em;
+}
+
+.createPostLinksContainer > div {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
 }
 
 /* the following instagram filters are borrowed from picturepan2 on github*/
