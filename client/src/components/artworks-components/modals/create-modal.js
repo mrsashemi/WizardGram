@@ -21,12 +21,12 @@ export function CreateModal({onHide, showModal, setPostType}) {
 
     const postPhotography = () => {
         setPostType("photograph")
-        return navigate("/fishstagram/newpost");
+        return navigate("/wizardgram/newpost");
     }
 
     const postArtworks = () => {
         setPostType("artwork")
-        return navigate("/fishstagram/newpost");
+        return navigate("/wizardgram/newpost");
     }
 
     return (

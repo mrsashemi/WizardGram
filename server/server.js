@@ -1,9 +1,20 @@
+// require framework
 const express = require('express');
 const app = express();
+
+// path provides a way of working with directories and file paths
 const path = require('path');
+
+// use cross-origin resource sharing to have the frontend communicate with the backend server 
 const cors = require("cors");
+
+// use to parse cookies from frontend
 const cookieParser = require('cookie-parser');
+
+// use pool to access the database
 const pool = require("./databases/db");
+
+// set port
 const port = process.env.PORT || 5050;
 if (process.env.NODE_ENV === 'development') require('dotenv').config()
 

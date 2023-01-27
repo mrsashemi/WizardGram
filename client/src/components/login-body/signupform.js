@@ -79,7 +79,7 @@ export function SignUpForm() {
                 <div className="loginSuccess">
                     <h1>Registration Successful!</h1>
                     <p>Check your email for a verification link</p>
-                    <Link to='/'>
+                    <Link to='/wizardgram'>
                         <button>Return Home</button>
                     </Link>
                 </div>

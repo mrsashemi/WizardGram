@@ -9,7 +9,7 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
 
     const toPostEdit = () => {
         setEditing(true);
-        navigate(`/fishstagram/posts/${postId}`)
+        navigate(`/wizardgram/posts/${postId}`)
     }
 
     useEffect(() => {

@@ -4,13 +4,13 @@ export function NewHeader({postType}) {
     const navigate = useNavigate();
 
     const toNextPage = () => {
-        if (postType === "photograph") navigate("/fishstagram/editpost")
-        else navigate("/fishstagram/createpost")
+        if (postType === "photograph") navigate("/wizardgram/editpost")
+        else navigate("/wizardgram/createpost")
     }
 
     return (
         <div className="instaUserHeader">
-            <Link to='/fishstagram'>
+            <Link to='/wizardgram'>
                 <button className="closeNewPost">X</button>
             </Link>
             <h2>New Post</h2>

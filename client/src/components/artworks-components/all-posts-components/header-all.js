@@ -4,7 +4,7 @@ export function AllHeader() {
     return (
         <div className="instaUserHeader">
             <div className="headerButtons">
-                <Link to='/fishstagram'>
+                <Link to='/wizardgram'>
                     <button className="postButton">{`<`}</button>
                 </Link>
             </div>

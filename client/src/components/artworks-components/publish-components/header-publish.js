@@ -161,7 +161,7 @@ export function PublishHeader({newImage, setNewImage, message, multiples, postTy
             }
         }
 
-        return navigate("/fishstagram");
+        return navigate("/wizardgram");
     }, [multiplePosts, navigate, postId])
 
     useEffect(() => {
@@ -259,7 +259,7 @@ export function PublishHeader({newImage, setNewImage, message, multiples, postTy
                 vignetteSpread: 0,
                 original: true
             }))
-            return navigate("/fishstagram")
+            return navigate("/wizardgram")
         } catch (error) {
             let errMsg;
 
@@ -283,8 +283,8 @@ export function PublishHeader({newImage, setNewImage, message, multiples, postTy
     }, [createPost, classId])
 
     const returnToPreviousPage = () => {
-        if (postType === "photograph") navigate('/fishstagram/editpost')
-        else navigate('/fishstagram/newpost')
+        if (postType === "photograph") navigate('/wizardgram/editpost')
+        else navigate('/wizardgram/newpost')
     }
 
     return (

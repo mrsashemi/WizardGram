@@ -157,7 +157,7 @@ export function ArtworkGallery() {
         setIsExpanded(false);
         setSelectedIndex(null)
         setDelay(false);
-        return navigate(`/fishstagram/posts/${id}`)
+        return navigate(`/wizardgram/posts/${id}`)
     }
 
     return (

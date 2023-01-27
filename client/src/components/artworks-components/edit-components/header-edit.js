@@ -29,14 +29,14 @@ export function EditHeader({newImage, setNewImage}) {
             })
         }
 
-        return navigate('/fishstagram/newpost');
+        return navigate('/wizardgram/newpost');
     }
 
     return (
         <div className="instaUserHeader">
             <button className="closeNewPost" onClick={() => toPostSelect()}>{`<`}</button>
             <h2>Edit Post</h2>
-            <Link to='/fishstagram/createpost'>
+            <Link to='/wizardgram/createpost'>
                 <button className="nextButton">Next</button>
             </Link>
         </div>

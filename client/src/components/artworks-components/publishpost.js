@@ -7,7 +7,7 @@ import { PublishLinks } from "./publish-components/links-publish";
 export function PublishPost() {
     const { newImage, setNewImage, multiples, postType } = useOutletContext();
     const [message, setMessage] = useState("");
-    const [postTitle, setPostTitle] = useState("Fishstagram Post");
+    const [postTitle, setPostTitle] = useState("wizardgram post");
 
     return (
         <div id="instaUserDashboard">

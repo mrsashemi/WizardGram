@@ -66,7 +66,7 @@ export function ArtworksHomeGrid({expandPost, isExpanded, hashMap, currentGrid, 
         document.getElementById(`gridimg-${imgInfo.current.id}`).style.transform = `scale(${imgInfo.current.scale})`;
         if (!isExpanded) {
             expandPost(false, imgIndex);
-            return navigate('/fishstagram/allposts');
+            return navigate('/wizardgram/allposts');
         };
     };
     
