@@ -40,8 +40,6 @@ export function SinglePost() {
                     showModal={showModal} 
                     postId={postId} 
                     setPostId={setPostId} 
-                    hashMap={hashMap}
-                    setHashMap={hashMap}
                     setEditing={setEditing}
                     editing={editing} />
             </div>
@@ -51,16 +49,12 @@ export function SinglePost() {
                     post={singlePost}
                     onShow={showPostModal} 
                     setPostId={setPostId} 
-                    setSelectedIndex={setSelectedIndex}
-                    hashMap={hashMap}
-                    setHashMap={setHashMap} />
+                    setSelectedIndex={setSelectedIndex} />
                 <ExistingModal 
                     onHide={hidePostModal} 
                     showModal={showModal} 
                     postId={postId} 
                     setPostId={setPostId} 
-                    hashMap={hashMap}
-                    setHashMap={hashMap}
                     setEditing={setEditing}
                     editing={editing} />
             </div>}

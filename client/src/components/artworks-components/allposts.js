@@ -7,7 +7,7 @@ import { AllHeader } from "./all-posts-components/header-all";
 export function AllPosts() {
     const [postId, setPostId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const { selectedIndex, setSelectedIndex, editing, setEditing, hashMap, setHashMap, currentGrid } = useOutletContext();
+    const { selectedIndex, setSelectedIndex, editing, setEditing, currentGrid } = useOutletContext();
 
     function showPostModal() {
         setShowModal(true);
@@ -26,18 +26,14 @@ export function AllPosts() {
                 selectedIndex={selectedIndex} 
                 onShow={showPostModal} 
                 setPostId={setPostId} 
-                setSelectedIndex={setSelectedIndex}
-                hashMap={hashMap}
-                setHashMap={setHashMap} />
+                setSelectedIndex={setSelectedIndex} />
             <ExistingModal 
                 onHide={hidePostModal} 
                 showModal={showModal} 
                 postId={postId} 
                 setPostId={setPostId} 
                 setEditing={setEditing} 
-                editing={editing}
-                hashMap={hashMap}
-                setHashMap={setHashMap} />
+                editing={editing} />
         </div>
     )
 }

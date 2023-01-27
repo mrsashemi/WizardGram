@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from "react"
+import { useSelector } from "react-redux";
+import { selectAllPosts, getAllPostsStatus } from "../../../features/posts/getAllPostsSlice";
 import { useNavigate } from "react-router-dom"
 import useLongPress from "../../../hooks/uselongpress"
 
-export function ArtworksHomeGrid({expandPost, isExpanded, hashMap, currentGrid, setCurrentGrid}) {
+export function ArtworksHomeGrid({expandPost, isExpanded, currentGrid, setCurrentGrid}) {
     const [imgIndex, setImgIndex] = useState(null);
     const [pressing, setPressing] = useState(false);
     const navigate = useNavigate();
     const imgInfo = useRef(null);
     let interval = useRef();
+
+    const allPosts = useSelector(selectAllPosts);
+    const allPostsStatus = useSelector(getAllPostsStatus);
+
 
     // simulate pressing shrinking effect on post with intervals
     useEffect(() => {
@@ -87,42 +93,42 @@ export function ArtworksHomeGrid({expandPost, isExpanded, hashMap, currentGrid, 
             </div>
             <div className="instaGrid">
                 {
-                hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created)).map((k, index) => 
+                allPosts && [...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created)).map((k, index) => 
                     <div 
-                        key={hashMap.get(k)[0].post_id} 
+                        key={allPosts[k][0].post_id} 
                         className="gridImageContainer" 
                         onMouseEnter={() => {onHover(index)}}
                         {...longPressEvent}>
                         <img
                             alt="photography"
-                            onMouseDown={(e) => {onPressingImage(e, hashMap.get(k)[0])}}
-                            onMouseUp={(e) => {onReleaseImage(e, hashMap.get(k)[0])}}
-                            src={hashMap.get(k)[0].img_location}
-                            id={`gridimg-${hashMap.get(k)[0].post_id}`} 
-                            className={`gridPage ${hashMap.get(k)[0].filter_class}`}
+                            onMouseDown={(e) => {onPressingImage(e, allPosts[k][0])}}
+                            onMouseUp={(e) => {onReleaseImage(e, allPosts[k][0])}}
+                            src={allPosts[k][0].img_location}
+                            id={`gridimg-${allPosts[k][0].post_id}`} 
+                            className={`gridPage ${allPosts[k][0].filter_class}`}
                             style={{
-                                transform: `scale(${hashMap.get(k)[0].scale}) 
-                                            translateX(${hashMap.get(k)[0].position_x}%) 
-                                            translateY(${hashMap.get(k)[0].position_y}%)
-                                            rotate(${hashMap.get(k)[0].rotate}deg)`, 
-                                opacity: `${hashMap.get(k)[0].opacity}%`,
-                                filter: hashMap.get(k)[0].filter_class === "no-filter" && 
-                                        `brightness(${hashMap.get(k)[0].brightness}%) 
-                                        contrast(${hashMap.get(k)[0].contrast}%) 
-                                        saturate(${hashMap.get(k)[0].saturate}%) 
-                                        grayscale(${hashMap.get(k)[0].grayscale}%)
-                                        sepia(${hashMap.get(k)[0].sepia}%)
-                                        hue-rotate(${hashMap.get(k)[0].hue}deg)
-                                        blur(${hashMap.get(k)[0].blur}px)`}} >
+                                transform: `scale(${allPosts[k][0].scale}) 
+                                            translateX(${allPosts[k][0].position_x}%) 
+                                            translateY(${allPosts[k][0].position_y}%)
+                                            rotate(${allPosts[k][0].rotate}deg)`, 
+                                opacity: `${allPosts[k][0].opacity}%`,
+                                filter: allPosts[k][0].filter_class === "no-filter" && 
+                                        `brightness(${allPosts[k][0].brightness}%) 
+                                        contrast(${allPosts[k][0].contrast}%) 
+                                        saturate(${allPosts[k][0].saturate}%) 
+                                        grayscale(${allPosts[k][0].grayscale}%)
+                                        sepia(${allPosts[k][0].sepia}%)
+                                        hue-rotate(${allPosts[k][0].hue}deg)
+                                        blur(${allPosts[k][0].blur}px)`}} >
                         </img>
                         {
-                        hashMap.get(k)[0].vignette &&
+                        allPosts[k][0].vignette &&
                         <div 
-                            onMouseDown={(e) => {onPressingImage(e, hashMap.get(k)[0])}}
-                            onMouseUp={(e) => {onReleaseImage(e, hashMap.get(k)[0])}}
+                            onMouseDown={(e) => {onPressingImage(e, allPosts[k][0])}}
+                            onMouseUp={(e) => {onReleaseImage(e, allPosts[k][0])}}
                             className="vignette" 
                             style={{
-                                boxShadow: `inset 0px 0px ${hashMap.get(k)[0].vignette_blur/2.5}px ${hashMap.get(k)[0].vignette_spread/2.5}px rgba(0, 0, 0, 0.5)`}} >
+                                boxShadow: `inset 0px 0px ${allPosts[k][0].vignette_blur/2.5}px ${allPosts[k][0].vignette_spread/2.5}px rgba(0, 0, 0, 0.5)`}} >
                         </div>
                         }
                     </div>)

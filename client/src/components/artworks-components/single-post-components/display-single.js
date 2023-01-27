@@ -1,7 +1,12 @@
 import axios from "../../../api/axios";
+import { useDispatch, useSelector } from "react-redux";
+import { incrementPostLikes, decrementPostLikes, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
 import { PostSlider } from "../sliders/post-slider";
 
-export function SingleDisplay({post, onShow, setPostId, setSelectedIndex, hashMap, setHashMap}) {
+export function SingleDisplay({post, onShow, setPostId, setSelectedIndex}) {
+    const allPosts = useSelector(selectAllPosts);
+    const dispatch = useDispatch();
+    
     const openModal = (postId, postIndex) => {
         setSelectedIndex(postIndex); 
         setPostId(postId);
@@ -28,10 +33,8 @@ export function SingleDisplay({post, onShow, setPostId, setSelectedIndex, hashMa
 
             console.log(result)
             if (result) {
-                let tempArray = hashMap.get(post.post_id);
-                tempArray[0].likes = (e.target.style.background === 'white') ? post.likes+1 : post.likes-1;
+                (e.target.style.background === 'white') ? dispatch(incrementPostLikes(post.post_id)) : dispatch(decrementPostLikes(post.post_id));
                 e.target.style.background = (e.target.style.background === 'white') ? 'red' : 'white';
-                setHashMap(new Map(hashMap.set(post.post_id, tempArray)));
             }
         } catch (error) {
             console.log("updatePost", error);
@@ -46,7 +49,7 @@ export function SingleDisplay({post, onShow, setPostId, setSelectedIndex, hashMa
                         <div className="individualPostProfilePic"></div>
                         <h4 className="usernameHeader">Username</h4>
                     </div>
-                    <button className="editPost" onClick={() => {openModal(post[0].post_id, [...hashMap.keys()].indexOf(post[0].post_id))}}>...</button>
+                    <button className="editPost" onClick={() => {openModal(post[0].post_id, [...Object.keys(allPosts)].indexOf(post[0].post_id))}}>...</button>
                 </div>
                 {post.length > 1 ? 
                 <PostSlider multiples={post} existing={true} />
@@ -77,7 +80,7 @@ export function SingleDisplay({post, onShow, setPostId, setSelectedIndex, hashMa
                 }
                 <div className="scrollPostLikesAndComment">
                     {post[0].show_likes && <div className="postLikes">
-                        <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, [...hashMap.keys()].indexOf(post[0].post_id), post[0])}}>Heart</button>
+                        <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, [...Object.keys(allPosts)].indexOf(post[0].post_id), post[0])}}>Heart</button>
                         <div>{post[0].likes} Likes</div>
                     </div>}
                     {post[0].body && <div className="postComment">

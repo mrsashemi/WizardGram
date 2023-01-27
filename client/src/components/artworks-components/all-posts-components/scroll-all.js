@@ -1,7 +1,13 @@
 import axios from "../../../api/axios";
+import { incrementPostLikes, decrementPostLikes, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { PostSlider } from "../sliders/post-slider";
 
-export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, hashMap, setHashMap, currentGrid}) {    
+export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, currentGrid}) {  
+    const allPosts = useSelector(selectAllPosts);
+    const dispatch = useDispatch();
+    
+    
     // scroll to selected post upon loading page
     const scrollToPost = (e, index) => {
         if (index === selectedIndex) e.target.scrollIntoView();
@@ -34,10 +40,8 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, h
             );
 
             if (result) {
-                let tempArray = hashMap.get(post.post_id);
-                tempArray[0].likes = (e.target.style.background === 'white') ? post.likes+1 : post.likes-1;
+                (e.target.style.background === 'white') ? dispatch(incrementPostLikes(post.post_id)) : dispatch(decrementPostLikes(post.post_id));
                 e.target.style.background = (e.target.style.background === 'white') ? 'red' : 'white';
-                setHashMap(new Map(hashMap.set(post.post_id, tempArray)));
             }
         } catch (error) {
             console.log("updatePost", error);
@@ -46,9 +50,9 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, h
 
     return (
         <div className="instaScroll">
-            {hashMap && [...hashMap.keys()].filter(k => hashMap.get(k)[0].archived === false && hashMap.get(k)[0].post_type === currentGrid).sort((x, y) =>  new Date(hashMap.get(y)[0].date_created) - new Date(hashMap.get(x)[0].date_created)).map((k, index) => 
+            {allPosts && [...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created)).map((k, index) => 
                 <div 
-                key={hashMap.get(k)[0].post_id} 
+                key={allPosts[k][0].post_id} 
                 className='scrollPostContainer'
                 id={index}
                 onLoad={(e) => {scrollToPost(e, index)}}>
@@ -57,42 +61,44 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, h
                             <div className="individualPostProfilePic"></div>
                             <h4 className="usernameHeader">Username</h4>
                         </div>
-                        <button className="editPost" onClick={() => {openModal(hashMap.get(k)[0].post_id, index)}}>...</button>
+                        <button className="editPost" onClick={() => {openModal(allPosts[k][0].post_id, index)}}>...</button>
                     </div>
-                    {hashMap.get(k).length > 1 ?
-                    <PostSlider multiples={hashMap.get(k)} existing={true} />
+                    {allPosts[k].length > 1 ?
+                    <PostSlider multiples={allPosts[k]} existing={true} />
                     :
                     <div className="scrollImageContainer">
-                        <img    alt={hashMap.get(k)[0].title}
-                                src={hashMap.get(k)[0].img_location} 
-                                className={`scrollPage ${hashMap.get(k)[0].filter_class} ${hashMap.get(k)[0].fit_class}`}
-                                style={{transform:  `scale(${hashMap.get(k)[0].scale}) 
-                                                translateX(${hashMap.get(k)[0].position_x}%) 
-                                                translateY(${hashMap.get(k)[0].position_y}%)
-                                                rotate(${hashMap.get(k)[0].rotate}deg)`, 
-                                        opacity: `${hashMap.get(k)[0].opacity}%`,
-                                        filter: hashMap.get(k)[0].filter_class === "no-filter" && 
-                                            `brightness(${hashMap.get(k)[0].brightness}%) 
-                                            contrast(${hashMap.get(k)[0].contrast}%) 
-                                            saturate(${hashMap.get(k)[0].saturate}%) 
-                                            grayscale(${hashMap.get(k)[0].grayscale}%)
-                                            sepia(${hashMap.get(k)[0].sepia}%)
-                                            hue-rotate(${hashMap.get(k)[0].hue}deg)
-                                            blur(${hashMap.get(k)[0].blur}px)`}}>
+                        <img    alt={allPosts[k][0].title}
+                                src={allPosts[k][0].img_location} 
+                                className={`scrollPage ${allPosts[k][0].filter_class} ${allPosts[k][0].fit_class}`}
+                                style={{transform:  `scale(${allPosts[k][0].scale}) 
+                                                translateX(${allPosts[k][0].position_x}%) 
+                                                translateY(${allPosts[k][0].position_y}%)
+                                                rotate(${allPosts[k][0].rotate}deg)`, 
+                                        opacity: `${allPosts[k][0].opacity}%`,
+                                        filter: allPosts[k][0].filter_class === "no-filter" && 
+                                            `brightness(${allPosts[k][0].brightness}%) 
+                                            contrast(${allPosts[k][0].contrast}%) 
+                                            saturate(${allPosts[k][0].saturate}%) 
+                                            grayscale(${allPosts[k][0].grayscale}%)
+                                            sepia(${allPosts[k][0].sepia}%)
+                                            hue-rotate(${allPosts[k][0].hue}deg)
+                                            blur(${allPosts[k][0].blur}px)`}}>
                             </img>
-                            {hashMap.get(k)[0].vignette &&
-                            <div className="vignette" style={{boxShadow: `inset 0px 0px ${hashMap.get(k)[0].vignette_blur}px ${hashMap.get(k)[0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
-                            </div>}
+                            {
+                            allPosts[k][0].vignette &&
+                            <div className="vignette" style={{boxShadow: `inset 0px 0px ${allPosts[k][0].vignette_blur}px ${allPosts[k][0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
+                            </div>
+                            }
                     </div>
                     }               
                     <div className="scrollPostLikesAndComment">
-                        {hashMap.get(k)[0].show_likes && <div className="postLikes">
-                            <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, index, hashMap.get(k)[0])}}>Heart</button>
-                            <div>{hashMap.get(k)[0].likes} likes</div>
+                        {allPosts[k][0].show_likes && <div className="postLikes">
+                            <button style={{background: `white`}} onClick={(e) => {incrementLikes(e, index, allPosts[k][0])}}>Heart</button>
+                            <div>{allPosts[k][0].likes} likes</div>
                         </div>}
-                        {hashMap.get(k)[0].body && <div className="postComment">
+                        {allPosts[k][0].body && <div className="postComment">
                             <h4 className="usernameHeader">Username</h4>
-                            <p className="usernameHeader">{hashMap.get(k)[0].body}</p>
+                            <p className="usernameHeader">{allPosts[k][0].body}</p>
                         </div>}
                     </div>
                 </div>

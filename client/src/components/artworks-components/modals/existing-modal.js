@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
+import { deleteSelectedPost, archiveSelectedPost, hidePostLikes, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios";
 
-export function ExistingModal({onHide, showModal, postId, setPostId, setEditing, editing, hashMap, setHashMap}) {
+export function ExistingModal({onHide, showModal, postId, setPostId, setEditing, editing}) {
+    const allPosts = useSelector(selectAllPosts);
+    const dispatch = useDispatch();
+
     const [confirmDelete, setConfirmDelete] = useState(false);
     const modalRef = useRef(null);
     const navigate = useNavigate();
@@ -36,13 +41,8 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
                 }
             );
 
-            console.log(result)
             if (result) {
-                setHashMap((prevMap) => {
-                    const newMap = new Map(prevMap);
-                    newMap.delete(postId);
-                    return newMap;
-                })
+                dispatch(deleteSelectedPost(postId));
                 if (!editing) {
                     onHide();
                 } else {
@@ -61,13 +61,13 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
         try {
             const result = await axiosPrivate.put(`/posts/update-post/${postId}`, 
                 JSON.stringify({
-                    body: hashMap.get(postId)[0].body,
-                    theme_id: hashMap.get(postId)[0].theme_id,
-                    title: hashMap.get(postId)[0].title,
-                    date_updated: hashMap.get(postId)[0].date_updated,
-                    likes: hashMap.get(postId)[0].likes,
-                    show_likes: hashMap.get(postId)[0].show_likes,
-                    archived: (hashMap.get(postId)[0].archived) ? false : true
+                    body: allPosts[postId][0].body,
+                    theme_id: allPosts[postId][0].theme_id,
+                    title: allPosts[postId][0].title,
+                    date_updated: allPosts[postId][0].date_updated,
+                    likes: allPosts[postId][0].likes,
+                    show_likes: allPosts[postId][0].show_likes,
+                    archived: (allPosts[postId][0].archived) ? false : true
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -75,11 +75,8 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
                 }
             );
 
-            console.log(result) 
             if (result) {
-                let tempArray = hashMap.get(postId);
-                tempArray[0].archived = (hashMap.get(postId)[0].archived) ? false : true;
-                setHashMap(new Map(hashMap.set(postId, tempArray)));
+                dispatch(archiveSelectedPost(postId));
                 setPostId(null);
                 onHide();
             }
@@ -92,13 +89,13 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
         try {
             const result = await axiosPrivate.put(`/posts/update-post/${postId}`, 
                 JSON.stringify({
-                    body: hashMap.get(postId)[0].body,
-                    theme_id: hashMap.get(postId)[0].theme_id,
-                    title: hashMap.get(postId)[0].title,
-                    date_updated: hashMap.get(postId)[0].date_updated,
-                    likes: hashMap.get(postId)[0].likes,
-                    show_likes: (hashMap.get(postId)[0].show_likes) ? false : true,
-                    archived: hashMap.get(postId)[0].archived
+                    body: allPosts[postId][0].body,
+                    theme_id: allPosts[postId][0].theme_id,
+                    title: allPosts[postId][0].title,
+                    date_updated: allPosts[postId][0].date_updated,
+                    likes: allPosts[postId][0].likes,
+                    show_likes: (allPosts[postId][0].show_likes) ? false : true,
+                    archived: allPosts[postId][0].archived
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -106,11 +103,8 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
                 }
             );
 
-            console.log(result)
             if (result) {
-                let tempArray = hashMap.get(postId);
-                tempArray[0].show_likes = (hashMap.get(postId)[0].show_likes) ? false : true;
-                setHashMap(new Map(hashMap.set(postId, tempArray)));
+                dispatch(hidePostLikes(postId));
                 onHide();
             }
         } catch (error) {
@@ -149,11 +143,11 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => archivePost()}>{(!postId) ? 'Archive' : (hashMap.get(postId)[0].archived) ? 'Unarchive' : 'Archive'}</button> 
+                    <button className="modalButton" onClick={() => archivePost()}>{(!postId) ? 'Archive' : (allPosts[postId][0].archived) ? 'Unarchive' : 'Archive'}</button> 
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => hideLikes()}>{(!postId) ? 'Hide Like Count' : (hashMap.get(postId)[0].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
+                    <button className="modalButton" onClick={() => hideLikes()}>{(!postId) ? 'Hide Like Count' : (allPosts[postId][0].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
                     <div className="modalButtonBottomBar"></div>
                 </div>
             </div>}
