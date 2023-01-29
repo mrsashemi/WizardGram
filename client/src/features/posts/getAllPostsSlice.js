@@ -52,6 +52,11 @@ export const allPostsSlice = createSlice({
             const newAllPosts = state.allPosts;
             newAllPosts[action.payload][0].show_likes = (newAllPosts[action.payload][0].show_likes) ? false : true;
             state.allPosts = newAllPosts;
+        },
+        editPostBody(state, action) {
+            const newAllPosts = state.allPosts;
+            newAllPosts[action.payload[0]][0].body = action.payload[1];
+            state.allPosts = newAllPosts;
         }
     },
     extraReducers(builder) {
@@ -86,6 +91,6 @@ export const selectAllPosts = (state) => state.allPosts.allPosts;
 export const getAllPostsStatus = (state) => state.allPosts.status;
 export const getAllPostsError = (state) => state.allPosts.error;
 
-export const { incrementPostLikes, decrementPostLikes, deleteSelectedPost, archiveSelectedPost, hidePostLikes } = allPostsSlice.actions
+export const { incrementPostLikes, decrementPostLikes, deleteSelectedPost, archiveSelectedPost, hidePostLikes, editPostBody } = allPostsSlice.actions
 
 export default allPostsSlice.reducer;

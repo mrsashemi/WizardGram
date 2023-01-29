@@ -1,8 +1,13 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
 import { axiosPrivate } from "../../../api/axios";
+import { editPostBody, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
 
-export function SingleEditHeader({post, message, hashMap, setHashMap}) {
+export function SingleEditHeader({post, message}) {
+    const allPosts = useSelector(selectAllPosts);
+    const dispatch = useDispatch();
+
     const navigate = useNavigate();
     const [errMsg, setErrMsg] = useState(null);
 
@@ -31,13 +36,11 @@ export function SingleEditHeader({post, message, hashMap, setHashMap}) {
             );
 
             if (result) {
-                let tempArray = hashMap.get(post.post_id);
-                tempArray[0].body = message;
-                setHashMap(new Map(hashMap.set(post.post_id, tempArray)));
+                dispatch(editPostBody([post.post_id, message]))
             }
         } catch (error) {
             if (error.response.status === 500) {
-                setErrMsg("Database Error");
+                setErrMsg("Database Error"); 
             } else if (error.response.status === 401) {
                 setErrMsg("Unauthorized");
             } else {

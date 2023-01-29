@@ -15,7 +15,6 @@ export function ArtworkGallery() {
     const [delay, setDelay] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [singlePost, setSinglePost] = useState(null);
-    const [hashMap, setHashMap] = useState(null);
     const [postMultiple, setPostMultiple] = useState(false);
     const [multiples, setMultiples] = useState(null);
     const [postType, setPostType] = useState(null);
@@ -143,7 +142,6 @@ export function ArtworkGallery() {
                     postMultiple, setPostMultiple,
                     multiples, setMultiples,
                     postType, setPostType,
-                    hashMap, setHashMap,
                     currentGrid, setCurrentGrid}} />
             </div>
             {isExpanded && 

@@ -5,12 +5,15 @@ import { AllHeader } from "./all-posts-components/header-all";
 import { SingleEditHeader } from "./single-post-components/header-edit-single";
 import { SingleModify } from "./single-post-components/modify-single";
 import { SingleDisplay } from "./single-post-components/display-single";
+import { useSelector } from "react-redux";
+import { selectAllPosts } from "../../features/posts/getAllPostsSlice";
 
 export function SinglePost() {
+    const allPosts = useSelector(selectAllPosts);
     const [message, setMessage] = useState(null);
     const [postId, setPostId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const { singlePost, selectedIndex, setSelectedIndex, editing, setEditing, hashMap, setHashMap } = useOutletContext();
+    const { singlePost, selectedIndex, setSelectedIndex, editing, setEditing } = useOutletContext();
 
     function showPostModal() {
         setShowModal(true);
@@ -28,12 +31,10 @@ export function SinglePost() {
             {editing
             ? <div id="instaUserDashboard">
                 <SingleEditHeader 
-                    post={hashMap.get([...hashMap.keys()][selectedIndex])[0]} 
-                    message={message} 
-                    hashMap={hashMap}
-                    setHashMap={setHashMap} />
+                    post={allPosts[[...Object.keys(allPosts)][selectedIndex]][0]} 
+                    message={message} />
                 <SingleModify
-                    post={hashMap.get([...hashMap.keys()][selectedIndex])[0]} 
+                    post={allPosts[[...Object.keys(allPosts)][selectedIndex]][0]} 
                     setMessage={setMessage} />
                 <ExistingModal 
                     onHide={hidePostModal} 
