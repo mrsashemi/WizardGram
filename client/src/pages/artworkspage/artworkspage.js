@@ -3,22 +3,21 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { SimpleBackground } from "../../components/backgrounds/background";
 import { TopNavBar } from "../../components/top-nav-bar/topbar";
 import './stylesheet/artworkspage.css'
-import { useSelector } from "react-redux";
-import { selectAllPosts } from "../../features/posts/getAllPostsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { changeCurrentGrid, choosePostId, expandSinglePost, getCurrentGrid, getExpanded, selectAllPosts, selectSinglePost } from "../../features/posts/getAllPostsSlice";
 
 export function ArtworkGallery() {
     const allPosts = useSelector(selectAllPosts);
+    const currentGrid = useSelector(getCurrentGrid);
+    const isExpanded = useSelector(getExpanded);
+    const dispatch = useDispatch();
+
     const postRef = useRef(null); 
     const navigate = useNavigate();
-    const [editing, setEditing] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [delay, setDelay] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(null);
-    const [singlePost, setSinglePost] = useState(null);
-    const [postMultiple, setPostMultiple] = useState(false);
-    const [multiples, setMultiples] = useState(null);
-    const [postType, setPostType] = useState(null);
-    const [currentGrid, setCurrentGrid] = useState("artwork");
+    const [delay, setDelay] = useState(false); // for dom effects when clicking on post to expand
+    const [postMultiple, setPostMultiple] = useState(false); // for use on deciding if multiples are being posted (new post)
+    const [multiples, setMultiples] = useState(null); // for use on deciding if multiples are being posted (new post)
+    const [postType, setPostType] = useState(null); // for use on  deciding what type of post to make (new post)
     const [newImage, setNewImage] = useState({
         id: "",
         url: null,
@@ -104,25 +103,17 @@ export function ArtworkGallery() {
         }
     }, [delay, isExpanded]);
 
-    // manage whether a post is being expanded or it is being directed to the scroll page
-    const expandPost = (expand, index) => {
-        setIsExpanded(expand)
-        setSelectedIndex(index)
-    }
-
     // shrink expanded image
     const contractImage = () => {
-        setIsExpanded(false)
-        setSelectedIndex(null)
+        dispatch(expandSinglePost(false));
+        dispatch(changeCurrentGrid(currentGrid));
+        dispatch(choosePostId(null));
         setDelay(false);
-        setSinglePost(null);
     }
 
     // go to individual post by clicking on expanded image
     const goToPost = (id) => {
-        setSinglePost(allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]]);
-        setIsExpanded(false);
-        setSelectedIndex(null)
+        dispatch(expandSinglePost(false));
         setDelay(false);
         return navigate(`/wizardgram/posts/${id}`)
     }
@@ -134,21 +125,15 @@ export function ArtworkGallery() {
                 <TopNavBar />
                 <Outlet context={{
                     newImage, setNewImage, 
-                    isExpanded, 
-                    expandPost, 
-                    singlePost, 
-                    selectedIndex, setSelectedIndex,
-                    editing, setEditing,
                     postMultiple, setPostMultiple,
                     multiples, setMultiples,
-                    postType, setPostType,
-                    currentGrid, setCurrentGrid}} />
+                    postType, setPostType}} />
             </div>
             {isExpanded && 
             <div className="expandedPostContainer" 
             ref={postRef} 
-            key={allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].post_id} 
-            onClick={() => {goToPost(allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].post_id)}}>
+            key={allPosts[[...Object.keys(allPosts)]][0].post_id} 
+            onClick={() => {goToPost(allPosts[[...Object.keys(allPosts)]][0].post_id)}}>
                 <div className="expandedHeader">
                     <div className="individualPostProfilePic"></div>
                     <h4 className="usernameHeader">Username</h4>
@@ -156,28 +141,28 @@ export function ArtworkGallery() {
                 <div className="expandedPost">
                     <img
                         alt="photography"
-                        src={allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].img_location} 
-                        className={`expandPage ${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].filter_class} ${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].fit_class}`}
+                        src={allPosts[[...Object.keys(allPosts)]][0].img_location} 
+                        className={`expandPage ${allPosts[[...Object.keys(allPosts)]][0].filter_class} ${allPosts[[...Object.keys(allPosts)]][0].fit_class}`}
                         style={{
-                            transform:  `scale(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].scale}) 
-                                        translateX(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].position_x}%) 
-                                        translateY(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].position_y}%)
-                                        rotate(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].rotate}deg)`, 
-                            opacity: `${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].opacity}%`,
-                            filter: allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].filter_class === "no-filter" && 
-                                    `brightness(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].brightness}%) 
-                                    contrast(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].contrast}%) 
-                                    saturate(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].saturate}%) 
-                                    grayscale(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].grayscale}%)
-                                    sepia(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].sepia}%)
-                                    hue-rotate(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].hue}deg)
-                                    blur(${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].blur}px)`}}>
+                            transform:  `scale(${allPosts[[...Object.keys(allPosts)]][0].scale}) 
+                                        translateX(${allPosts[[...Object.keys(allPosts)]][0].position_x}%) 
+                                        translateY(${allPosts[[...Object.keys(allPosts)]][0].position_y}%)
+                                        rotate(${allPosts[[...Object.keys(allPosts)]][0].rotate}deg)`, 
+                            opacity: `${allPosts[[...Object.keys(allPosts)]][0].opacity}%`,
+                            filter: allPosts[[...Object.keys(allPosts)]][0].filter_class === "no-filter" && 
+                                    `brightness(${allPosts[[...Object.keys(allPosts)]][0].brightness}%) 
+                                    contrast(${allPosts[[...Object.keys(allPosts)]][0].contrast}%) 
+                                    saturate(${allPosts[[...Object.keys(allPosts)]][0].saturate}%) 
+                                    grayscale(${allPosts[[...Object.keys(allPosts)]][0].grayscale}%)
+                                    sepia(${allPosts[[...Object.keys(allPosts)]][0].sepia}%)
+                                    hue-rotate(${allPosts[[...Object.keys(allPosts)]][0].hue}deg)
+                                    blur(${allPosts[[...Object.keys(allPosts)]][0].blur}px)`}}>
                     </img>
                     {
-                    allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].vignette &&
+                    allPosts[[...Object.keys(allPosts)]][0].vignette &&
                     <div 
                         className="vignette" 
-                        style={{boxShadow: `inset 0px 0px ${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].vignette_blur}px ${allPosts[[...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created))[selectedIndex]][0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
+                        style={{boxShadow: `inset 0px 0px ${allPosts[[...Object.keys(allPosts)]][0].vignette_blur}px ${allPosts[[...Object.keys(allPosts)]][0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
                     </div>
                     }
                 </div>

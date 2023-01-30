@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { deleteSelectedPost, archiveSelectedPost, hidePostLikes, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
+import { deleteSelectedPost, archiveSelectedPost, hidePostLikes, selectAllPosts, getPostId, choosePostId, getEditing, editSinglePost, selectSinglePost } from "../../../features/posts/getAllPostsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios";
 
-export function ExistingModal({onHide, showModal, postId, setPostId, setEditing, editing}) {
+export function ExistingModal({onHide, showModal}) {
+    const editing = useSelector(getEditing);
     const allPosts = useSelector(selectAllPosts);
+    const selectedId = useSelector(getPostId);
     const dispatch = useDispatch();
 
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -13,8 +15,9 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
     const navigate = useNavigate();
 
     const toPostEdit = () => {
-        setEditing(true);
-        navigate(`/wizardgram/posts/${postId}`)
+        dispatch(selectSinglePost(selectedId));
+        dispatch(editSinglePost(true));
+        navigate(`/wizardgram/posts/${selectedId}`);
     }
 
     useEffect(() => {
@@ -34,7 +37,7 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
 
     const deletePost = async () => {
         try {
-            const result = await axiosPrivate.delete(`/posts/delete-post/${postId}`,
+            const result = await axiosPrivate.delete(`/posts/delete-post/${selectedId}`,
                 {
                     headers: {'Content-Type': 'application/json'},
                     withCredentials: true
@@ -42,7 +45,7 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
             );
 
             if (result) {
-                dispatch(deleteSelectedPost(postId));
+                dispatch(deleteSelectedPost(selectedId));
                 if (!editing) {
                     onHide();
                 } else {
@@ -59,15 +62,15 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
 
     const archivePost = async () => {
         try {
-            const result = await axiosPrivate.put(`/posts/update-post/${postId}`, 
+            const result = await axiosPrivate.put(`/posts/update-post/${selectedId}`, 
                 JSON.stringify({
-                    body: allPosts[postId][0].body,
-                    theme_id: allPosts[postId][0].theme_id,
-                    title: allPosts[postId][0].title,
-                    date_updated: allPosts[postId][0].date_updated,
-                    likes: allPosts[postId][0].likes,
-                    show_likes: allPosts[postId][0].show_likes,
-                    archived: (allPosts[postId][0].archived) ? false : true
+                    body: allPosts[selectedId][0].body,
+                    theme_id: allPosts[selectedId][0].theme_id,
+                    title: allPosts[selectedId][0].title,
+                    date_updated: allPosts[selectedId][0].date_updated,
+                    likes: allPosts[selectedId][0].likes,
+                    show_likes: allPosts[selectedId][0].show_likes,
+                    archived: (allPosts[selectedId][0].archived) ? false : true
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -76,8 +79,8 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
             );
 
             if (result) {
-                dispatch(archiveSelectedPost(postId));
-                setPostId(null);
+                dispatch(archiveSelectedPost(selectedId));
+                dispatch(choosePostId(null));
                 onHide();
             }
         } catch (error) {
@@ -87,15 +90,15 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
 
     const hideLikes = async () => {   
         try {
-            const result = await axiosPrivate.put(`/posts/update-post/${postId}`, 
+            const result = await axiosPrivate.put(`/posts/update-post/${selectedId}`, 
                 JSON.stringify({
-                    body: allPosts[postId][0].body,
-                    theme_id: allPosts[postId][0].theme_id,
-                    title: allPosts[postId][0].title,
-                    date_updated: allPosts[postId][0].date_updated,
-                    likes: allPosts[postId][0].likes,
-                    show_likes: (allPosts[postId][0].show_likes) ? false : true,
-                    archived: allPosts[postId][0].archived
+                    body: allPosts[selectedId][0].body,
+                    theme_id: allPosts[selectedId][0].theme_id,
+                    title: allPosts[selectedId][0].title,
+                    date_updated: allPosts[selectedId][0].date_updated,
+                    likes: allPosts[selectedId][0].likes,
+                    show_likes: (allPosts[selectedId][0].show_likes) ? false : true,
+                    archived: allPosts[selectedId][0].archived
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -104,7 +107,7 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
             );
 
             if (result) {
-                dispatch(hidePostLikes(postId));
+                dispatch(hidePostLikes(selectedId));
                 onHide();
             }
         } catch (error) {
@@ -143,11 +146,11 @@ export function ExistingModal({onHide, showModal, postId, setPostId, setEditing,
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => archivePost()}>{(!postId) ? 'Archive' : (allPosts[postId][0].archived) ? 'Unarchive' : 'Archive'}</button> 
+                    <button className="modalButton" onClick={() => archivePost()}>{(!selectedId) ? 'Archive' : (allPosts[selectedId][0].archived) ? 'Unarchive' : 'Archive'}</button> 
                     <div className="modalButtonBottomBar"></div>
                 </div>
                 <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => hideLikes()}>{(!postId) ? 'Hide Like Count' : (allPosts[postId][0].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
+                    <button className="modalButton" onClick={() => hideLikes()}>{(!selectedId) ? 'Hide Like Count' : (allPosts[selectedId][0].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
                     <div className="modalButtonBottomBar"></div>
                 </div>
             </div>}

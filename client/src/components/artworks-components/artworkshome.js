@@ -11,7 +11,7 @@ import { CreateModal } from "./modals/create-modal";
 
 export function ArtworksHome() {
     const [showModal, setShowModal] = useState(false);
-    const { isExpanded, expandPost, setPostType, currentGrid, setCurrentGrid } = useOutletContext();
+    const { setPostType } = useOutletContext();
 
     const dispatch = useDispatch();
     const allPostsStatus = useSelector(getAllPostsStatus);
@@ -39,11 +39,7 @@ export function ArtworksHome() {
             <ArtworksHomeProfilePic />
             <ArtworksHomeDescription />
             <ArtworksHomeHighlights />
-            <ArtworksHomeGrid 
-                expandPost={expandPost}
-                isExpanded={isExpanded}
-                currentGrid={currentGrid}
-                setCurrentGrid={setCurrentGrid} />
+            <ArtworksHomeGrid />
             <CreateModal 
                 onHide={hidePostModal} 
                 showModal={showModal}

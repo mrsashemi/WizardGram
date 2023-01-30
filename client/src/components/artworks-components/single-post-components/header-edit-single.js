@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { axiosPrivate } from "../../../api/axios";
 import { editPostBody, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
 
-export function SingleEditHeader({post, message}) {
+export function SingleEditHeader({message}) {
     const allPosts = useSelector(selectAllPosts);
     const dispatch = useDispatch();
 
@@ -19,15 +19,15 @@ export function SingleEditHeader({post, message}) {
         const time = new Date().toISOString();
 
         try {
-            const result = await axiosPrivate.put(`/posts/update-post/${post.post_id}`, 
+            const result = await axiosPrivate.put(`/posts/update-post/${allPosts[[...Object.keys(allPosts)]][0].post_id}`, 
                 JSON.stringify({
                     body: message,
-                    theme_id: post.theme_id,
-                    title: post.title,
+                    theme_id: allPosts[[...Object.keys(allPosts)]][0].theme_id,
+                    title: allPosts[[...Object.keys(allPosts)]][0].title,
                     date_updated: time,
-                    likes: post.likes,
-                    show_likes: post.show_likes,
-                    archived: post.archived
+                    likes: allPosts[[...Object.keys(allPosts)]][0].likes,
+                    show_likes: allPosts[[...Object.keys(allPosts)]][0].show_likes,
+                    archived: allPosts[[...Object.keys(allPosts)]][0].archived
                 }),
                 {
                     headers: {'Content-Type': 'application/json'},
@@ -36,7 +36,7 @@ export function SingleEditHeader({post, message}) {
             );
 
             if (result) {
-                dispatch(editPostBody([post.post_id, message]))
+                dispatch(editPostBody([allPosts[[...Object.keys(allPosts)]][0].post_id, message]))
             }
         } catch (error) {
             if (error.response.status === 500) {

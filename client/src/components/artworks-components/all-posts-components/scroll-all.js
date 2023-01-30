@@ -1,22 +1,22 @@
 import axios from "../../../api/axios";
-import { incrementPostLikes, decrementPostLikes, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
+import { incrementPostLikes, decrementPostLikes, selectAllPosts, getPostId, choosePostId } from "../../../features/posts/getAllPostsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { PostSlider } from "../sliders/post-slider";
 
-export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, currentGrid}) {  
+export function AllScroll({onShow}) {  
     const allPosts = useSelector(selectAllPosts);
+    const selectedId = useSelector(getPostId);
     const dispatch = useDispatch();
     
     
     // scroll to selected post upon loading page
-    const scrollToPost = (e, index) => {
-        if (index === selectedIndex) e.target.scrollIntoView();
+    const scrollToPost = (e, id) => {
+        if (id === selectedId) e.target.scrollIntoView();
     }
 
     // open the modify post modal
-    const openModal = (postId, postIndex) => {
-        setSelectedIndex(postIndex);
-        setPostId(postId);
+    const openModal = (postId) => {
+        dispatch(choosePostId(postId));
         onShow();
     } 
 
@@ -50,18 +50,18 @@ export function AllScroll({selectedIndex, onShow, setPostId, setSelectedIndex, c
 
     return (
         <div className="instaScroll">
-            {allPosts && [...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created)).map((k, index) => 
+            {allPosts && [...Object.keys(allPosts)].map((k, index) => 
                 <div 
                 key={allPosts[k][0].post_id} 
                 className='scrollPostContainer'
                 id={index}
-                onLoad={(e) => {scrollToPost(e, index)}}>
+                onLoad={(e) => {scrollToPost(e, allPosts[k][0].post_id)}}>
                     <div  className="individualPostHeader">
                         <div className="individualPostProfile">
                             <div className="individualPostProfilePic"></div>
                             <h4 className="usernameHeader">Username</h4>
                         </div>
-                        <button className="editPost" onClick={() => {openModal(allPosts[k][0].post_id, index)}}>...</button>
+                        <button className="editPost" onClick={() => {openModal(allPosts[k][0].post_id)}}>...</button>
                     </div>
                     {allPosts[k].length > 1 ?
                     <PostSlider multiples={allPosts[k]} existing={true} />

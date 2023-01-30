@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from "react"
-import { useSelector } from "react-redux";
-import { selectAllPosts, getAllPostsStatus } from "../../../features/posts/getAllPostsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAllPosts, getAllPostsStatus, changeCurrentGrid, getExpanded, expandSinglePost, getPostId, choosePostId, selectSinglePost } from "../../../features/posts/getAllPostsSlice";
 import { useNavigate } from "react-router-dom"
 import useLongPress from "../../../hooks/uselongpress"
 
-export function ArtworksHomeGrid({expandPost, isExpanded, currentGrid, setCurrentGrid}) {
-    const [imgIndex, setImgIndex] = useState(null);
+export function ArtworksHomeGrid() {
     const [pressing, setPressing] = useState(false);
     const navigate = useNavigate();
     const imgInfo = useRef(null);
     let interval = useRef();
 
+
     const allPosts = useSelector(selectAllPosts);
-    const allPostsStatus = useSelector(getAllPostsStatus);
+    const isExpanded = useSelector(getExpanded);
+    const selectedPostId = useSelector(getPostId);
+    //const allPostsStatus = useSelector(getAllPostsStatus);
+    const dispatch = useDispatch();
 
 
     // simulate pressing shrinking effect on post with intervals
@@ -56,14 +59,17 @@ export function ArtworksHomeGrid({expandPost, isExpanded, currentGrid, setCurren
     };
 
     // onMouseOver to find id/index of post prior to beginning next event
-    const onHover = (index) => {
-        setImgIndex(index);
+    const onHover = (postid) => {
+        dispatch(choosePostId(postid));
     };
 
     // Using custom event hook, a longer click will expand the post to a large view
     const onLongPress = () => {
         setPressing(false);
-        if (!isExpanded) expandPost(true, imgIndex);
+        if (!isExpanded) {
+            dispatch(expandSinglePost(true));
+            dispatch(selectSinglePost(selectedPostId));
+        } 
     };
 
     // Custom hook also takes normal click to proceed to the scroll page
@@ -71,7 +77,6 @@ export function ArtworksHomeGrid({expandPost, isExpanded, currentGrid, setCurren
         setPressing(false);
         document.getElementById(`gridimg-${imgInfo.current.id}`).style.transform = `scale(${imgInfo.current.scale})`;
         if (!isExpanded) {
-            expandPost(false, imgIndex);
             return navigate('/wizardgram/allposts');
         };
     };
@@ -87,17 +92,17 @@ export function ArtworksHomeGrid({expandPost, isExpanded, currentGrid, setCurren
     return (
         <div className="instaGridContainer">
             <div className="gridSwitch">
-                <button onClick={() => {setCurrentGrid("artwork")}}>artworks</button>
-                <button onClick={() => {setCurrentGrid("photograph")}}>photography</button>
-                <button onClick={() => {setCurrentGrid("generative")}}>generative</button>
+                <button onClick={() => {dispatch(changeCurrentGrid("artwork"))}}>artworks</button>
+                <button onClick={() => {dispatch(changeCurrentGrid("photograph"))}}>photography</button>
+                <button onClick={() => {dispatch(changeCurrentGrid("generative"))}}>generative</button>
             </div>
             <div className="instaGrid">
                 {
-                allPosts && [...Object.keys(allPosts)].filter(k => allPosts[k][0].archived === false && allPosts[k][0].post_type === currentGrid).sort((x, y) =>  new Date(allPosts[y][0].date_created) - new Date(allPosts[x][0].date_created)).map((k, index) => 
+                allPosts && [...Object.keys(allPosts)].map((k, index) => 
                     <div 
                         key={allPosts[k][0].post_id} 
                         className="gridImageContainer" 
-                        onMouseEnter={() => {onHover(index)}}
+                        onMouseEnter={() => {onHover(allPosts[k][0].post_id)}}
                         {...longPressEvent}>
                         <img
                             alt="photography"
