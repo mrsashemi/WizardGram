@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { SimpleBackground } from "../../components/backgrounds/background";
 import { TopNavBar } from "../../components/top-nav-bar/topbar";
 import './stylesheet/artworkspage.css'
 import { useDispatch, useSelector } from "react-redux";
-import { changeCurrentGrid, choosePostId, expandSinglePost, getCurrentGrid, getExpanded, selectAllPosts, selectSinglePost } from "../../features/posts/getAllPostsSlice";
+import { changeCurrentGrid, choosePostId, editSinglePost, expandSinglePost, getAllPosts, getAllPostsStatus, getCurrentGrid, getExpanded, selectAllPosts, selectSinglePost } from "../../features/posts/getAllPostsSlice";
 
 export function ArtworkGallery() {
+    const { id } = useParams();
     const allPosts = useSelector(selectAllPosts);
     const currentGrid = useSelector(getCurrentGrid);
     const isExpanded = useSelector(getExpanded);
+    const allPostsStatus = useSelector(getAllPostsStatus);
     const dispatch = useDispatch();
 
     const postRef = useRef(null); 
@@ -42,6 +44,13 @@ export function ArtworkGallery() {
         original: true,
         theme: "photography"
     })
+
+
+    useEffect(() => {
+        if (allPostsStatus === 'idle') {
+            dispatch(getAllPosts(id));
+        }
+    }, [allPostsStatus, dispatch, id])
     
     // manage whether or not the image is untouched while editing
     useEffect(() => {
@@ -114,6 +123,7 @@ export function ArtworkGallery() {
     // go to individual post by clicking on expanded image
     const goToPost = (id) => {
         dispatch(expandSinglePost(false));
+        dispatch(editSinglePost(false));
         setDelay(false);
         return navigate(`/wizardgram/posts/${id}`)
     }

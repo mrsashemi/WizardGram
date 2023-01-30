@@ -10,18 +10,19 @@ const initialState = {
     editing: false,
     expanded: false,
     currentGrid: "artwork",
+    postMessage: null,
     status: 'idle', //'idle' || 'loading' || 'succeeded' || 'failed',
     error: null
 }
 
-// thunk is a piece of code that does delayed work in redux toolkit
-export const getAllPosts = createAsyncThunk('posts/getAllPosts', async () => {
+// thunk is a piece of code that allows async work in redux toolkit
+export const getAllPosts = createAsyncThunk('posts/getAllPosts', async (id) => {
     try {
         const result = await axios.get(GET_ALL_POSTS_URL, {
             headers: {'Content-Type': 'application/json'},
             withCredentials: true,
         });
-        return [...result.data.postList.slice(0).reverse()]
+        return [[...result.data.postList.slice(0).reverse()], id]
     } catch (error) {
         console.error(error);
         return error.message
@@ -104,6 +105,9 @@ export const allPostsSlice = createSlice({
         },
         expandSinglePost(state, action) {
             state.expanded = action.payload;
+        },
+        changePostMessage(state, action) {
+            state.postMessage = action.payload;
         }
     },
     extraReducers(builder) {
@@ -115,18 +119,29 @@ export const allPostsSlice = createSlice({
                 state.status = 'succeeded'
 
                 let hash = {};
-                for (let i = 0; i < action.payload.length; i++) {
-                    let key = action.payload[i].post_id;
+                for (let i = 0; i < action.payload[0].length; i++) {
+                    let key = action.payload[0][i].post_id;
 
                     if (key in hash) {
-                        hash[key] = [...hash[key], action.payload[i]];
+                        hash[key] = [...hash[key], action.payload[0][i]];
                     } else {
-                        hash[key] = [action.payload[i]];
+                        hash[key] = [action.payload[0][i]];
                     }
                 }
-   
-                state.allPosts = hash;
+
                 state.allPostsInitial = hash;
+                if (action.payload[1]) {
+                    const newAllPosts = hash;
+                    state.allPosts = [...Object.keys(newAllPosts)]
+                        .filter(k => newAllPosts[k][0].post_id === Number(action.payload[1]))
+                        .reduce((curr, k) => {return Object.assign(curr, {[k]: newAllPosts[k]})}, {});
+                } else {
+                    const newAllPosts = hash;
+                    state.allPosts = [...Object.keys(newAllPosts)]
+                        .filter(k => newAllPosts[k][0].archived === false && newAllPosts[k][0].post_type === state.currentGrid)
+                        .sort((x,y) => new Date(newAllPosts[y][0].date_created) - new Date(newAllPosts[x][0].date_created))
+                        .reduce((curr, k) => {return Object.assign(curr, {[k]: newAllPosts[k]})}, {});
+                } 
             })
             .addCase(getAllPosts.rejected, (state, action) => {
                 state.status = 'failed';
@@ -142,6 +157,7 @@ export const getPostId = (state) => state.allPosts.selectedId;
 export const getEditing = (state) => state.allPosts.editing;
 export const getExpanded = (state) => state.allPosts.expanded;
 export const getCurrentGrid = (state) => state.allPosts.currentGrid;
+export const getPostMessage = (state) => state.allPosts.postMessage;
 
 export const { 
     incrementPostLikes, 
@@ -154,7 +170,8 @@ export const {
     selectSinglePost,
     choosePostId,
     editSinglePost,
-    expandSinglePost 
+    expandSinglePost,
+    changePostMessage 
 } = allPostsSlice.actions
 
 export default allPostsSlice.reducer;

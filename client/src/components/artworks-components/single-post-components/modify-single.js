@@ -1,11 +1,12 @@
-import { useSelector } from "react-redux";
-import { selectAllPosts } from "../../../features/posts/getAllPostsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { changePostMessage, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
 
-export function SingleModify({setMessage}) {
+export function SingleModify() {
     const allPosts = useSelector(selectAllPosts);
+    const dispatch = useDispatch();
 
     const handleMessageChange = (e) => {
-        setMessage(e.target.value);
+        dispatch(changePostMessage(e.target.value));
     }
     
     return (

@@ -2,16 +2,18 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
 import { axiosPrivate } from "../../../api/axios";
-import { editPostBody, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
+import { editPostBody, editSinglePost, getPostMessage, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
 
-export function SingleEditHeader({message}) {
+export function SingleEditHeader() {
     const allPosts = useSelector(selectAllPosts);
+    const message = useSelector(getPostMessage);
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
     const [errMsg, setErrMsg] = useState(null);
 
     const cancelEdit = () => {
+        dispatch(editSinglePost(false));
         return navigate(-1)
     }
 
@@ -36,7 +38,8 @@ export function SingleEditHeader({message}) {
             );
 
             if (result) {
-                dispatch(editPostBody([allPosts[[...Object.keys(allPosts)]][0].post_id, message]))
+                dispatch(editPostBody([allPosts[[...Object.keys(allPosts)]][0].post_id, message]));
+                dispatch(editSinglePost(false));
             }
         } catch (error) {
             if (error.response.status === 500) {

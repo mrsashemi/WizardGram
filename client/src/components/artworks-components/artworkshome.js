@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { getAllPostsStatus, getAllPostsError, getAllPosts } from "../../features/posts/getAllPostsSlice";
 import { ArtworksHomeGrid } from "./home-artworks-components/grid-artworks-home";
 import { ArtworksHomeHeader } from "./home-artworks-components/header-artworks-home";
 import { ArtworksHomeHighlights } from "./home-artworks-components/highlights-artworks-home";
@@ -12,17 +10,6 @@ import { CreateModal } from "./modals/create-modal";
 export function ArtworksHome() {
     const [showModal, setShowModal] = useState(false);
     const { setPostType } = useOutletContext();
-
-    const dispatch = useDispatch();
-    const allPostsStatus = useSelector(getAllPostsStatus);
-    const getAllError = useSelector(getAllPostsError);
-
-    useEffect(() => {
-        if (allPostsStatus === 'idle') {
-            dispatch(getAllPosts())
-        }
-    }, [allPostsStatus, dispatch])
-
 
     function showPostModal() {
         setShowModal(true);
