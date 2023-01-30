@@ -1,11 +1,18 @@
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { changeImageIndex } from "../../../features/posts/newPostSlice";
 
 export function NewHeader({postType}) {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const toNextPage = () => {
-        if (postType === "photograph") navigate("/wizardgram/editpost")
-        else navigate("/wizardgram/createpost")
+        if (postType === "photograph") {
+            dispatch(changeImageIndex(0));
+            navigate("/wizardgram/editpost")
+        } else {
+            navigate("/wizardgram/createpost")
+        }
     }
 
     return (

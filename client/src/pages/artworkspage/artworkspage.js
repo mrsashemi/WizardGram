@@ -4,7 +4,8 @@ import { SimpleBackground } from "../../components/backgrounds/background";
 import { TopNavBar } from "../../components/top-nav-bar/topbar";
 import './stylesheet/artworkspage.css'
 import { useDispatch, useSelector } from "react-redux";
-import { changeCurrentGrid, choosePostId, editSinglePost, expandSinglePost, getAllPosts, getAllPostsStatus, getCurrentGrid, getExpanded, selectAllPosts, selectSinglePost } from "../../features/posts/getAllPostsSlice";
+import { changeCurrentGrid, choosePostId, editSinglePost, expandSinglePost, getAllPosts, getAllPostsStatus, getCurrentGrid, getExpanded, selectAllPosts } from "../../features/posts/getAllPostsSlice";
+import { chooseUnedited, getNewImage } from "../../features/posts/newPostSlice";
 
 export function ArtworkGallery() {
     const { id } = useParams();
@@ -14,75 +15,23 @@ export function ArtworkGallery() {
     const allPostsStatus = useSelector(getAllPostsStatus);
     const dispatch = useDispatch();
 
+    const newImage = useSelector(getNewImage);
+
     const postRef = useRef(null); 
     const navigate = useNavigate();
     const [delay, setDelay] = useState(false); // for dom effects when clicking on post to expand
-    const [postMultiple, setPostMultiple] = useState(false); // for use on deciding if multiples are being posted (new post)
     const [multiples, setMultiples] = useState(null); // for use on deciding if multiples are being posted (new post)
     const [postType, setPostType] = useState(null); // for use on  deciding what type of post to make (new post)
-    const [newImage, setNewImage] = useState({
-        id: "",
-        url: null,
-        posX: 0,
-        posY: 0,
-        scale: 1,
-        fit: "coverImg",
-        filter: "no-filter",
-        brightness: 100,
-        contrast: 100,
-        saturate: 100,
-        grayscale: 0,
-        sepia: 0,
-        hue: 0,
-        opacity: 100,
-        blur: 0,
-        rotate: 0,
-        vignette: false,
-        vignetteClass: "vignette",
-        vignetteBlur: 0,
-        vignetteSpread: 0,
-        original: true,
-        theme: "photography"
-    })
-
-
+    
+    // fetch all posts from api
     useEffect(() => {
-        if (allPostsStatus === 'idle') {
-            dispatch(getAllPosts(id));
-        }
+        if (allPostsStatus === 'idle') dispatch(getAllPosts(id));
     }, [allPostsStatus, dispatch, id])
     
     // manage whether or not the image is untouched while editing
     useEffect(() => {
-        if (newImage.filter === "no-filter" 
-            && newImage.brightness === 100
-            && newImage.contrast === 100
-            && newImage.saturate === 100
-            && newImage.grayscale === 0
-            && newImage.sepia === 0
-            && newImage.hue === 0
-            && newImage.blur === 0
-            && newImage.fit === "coverImg") {
-                setNewImage(n => ({
-                    ...n,
-                    original: true
-                }))
-            } else {
-                setNewImage(n => ({
-                    ...n,
-                    original: false
-                }))
-            }
-    }, [
-        newImage.filter, 
-        newImage.brightness, 
-        newImage.contrast, newImage.saturate, 
-        newImage.grayscale, 
-        newImage.sepia, 
-        newImage.hue, 
-        newImage.blur, 
-        newImage.fit
-    ]);
+        if (newImage) dispatch(chooseUnedited());
+    }, [newImage, dispatch]);
 
 
     // useEffect to create a custom delay to differentiate between the mousedown event that shrinks the posts as it is pressed and the custom longpressevents 
@@ -134,8 +83,7 @@ export function ArtworkGallery() {
             <div id="instaGalleryContainer">
                 <TopNavBar />
                 <Outlet context={{
-                    newImage, setNewImage, 
-                    postMultiple, setPostMultiple,
+                    newImage, 
                     multiples, setMultiples,
                     postType, setPostType}} />
             </div>

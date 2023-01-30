@@ -1,58 +1,35 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useOutletContext } from "react-router-dom";
+import { changeFilter, getNewImage, getNewImageIndex } from "../../features/posts/newPostSlice";
 import { EditDisplay } from "./edit-components/display-edit";
 import { EditFilters } from "./edit-components/filters-edit";
 import { EditHeader } from "./edit-components/header-edit";
 import { EditManual } from "./edit-components/manual-edit";
 
 export function EditPost() {
-    const [current, setCurrent] = useState(0);
+    const current = useSelector(getNewImageIndex);
+    const newImage = useSelector(getNewImage);
+    const dispatch = useDispatch();
+
     const [useFilter, setUseFilter] = useState(true);
     const [editRotate, setEditRotate] = useState(false);
-    const { newImage, setNewImage, multiples, setMultiples } = useOutletContext();
 
-    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
-        if (!useFilter) {
-            if (multiples) {
-                let temporaryMultiples = multiples.slice();
-                temporaryMultiples[current].filter = "no-filter";
-                setMultiples(temporaryMultiples);
-            } else {
-                setNewImage(n => ({
-                    ...n,
-                    filter: "no-filter"
-                }))
-            }
-        }
-    }, [useFilter, current, multiples, setMultiples])
+        if (!useFilter) dispatch(changeFilter("no-filter"));
+    }, [useFilter, dispatch])
 
 
     return (
         <div id="instaUserDashboard">
-            <EditHeader newImage={newImage} setNewImage={setNewImage} />
+            <EditHeader />
             <EditDisplay 
-                newImage={newImage}
-                setNewImage={setNewImage}
                 editRotate={editRotate}
                 useFilter={useFilter}
-                multiples={multiples}
-                current={current}
-                setCurrent={setCurrent}
                 setUseFilter={setUseFilter} />    
             {useFilter
-                ?<EditFilters 
-                    newImage={newImage}
-                    setNewImage={setNewImage}
-                    multiples={multiples}
-                    setMultiples={setMultiples}
-                    current={current} />
+                ?<EditFilters />
                 : <EditManual
-                    newImage={newImage}
-                    setNewImage={setNewImage}
-                    multiples={multiples}
-                    setMultiples={setMultiples}
-                    current={current}
                     setEditRotate={setEditRotate} />
             }
             <div className="editOptionsContainer">

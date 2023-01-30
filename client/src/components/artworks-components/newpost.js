@@ -5,16 +5,20 @@ import { NewHeader } from "./new-components/header-new";
 import { NewFileSelect } from "./new-components/file-select-new";
 import useAxiosPrivate from "../../hooks/useaxiosprivate";
 import { useOutletContext } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateImageUrlId } from "../../features/posts/newPostSlice";
 const SAVE_IMG_URL = '/img/save-image';
 const GET_ALL_IMG_URL = '/img/get-all-images';
 
 
 export function NewPost() {
+    const dispatch = useDispatch();
+
     const [selectedImage, setSelectedImage] = useState("");
     const [allImg, setAllImg] = useState(null);
 
     const axiosPrivate = useAxiosPrivate();
-    const { newImage, setNewImage, postMultiple, setPostMultiple, multiples, setMultiples, postType } = useOutletContext();
+    const { postType } = useOutletContext();
 
     const loadImages = useCallback(() => {
         const formData = new FormData();
@@ -28,11 +32,7 @@ export function NewPost() {
                             headers: {'Content-Type': 'multipart/form-data'},
                             withCredentials: true,
                         });
-                        setNewImage(n => ({
-                            ...n,
-                            url: result.data.img_location,
-                            id: result.data.img_id
-                        }))
+                        dispatch(updateImageUrlId([result.data.img_location, result.data.img_id]))
                         setSelectedImage("");       
                 } catch (error) {
                     console.error(error);
@@ -48,12 +48,7 @@ export function NewPost() {
                         withCredentials: true,
                     });
                     setAllImg(result.data.imageList.slice(0).reverse());
-                    setNewImage(n => ({
-                        ...n,
-                        url: result.data.imageList.slice(0).reverse()[0].img_location,
-                        id: result.data.imageList.slice(0).reverse()[0].img_id
-                    }))
-                    
+                    dispatch(updateImageUrlId([result.data.imageList.slice(0).reverse()[0].img_location, result.data.imageList.slice(0).reverse()[0].img_id]));
                 } catch (error) {
                     console.error(error);
                 }
@@ -61,42 +56,22 @@ export function NewPost() {
 
             getAllImg();
         }
-    }, [axiosPrivate, selectedImage, setNewImage]);
+    }, [axiosPrivate, selectedImage, dispatch]);
 
-    const createMultiplesArray = useCallback(() => {
-        if (postMultiple) {
-            if (!multiples) setMultiples([newImage]);
-        } else {
-            setMultiples(null);
-        }
-    }, [postMultiple, multiples, setMultiples, newImage])
+  
 
     useEffect(() => {
         loadImages();
     }, [loadImages])
 
-    useEffect(() => {
-        createMultiplesArray();
-    }, [createMultiplesArray])
-
     return (
         <div id="instaUserDashboard">
             <NewHeader postType={postType} />
-            <NewDisplay
-                newImage={newImage}
-                setNewImage={setNewImage} 
-                postMultiple={postMultiple}
-                setPostMultiple={setPostMultiple} />
+            <NewDisplay />
             <NewFileSelect 
                 setSelectedImage={setSelectedImage} />
             <NewGrid 
-                allImg={allImg}
-                newImage={newImage}
-                setNewImage={setNewImage}
-                postMultiple={postMultiple}
-                setPostMultiple={setPostMultiple}
-                multiples={multiples}
-                setMultiples={setMultiples} />
+                allImg={allImg} />
         </div>
     )
 }

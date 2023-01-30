@@ -1,98 +1,33 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useDispatch, useSelector } from "react-redux";
+import { addMultipleImages, adjustNewImageFit, adjustNewImagePos, cancelMultipleImages, changeImageIndex, getNewImage, getNewImageIndex, getPostMultiple, postMultipleImages } from "../../../features/posts/newPostSlice";
 
-export function NewDisplay({newImage, setNewImage, postMultiple, setPostMultiple}) {
+export function NewDisplay() {
+    const newImage = useSelector(getNewImage);
+    const postMultiple = useSelector(getPostMultiple);
+    const imgIndex = useSelector(getNewImageIndex);
+    const dispatch = useDispatch();
+
     const [tile, setTile] = useState("");
     const startTimer = useRef(false);
     const start = useRef(10);
     const timer = useRef(null); 
 
     const handleFit = () => {
-        setNewImage({
-            ...newImage,
-            fit: (newImage.fit === "coverImg") ? "containImg" : "coverImg",
-            posX: 0,
-            posY: 0,
-            scale: 1
-        })
+        dispatch(adjustNewImageFit());
     }
 
     const useMultiple = () => {
-        if (postMultiple) setPostMultiple(false);
-        else setPostMultiple(true);
+        if (postMultiple) {
+            dispatch(cancelMultipleImages());
+        } else {
+            dispatch(addMultipleImages());
+        }
     }
 
-    useEffect(() => {
-        console.log(postMultiple)
-    }, [postMultiple])
-
     const repeatEvent = useCallback((e) => {
-        if (tile === "middleMiddle") {
-            setNewImage(n => ({
-                ...n,
-                scale: newImage.scale+0.01
-            }))
-        }
-
-        if (tile === "middleLeft") {
-            setNewImage(n => ({
-                ...n,
-                posX: newImage.posX-0.25
-            }))
-        }
-
-        if (tile === "middleRight") {
-            setNewImage(n => ({
-                ...n,
-                posX: newImage.posX+0.25
-            }))
-        }
-
-        if (tile === "topMiddle") {
-            setNewImage(n => ({
-                ...n,
-                posY: newImage.posY-0.25
-            }))
-        }
-
-        if (tile === "bottomMiddle") {
-            setNewImage(n => ({
-                ...n,
-                posY: newImage.posY+0.25
-            }))
-        }
-
-        if (tile === "topLeft") {
-            setNewImage(n => ({
-                ...n,
-                posY: newImage.posY-0.25,
-                posX: newImage.posX-0.25
-            }))
-        }
-
-        if (tile === "topRight") {
-            setNewImage(n => ({
-                ...n,
-                posY: newImage.posY-0.25,
-                posX: newImage.posX+0.25
-            }))
-        }
-
-        if (tile === "bottomLeft") {
-            setNewImage(n => ({
-                ...n,
-                posY: newImage.posY+0.25,
-                posX: newImage.posX-0.25
-            }))
-        }
-
-        if (tile === "bottomRight") {
-            setNewImage(n => ({
-                ...n,
-                posY: newImage.posY+0.25,
-                posX: newImage.posX+0.25
-            }))
-        }
-    }, [newImage.posX, newImage.posY, newImage.scale, setNewImage, tile])
+        if (newImage) dispatch(adjustNewImagePos(tile))
+    }, [newImage, dispatch, tile])
 
     useEffect(() => {
         if (startTimer.current) timer.current = setTimeout(repeatEvent, start.current);
@@ -113,12 +48,12 @@ export function NewDisplay({newImage, setNewImage, postMultiple, setPostMultiple
 
     return (
         <div className="newPostFileContainer">
-            {newImage.url
+            {newImage[imgIndex].url
                 ? <img 
                     alt="selected file display"
-                    className={`newPostFile ${newImage.fit}`}
-                    src={newImage.url} 
-                    style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}%) translateY(${newImage.posY}%)`}} 
+                    className={`newPostFile ${newImage[imgIndex].fit_class}`}
+                    src={newImage[imgIndex].url} 
+                    style={{transform: `scale(${newImage[imgIndex].scale}) translateX(${newImage[imgIndex].position_x}%) translateY(${newImage[imgIndex].position_y}%)`}} 
                     draggable={false}></img>
                 : <img alt="selected file display" className="newPostFile"></img>
             }
