@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllPosts, getAllPostsStatus, changeCurrentGrid, getExpanded, expandSinglePost, getPostId, choosePostId, selectSinglePost } from "../../../features/posts/getAllPostsSlice";
+import { ImgContainer } from "../img-component/img-container.js"
+import { selectAllPosts, getAllPostsStatus, changeCurrentGrid, getExpanded, expandSinglePost, getPostId, choosePostId, selectSinglePost, useGetPostsQuery, selectAllPost, selectPostById, selectUserIds } from "../../../features/posts/getAllPostsSlice";
 import { useNavigate } from "react-router-dom"
 import useLongPress from "../../../hooks/uselongpress"
+
 
 export function ArtworksHomeGrid() {
     const [pressing, setPressing] = useState(false);
@@ -10,12 +12,20 @@ export function ArtworksHomeGrid() {
     const imgInfo = useRef(null);
     let interval = useRef();
 
-
+    const allPost = useSelector(selectAllPost);
     const allPosts = useSelector(selectAllPosts);
     const isExpanded = useSelector(getExpanded);
     const selectedPostId = useSelector(getPostId);
     //const allPostsStatus = useSelector(getAllPostsStatus);
     const dispatch = useDispatch();
+
+    const {
+        data: post,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetPostsQuery()
 
 
     // simulate pressing shrinking effect on post with intervals
@@ -98,44 +108,19 @@ export function ArtworksHomeGrid() {
             </div>
             <div className="instaGrid">
                 {
-                allPosts && [...Object.keys(allPosts)].map((k, index) => 
+                allPosts && [...Object.keys(allPosts)].reverse().map((k, index) => 
                     <div 
                         key={allPosts[k][0].post_id} 
                         className="gridImageContainer" 
                         onMouseEnter={() => {onHover(allPosts[k][0].post_id)}}
                         {...longPressEvent}>
-                        <img
-                            alt="photography"
-                            onMouseDown={(e) => {onPressingImage(e, allPosts[k][0])}}
-                            onMouseUp={(e) => {onReleaseImage(e, allPosts[k][0])}}
-                            src={allPosts[k][0].img_location}
-                            id={`gridimg-${allPosts[k][0].post_id}`} 
-                            className={`gridPage ${allPosts[k][0].filter_class}`}
-                            style={{
-                                transform: `scale(${allPosts[k][0].scale}) 
-                                            translateX(${allPosts[k][0].position_x}%) 
-                                            translateY(${allPosts[k][0].position_y}%)
-                                            rotate(${allPosts[k][0].rotate}deg)`, 
-                                opacity: `${allPosts[k][0].opacity}%`,
-                                filter: allPosts[k][0].filter_class === "no-filter" && 
-                                        `brightness(${allPosts[k][0].brightness}%) 
-                                        contrast(${allPosts[k][0].contrast}%) 
-                                        saturate(${allPosts[k][0].saturate}%) 
-                                        grayscale(${allPosts[k][0].grayscale}%)
-                                        sepia(${allPosts[k][0].sepia}%)
-                                        hue-rotate(${allPosts[k][0].hue}deg)
-                                        blur(${allPosts[k][0].blur}px)`}} >
-                        </img>
-                        {
-                        allPosts[k][0].vignette &&
-                        <div 
-                            onMouseDown={(e) => {onPressingImage(e, allPosts[k][0])}}
-                            onMouseUp={(e) => {onReleaseImage(e, allPosts[k][0])}}
-                            className="vignette" 
-                            style={{
-                                boxShadow: `inset 0px 0px ${allPosts[k][0].vignette_blur/2.5}px ${allPosts[k][0].vignette_spread/2.5}px rgba(0, 0, 0, 0.5)`}} >
-                        </div>
-                        }
+                            <ImgContainer post={allPosts[k][0]} imgClass={'scrollPage'} render={(selected) => (
+                                selected.vignette ? (
+                                    <div className="vignette" style={{boxShadow: `inset 0px 0px ${selected.vignette_blur/2.5}px ${selected.vignette_spread/2.5}px rgba(0, 0, 0, 0.5)`}}></div>
+                                ) : (
+                                    <div className="floater" onMouseDown={(e) => {onPressingImage(e, selected)}} onMouseUp={(e) => {onReleaseImage(e, selected)}}></div>
+                                )
+                            )}/> 
                     </div>)
                 }
             </div>

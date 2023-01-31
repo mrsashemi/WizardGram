@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getFilterUsage, getNewImage, getNewImageIndex, getRotating, manageScaleForRotatedImage } from "../../../features/posts/newPostSlice";
+import { ImgContainer } from "../img-component/img-container";
 import { PostSlider } from "../sliders/post-slider";
 
 export function EditDisplay() {
@@ -44,26 +45,12 @@ export function EditDisplay() {
             {
             newImage.length > 1 ? 
             <PostSlider existing={false}/>
-            : 
-            <img 
-                alt="editing display"
-                className={`newPostFile ${newImage[current].fit_class} ${newImage[current].filter_class}`}
-                src={newImage[current].url} 
-                onLoad={() => {scaleReminder.current = newImage[current].scale}}
-                style={{transform:  `scale(${newImage[current].scale}) 
-                                    translateX(${newImage[current].position_x}%) 
-                                    translateY(${newImage[current].position_y}%)
-                                    rotate(${newImage[current].rotate}deg)`, 
-                        opacity: `${newImage[current].opacity}%`,
-                        filter: !useFilter && `brightness(${newImage[current].brightness}%) 
-                                contrast(${newImage[current].contrast}%) 
-                                saturate(${newImage[current].saturate}%) 
-                                grayscale(${newImage[current].grayscale}%)
-                                sepia(${newImage[current].sepia}%)
-                                hue-rotate(${newImage[current].hue}deg)
-                                blur(${newImage[current].blur}px)`}} 
-                draggable={false}>    
-            </img>
+            :
+            <ImgContainer post={newImage[current]} imgClass={'newPostFile'} render={(selected) => (
+                selected.vignette && (
+                    <div className="vignette" style={{boxShadow: `inset 0px 0px ${selected.vignette_blur}px ${selected.vignette_spread}px rgba(0, 0, 0, 0.5)`}}></div>
+                ) 
+            )}/> 
             }
             {editRotate &&
             <div className="invisibleGrid">
@@ -76,9 +63,6 @@ export function EditDisplay() {
                 <div className="bottomRight"></div>
                 <div className="bottomMiddle"></div>
                 <div className="bottomLeft"></div>
-            </div>}
-            {newImage[current].vignette &&
-            <div className="vignette" style={{boxShadow: `inset 0px 0px ${newImage[current].vignette_blur}px ${newImage[current].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
             </div>}
         </div>
     )

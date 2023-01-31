@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeImageIndex, getFilterUsage, getNewImage, getNewImageIndex, manageFilterUsage } from "../../../features/posts/newPostSlice";
+import { ImgContainer } from "../img-component/img-container";
 
 export function PostSlider({multiples, existing}) {
     const newImage = useSelector(getNewImage);
@@ -36,73 +37,33 @@ export function PostSlider({multiples, existing}) {
 
     return (
         <React.Fragment>
-            {existing ?
-                <div className="scrollImageContainer" >
-                    <div className="postSliderContainer">
-                        <div className="postSliderButtons">
-                            <div className="postSliderLeftArrow" onClick={prevSlide}>{'<'}</div>
-                            <div  className="postSliderRightArrow" onClick={nextSlide}>{'>'}</div>
-                        </div>
-                        <div className="pickSlideButtonsContainer">
-                            {multiples.map((post, index) => 
-                            <div key={index} className="pickSlideButton" onClick={() => setOptionOnChange(post, index)} style={{background: (index === curr) ? 'rgba(0, 21, 252, 0.5)' : 'rgba(255, 255, 255, 0.2)'}}></div>
-                            )}
-                        </div> 
-                        <img 
-                            alt={multiples[curr].title}
-                            className={`newPostFile ${multiples[curr].fit_class} ${multiples[curr].filter_class}`}
-                            src={multiples[curr].img_location} 
-                            style={{transform:  `scale(${multiples[curr].scale}) 
-                                                translateX(${multiples[curr].position_x}%) 
-                                                translateY(${multiples[curr].position_y}%)
-                                                rotate(${multiples[curr].rotate}deg)`, 
-                                    opacity: `${multiples[curr].opacity}%`,
-                                    filter: multiples[curr].filter_class === "no-filter" && 
-                                            `brightness(${multiples[curr].brightness}%) 
-                                            contrast(${multiples[curr].contrast}%) 
-                                            saturate(${multiples[curr].saturate}%) 
-                                            grayscale(${multiples[curr].grayscale}%)
-                                            sepia(${multiples[curr].sepia}%)
-                                            hue-rotate(${multiples[curr].hue}deg)
-                                            blur(${multiples[curr].blur}px)`}} 
-                            draggable={false}>    
-                        </img>
-                    </div>
-                    {multiples[curr].vignette &&
-                    <div className="vignette" style={{boxShadow: `inset 0px 0px ${multiples[curr].vignette_blur}px ${multiples[curr].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
-                    </div>}
-                </div>
-                :
+            <div className="scrollImageContainer" >
                 <div className="postSliderContainer">
                     <div className="postSliderButtons">
                         <div className="postSliderLeftArrow" onClick={prevSlide}>{'<'}</div>
                         <div  className="postSliderRightArrow" onClick={nextSlide}>{'>'}</div>
                     </div>
-                    <div className="pickSlideButtonsContainer">
-                        {newImage.map((post, index) => 
-                        <div key={index} className="pickSlideButton" onClick={() => setOptionOnChange(post, index)} style={{background: (index === current) ? 'rgba(0, 21, 252, 0.5)' : 'rgba(255, 255, 255, 0.2)'}}></div>
-                        )}
-                    </div> 
-                    <img 
-                        alt={newImage[current].url}
-                        className={`newPostFile ${newImage[current].fit_class} ${newImage[current].filter_class}`}
-                        src={newImage[current].url} 
-                        style={{transform:  `scale(${newImage[current].scale}) 
-                                            translateX(${newImage[current].position_x}%) 
-                                            translateY(${newImage[current].position_y}%)
-                                            rotate(${newImage[current].rotate}deg)`, 
-                                opacity: `${newImage[current].opacity}%`,
-                                filter: !useFilter && `brightness(${newImage[current].brightness}%) 
-                                        contrast(${newImage[current].contrast}%) 
-                                        saturate(${newImage[current].saturate}%) 
-                                        grayscale(${newImage[current].grayscale}%)
-                                        sepia(${newImage[current].sepia}%)
-                                        hue-rotate(${newImage[current].hue}deg)
-                                        blur(${newImage[current].blur}px)`}} 
-                        draggable={false}>    
-                    </img>
+                    <ImgContainer 
+                            post={(multiples) ? multiples[curr] : newImage[current]} 
+                            imgClass={'newPostFile'} 
+                            all={(multiples) ? multiples : newImage}
+                            idx={(multiples) ? curr : current}
+                            newImg={(newImage) ? true : false}
+                            useFltr={useFilter}
+                            slider={(multPosts, currIdx) => (
+                                <div className="pickSlideButtonsContainer">
+                                    {multPosts.map((post, index) => 
+                                    <div key={index} className="pickSlideButton" onClick={() => setOptionOnChange(post, index)} style={{background: (index === currIdx) ? 'rgba(0, 21, 252, 0.5)' : 'rgba(255, 255, 255, 0.2)'}}></div>
+                                    )}
+                                </div> 
+                            )}
+                            render={(selected) => (
+                                selected.vignette && (
+                                    <div className="vignette" style={{boxShadow: `inset 0px 0px ${selected.vignette_blur}px ${selected.vignette_spread}px rgba(0, 0, 0, 0.5)`}}></div>
+                                ) 
+                    )}/> 
                 </div>
-            }
+            </div>
         </React.Fragment>
     )
 }

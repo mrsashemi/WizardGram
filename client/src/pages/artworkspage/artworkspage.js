@@ -4,8 +4,12 @@ import { SimpleBackground } from "../../components/backgrounds/background";
 import { TopNavBar } from "../../components/top-nav-bar/topbar";
 import './stylesheet/artworkspage.css'
 import { useDispatch, useSelector } from "react-redux";
-import { changeCurrentGrid, choosePostId, editSinglePost, expandSinglePost, getAllPosts, getAllPostsStatus, getCurrentGrid, getExpanded, selectAllPosts } from "../../features/posts/getAllPostsSlice";
+import { changeCurrentGrid, choosePostId, editSinglePost, expandSinglePost, extendedApiSlice, getAllPosts, getAllPostsStatus, getCurrentGrid, getExpanded, selectAllPosts } from "../../features/posts/getAllPostsSlice";
 import { chooseUnedited, getNewImage } from "../../features/posts/newPostSlice";
+import { store } from "../../app/store";
+import { ImgContainer } from "../../components/artworks-components/img-component/img-container";
+
+store.dispatch(extendedApiSlice.endpoints.getPosts.initiate());
 
 export function ArtworkGallery() {
     const { id } = useParams();
@@ -97,32 +101,11 @@ export function ArtworkGallery() {
                     <h4 className="usernameHeader">Username</h4>
                 </div>
                 <div className="expandedPost">
-                    <img
-                        alt="photography"
-                        src={allPosts[[...Object.keys(allPosts)]][0].img_location} 
-                        className={`expandPage ${allPosts[[...Object.keys(allPosts)]][0].filter_class} ${allPosts[[...Object.keys(allPosts)]][0].fit_class}`}
-                        style={{
-                            transform:  `scale(${allPosts[[...Object.keys(allPosts)]][0].scale}) 
-                                        translateX(${allPosts[[...Object.keys(allPosts)]][0].position_x}%) 
-                                        translateY(${allPosts[[...Object.keys(allPosts)]][0].position_y}%)
-                                        rotate(${allPosts[[...Object.keys(allPosts)]][0].rotate}deg)`, 
-                            opacity: `${allPosts[[...Object.keys(allPosts)]][0].opacity}%`,
-                            filter: allPosts[[...Object.keys(allPosts)]][0].filter_class === "no-filter" && 
-                                    `brightness(${allPosts[[...Object.keys(allPosts)]][0].brightness}%) 
-                                    contrast(${allPosts[[...Object.keys(allPosts)]][0].contrast}%) 
-                                    saturate(${allPosts[[...Object.keys(allPosts)]][0].saturate}%) 
-                                    grayscale(${allPosts[[...Object.keys(allPosts)]][0].grayscale}%)
-                                    sepia(${allPosts[[...Object.keys(allPosts)]][0].sepia}%)
-                                    hue-rotate(${allPosts[[...Object.keys(allPosts)]][0].hue}deg)
-                                    blur(${allPosts[[...Object.keys(allPosts)]][0].blur}px)`}}>
-                    </img>
-                    {
-                    allPosts[[...Object.keys(allPosts)]][0].vignette &&
-                    <div 
-                        className="vignette" 
-                        style={{boxShadow: `inset 0px 0px ${allPosts[[...Object.keys(allPosts)]][0].vignette_blur}px ${allPosts[[...Object.keys(allPosts)]][0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
-                    </div>
-                    }
+                    <ImgContainer post={allPosts[[...Object.keys(allPosts)]][0]} imgClass={'expandPage'} render={(selected) => (
+                        selected.vignette && (
+                            <div className="vignette" style={{boxShadow: `inset 0px 0px ${selected.vignette_blur}px ${selected.vignette_spread}px rgba(0, 0, 0, 0.5)`}}></div>
+                        ) 
+                    )}/> 
                 </div>
             </div>}
         </div>

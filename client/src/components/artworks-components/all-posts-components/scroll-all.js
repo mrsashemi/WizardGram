@@ -2,6 +2,7 @@ import axios from "../../../api/axios";
 import { incrementPostLikes, decrementPostLikes, selectAllPosts, getPostId, choosePostId } from "../../../features/posts/getAllPostsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { PostSlider } from "../sliders/post-slider";
+import { ImgContainer } from "../img-component/img-container";
 
 export function AllScroll({onShow}) {  
     const allPosts = useSelector(selectAllPosts);
@@ -67,28 +68,11 @@ export function AllScroll({onShow}) {
                     <PostSlider multiples={allPosts[k]} existing={true} />
                     :
                     <div className="scrollImageContainer">
-                        <img    alt={allPosts[k][0].title}
-                                src={allPosts[k][0].img_location} 
-                                className={`scrollPage ${allPosts[k][0].filter_class} ${allPosts[k][0].fit_class}`}
-                                style={{transform:  `scale(${allPosts[k][0].scale}) 
-                                                translateX(${allPosts[k][0].position_x}%) 
-                                                translateY(${allPosts[k][0].position_y}%)
-                                                rotate(${allPosts[k][0].rotate}deg)`, 
-                                        opacity: `${allPosts[k][0].opacity}%`,
-                                        filter: allPosts[k][0].filter_class === "no-filter" && 
-                                            `brightness(${allPosts[k][0].brightness}%) 
-                                            contrast(${allPosts[k][0].contrast}%) 
-                                            saturate(${allPosts[k][0].saturate}%) 
-                                            grayscale(${allPosts[k][0].grayscale}%)
-                                            sepia(${allPosts[k][0].sepia}%)
-                                            hue-rotate(${allPosts[k][0].hue}deg)
-                                            blur(${allPosts[k][0].blur}px)`}}>
-                            </img>
-                            {
-                            allPosts[k][0].vignette &&
-                            <div className="vignette" style={{boxShadow: `inset 0px 0px ${allPosts[k][0].vignette_blur}px ${allPosts[k][0].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
-                            </div>
-                            }
+                        <ImgContainer post={allPosts[k][0]} imgClass={'scrollPage'} render={(selected) => (
+                                selected.vignette && (
+                                    <div className="vignette" style={{boxShadow: `inset 0px 0px ${selected.vignette_blur}px ${selected.vignette_spread}px rgba(0, 0, 0, 0.5)`}}></div>
+                                ) 
+                        )}/> 
                     </div>
                     }               
                     <div className="scrollPostLikesAndComment">

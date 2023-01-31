@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../../api/axios";
-import { getNewImage } from "../../../features/posts/newPostSlice";
+import { getNewImage, getNewImageMessage, getNewImageTitle } from "../../../features/posts/newPostSlice";
 const SAVE_CLASS_URL = "/classes/create-class";
 const SHARE_POST_URL = "/posts/create-post"
 
-export function PublishHeader({ message, multiples, postType, postTitle}) {
+export function PublishHeader({ postType }) {
+    const message = useSelector(getNewImageMessage);
+    const postTitle = useSelector(getNewImageTitle);
     const newImage = useSelector(getNewImage);
     const [errMsg, setErrMsg] = useState(null);
     const [multiplePosts, setMultiplePosts] = useState([]);
