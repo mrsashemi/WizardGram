@@ -7,5 +7,6 @@ export const store = configureStore({
     reducer: {
         allPosts: allPostsSlice.reducer,
         newImage: newPostSlice.reducer
-    }
+    },
+    devTools: true
 })
