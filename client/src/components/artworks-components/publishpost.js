@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useOutletContext } from "react-router-dom";
+import { getNewImage } from "../../features/posts/newPostSlice";
 import { PublishContent } from "./publish-components/content-publish";
 import { PublishHeader } from "./publish-components/header-publish";
 import { PublishLinks } from "./publish-components/links-publish";
 
 export function PublishPost() {
-    const { newImage, setNewImage, multiples, postType } = useOutletContext();
+    const newImage = useSelector(getNewImage);
+    const { setNewImage, multiples, postType } = useOutletContext();
     const [message, setMessage] = useState("");
     const [postTitle, setPostTitle] = useState("wizardgram post");
 
@@ -18,13 +21,8 @@ export function PublishPost() {
                 multiples={multiples} 
                 postType={postType} 
                 postTitle={postTitle}/>
-            <PublishContent 
-                newImage={newImage} 
-                setMessage={setMessage} 
-                multiples={multiples}/>
-            <PublishLinks 
-                setPostTitle={setPostTitle} 
-                postTitle={postTitle}/>
+            <PublishContent />
+            <PublishLinks />
         </div>
     )
 }

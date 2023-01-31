@@ -1,6 +1,13 @@
-export function PublishLinks({setPostTitle, postTitle}) {
+import { useDispatch, useSelector } from "react-redux";
+import { changeNewImageTitle, getNewImageTitle } from "../../../features/posts/newPostSlice";
+
+
+export function PublishLinks() {
+    const postTitle = useSelector(getNewImageTitle);
+    const dispatch = useDispatch();
+
     const handleTitleChange = (e) => {
-        setPostTitle(e.target.value);
+        dispatch(changeNewImageTitle(e.target.value));
     }
 
     return (

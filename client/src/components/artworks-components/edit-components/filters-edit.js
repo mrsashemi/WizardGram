@@ -1,60 +1,14 @@
-import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux";
+import { getFilterClasses, getNewImage, getNewImageIndex, selectFilterForNewImage } from "../../../features/posts/newPostSlice";
 
-export function EditFilters({newImage, setNewImage, multiples, setMultiples, current}) {
-    const [filterClasses] = useState([
-        ["None", "no-filter"],
-        ["1977", "filter-1977"],
-        ["Aden", "filter-aden"],
-        ["Amaro", "filter-amaro"],
-        ["Ashby", "filter-ashby"],
-        ["Brannan", "filter-brannan"],
-        ["Brooklyn", "filter-brooklyn"],
-        ["Charmes", "filter-charmes"],
-        ["Crema", "filter-crema"],
-        ["Dogpatch", "filter-dogpatch"],
-        ["Earlybird", "filter-earlybird"],
-        ["Gingham", "filter-gingham"],
-        ["Ginza", "filter-ginza"],
-        ["Helena", "filter-helena"],
-        ["Hudson", "filter-hudson"],
-        ["Inkwell", "filter-inkwell"],
-        ["Kelvin", "filter-kelvin"],
-        ["Kuno", "filter-kuno"],
-        ["Lark", "filter-lark"],
-        ["Lo-fi", "filter-lofi"],
-        ["Ludwig", "filter-ludwig"],
-        ["Maven", "filter-maven"],
-        ["Mayfair", "filter-mayfair"],
-        ["Moon", "filter-moon"],
-        ["Nashville", "filter-nashville"],
-        ["Perpetua", "filter-perpetua"],
-        ["Poprocket", "filter-poprocket"],
-        ["Reyes", "filter-reyes"],
-        ["Rise", "filter-rise"],
-        ["Sierra", "filter-sierra"],
-        ["Skyline", "filter-skyline"],
-        ["Slumber", "filter-slumber"],
-        ["Stinson", "filter-stinson"],
-        ["Sutro", "filter-sutro"],
-        ["Toaster", "filter-toaster"],
-        ["Valencia", "filter-valencia"],
-        ["Vesper", "filter-vesper"],
-        ["Walden", "filter-walden"],
-        ["Willow", "filter-willow"],
-        ["X-Pro II", "filter-xpro-ii"]
-    ]);
+export function EditFilters() {
+    const newImage = useSelector(getNewImage);
+    const current = useSelector(getNewImageIndex);
+    const filterClasses = useSelector(getFilterClasses);
+    const dispatch = useDispatch();
 
     const handleSaveFilter = (selectedFilter) => {
-        if (multiples) {
-            let temporaryMultiples = multiples.slice();
-            temporaryMultiples[current].filter = selectedFilter;
-            setMultiples(temporaryMultiples);
-        } else {
-            setNewImage({
-                ...newImage,
-                filter: selectedFilter
-            })
-        }
+        dispatch(selectFilterForNewImage(selectedFilter));
     }
 
     return (
@@ -63,22 +17,12 @@ export function EditFilters({newImage, setNewImage, multiples, setMultiples, cur
                 <div className="filterTile" key={index}>
                     <h5 className="filterTitle">{filter[0]}</h5>
                     <div className="filterSquareContainer">
-                        {
-                        multiples ?
                         <img 
                             alt={`filter ${filter[0]}`}
-                            className={`filterSquare ${multiples[current].fit} ${filter[1]}`}
-                            style={{transform: `scale(${multiples[current].scale}) translateX(${multiples[current].posX}px) translateY(${multiples[current].posY}px)`}} 
-                            src={multiples[current].url}
+                            className={`filterSquare ${newImage[current].fit_class} ${filter[1]}`}
+                            style={{transform: `scale(${newImage[current].scale}) translateX(${newImage[current].position_x}px) translateY(${newImage[current].position_y}px)`}} 
+                            src={newImage[current].url}
                             onClick={() => {handleSaveFilter(filter[1])}}></img>
-                        :
-                        <img 
-                            alt={`filter ${filter[0]}`}
-                            className={`filterSquare ${newImage.fit} ${filter[1]}`}
-                            style={{transform: `scale(${newImage.scale}) translateX(${newImage.posX}px) translateY(${newImage.posY}px)`}} 
-                            src={newImage.url}
-                            onClick={() => {handleSaveFilter(filter[1])}}></img>
-                        }
                     </div>
                 </div>
             )}

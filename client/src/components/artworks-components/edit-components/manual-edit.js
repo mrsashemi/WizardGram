@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react"
+import { useDispatch } from "react-redux";
+import { addVignetteForNewImage, adjustImageValue, cancelImageValue, rotateNewImage } from "../../../features/posts/newPostSlice";
 
-export function EditManual ({newImage, setNewImage, multiples, setMultiples, current, setEditRotate}) {
+export function EditManual () {
+    const dispatch = useDispatch();
     const [selectedSetting, setSetting] = useState(true);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [min, setMin] = useState(0);
@@ -123,61 +126,20 @@ export function EditManual ({newImage, setNewImage, multiples, setMultiples, cur
         setMax(pMax)
         setValue(pVal);
         setProperty(pProperty);
+
         if (pProperty === "rotate") {
-            setEditRotate(true);
+            dispatch(rotateNewImage(true));
         }
 
         if (pProperty === "box-shadow") {
-            if (multiples) {
-                let temporaryMultiples = multiples.slice();
-                temporaryMultiples[current].vignetteBlur = 35;
-                temporaryMultiples[current].vignette = true;
-                setMultiples(temporaryMultiples);
-            } else {
-                setNewImage({
-                    ...newImage,
-                    vignetteBlur: 35,
-                    vignette: true
-                })
-            }
+            dispatch(addVignetteForNewImage());
         }
     }
 
     const cancelSetting = () => {
-        setEditRotate(false)
+        dispatch(rotateNewImage(false));
         setSetting(true);
-        if (multiples) {
-            let temporaryMultiples = multiples.slice();
-            temporaryMultiples[current].brightness = (property === "brightness") ? 100 : temporaryMultiples[current].brightness
-            temporaryMultiples[current].contrast = (property === "contrast") ? 100 : temporaryMultiples[current].contrast
-            temporaryMultiples[current].saturate = (property === "saturate") ? 100 : temporaryMultiples[current].saturate
-            temporaryMultiples[current].grayscale = (property === "grayscale") ? 0 : temporaryMultiples[current].grayscale
-            temporaryMultiples[current].sepia = (property === "sepia") ? 0 : temporaryMultiples[current].sepia
-            temporaryMultiples[current].hue = (property === "hue-rotate") ? 0 : temporaryMultiples[current].hue
-            temporaryMultiples[current].opacity = (property === "opacity") ? 100 : temporaryMultiples[current].opacity
-            temporaryMultiples[current].blur = (property === "blur") ? 0 : temporaryMultiples[current].blur
-            temporaryMultiples[current].rotate = (property === "rotate") ? 0 : temporaryMultiples[current].rotate
-            temporaryMultiples[current].vignetteBlur = (property === "box-shadow") ? 0 : temporaryMultiples[current].vignetteBlur
-            temporaryMultiples[current].vignetteSpread = (property === "box-shadow") ? 0 : temporaryMultiples[current].vignetteSpread
-            temporaryMultiples[current].vignette = (property === "box-shadow") ? false : temporaryMultiples[current].vignette
-            setMultiples(temporaryMultiples);
-        } else {
-            setNewImage({
-                ...newImage,
-                brightness: (property === "brightness") ? 100 : newImage.brightness,
-                contrast: (property === "contrast") ? 100 : newImage.contrast,
-                saturate: (property === "saturate") ? 100 : newImage.saturate,
-                grayscale: (property === "grayscale") ? 0 : newImage.grayscale,
-                sepia: (property === "sepia") ? 0 : newImage.sepia,
-                hue: (property === "hue-rotate") ? 0 : newImage.hue,
-                opacity: (property === "opacity") ? 100 : newImage.opacity,
-                blur: (property === "blur") ? 0 : newImage.blur,
-                rotate: (property === "rotate") ? 0 : newImage.rotate,
-                vignetteBlur: (property === "box-shadow") ? 0 : newImage.vignetteBlur,
-                vignetteSpread: (property === "box-shadow") ? 0 : newImage.vignetteSpread,
-                vignette: (property === "box-shadow") ? false : newImage.vignette
-            })
-        }
+        dispatch(cancelImageValue(property))
 
         setDefaultOptions([...defaultOptions].map(object => {
             if (object.property === property) {
@@ -192,7 +154,7 @@ export function EditManual ({newImage, setNewImage, multiples, setMultiples, cur
     }
 
     const finishSetting = () => {
-        setEditRotate(false)
+        dispatch(rotateNewImage(false));
         setSetting(true);
         setDefaultOptions([...defaultOptions].map(object => {
             if (object.property === property) {
@@ -208,39 +170,7 @@ export function EditManual ({newImage, setNewImage, multiples, setMultiples, cur
 
     const adjustValue = (e) => {
         setValue(e.target.value)
-
-        if (multiples) {
-            let temporaryMultiples = multiples.slice();
-            temporaryMultiples[current].brightness = (property === "brightness") ? value : temporaryMultiples[current].brightness
-            temporaryMultiples[current].contrast = (property === "contrast") ? value : temporaryMultiples[current].contrast
-            temporaryMultiples[current].saturate = (property === "saturate") ? value : temporaryMultiples[current].saturate
-            temporaryMultiples[current].grayscale = (property === "grayscale") ? value : temporaryMultiples[current].grayscale
-            temporaryMultiples[current].sepia = (property === "sepia") ? value : temporaryMultiples[current].sepia
-            temporaryMultiples[current].hue = (property === "hue-rotate") ? value : temporaryMultiples[current].hue
-            temporaryMultiples[current].opacity = (property === "opacity") ? value : temporaryMultiples[current].opacity
-            temporaryMultiples[current].blur = (property === "blur") ? value : temporaryMultiples[current].blur
-            temporaryMultiples[current].rotate = (property === "rotate") ? value : temporaryMultiples[current].rotate
-            temporaryMultiples[current].vignetteBlur = (property === "box-shadow") ? 35 : temporaryMultiples[current].vignetteBlur
-            temporaryMultiples[current].vignetteSpread = (property === "box-shadow") ? value : temporaryMultiples[current].vignetteSpread
-            temporaryMultiples[current].vignette = (property === "box-shadow") ? true : temporaryMultiples[current].vignette
-            setMultiples(temporaryMultiples);
-        } else {
-            setNewImage({
-                ...newImage,
-                brightness: (property === "brightness") ? value : newImage.brightness,
-                contrast: (property === "contrast") ? value : newImage.contrast,
-                saturate: (property === "saturate") ? value : newImage.saturate,
-                grayscale: (property === "grayscale") ? value : newImage.grayscale,
-                sepia: (property === "sepia") ? value : newImage.sepia,
-                hue: (property === "hue-rotate") ? value : newImage.hue,
-                opacity: (property === "opacity") ? value : newImage.opacity,
-                blur: (property === "blur") ? value : newImage.blur,
-                rotate: (property === "rotate") ? value : newImage.rotate,
-                vignetteBlur: (property === "box-shadow") ? 35 : newImage.vignetteBlur,
-                vignetteSpread: (property === "box-shadow") ? value : newImage.vignetteSpread,
-                vignette: (property === "box-shadow") ? true : newImage.vignette
-            })
-        }
+        dispatch(adjustImageValue([property, value]))
     }
 
     return (

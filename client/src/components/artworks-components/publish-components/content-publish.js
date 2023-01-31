@@ -1,6 +1,13 @@
-export function PublishContent({newImage, setMessage, multiples}) {
+import { useDispatch, useSelector } from "react-redux";
+import { changeNewImageBodyMessage, getNewImage, getNewImageIndex } from "../../../features/posts/newPostSlice";
+
+export function PublishContent() {
+    const newImage = useSelector(getNewImage);
+    const current = useSelector(getNewImageIndex);
+    const dispatch = useDispatch();
+    
     const handleMessageChange = (e) => {
-        setMessage(e.target.value);
+        dispatch(changeNewImageBodyMessage(e.target.value));
     }
 
     return (
@@ -8,25 +15,25 @@ export function PublishContent({newImage, setMessage, multiples}) {
             <div className="contentImageContainer">
                 <img 
                         alt="content to be posted"
-                        className={`contentImage ${multiples ? multiples[0].fit : newImage.fit} ${multiples ? multiples[0].filter : newImage.filter}`}
-                        src={multiples ? multiples[0].url : newImage.url} 
-                        style={{transform:  `scale(${multiples ? multiples[0].scale : newImage.scale}) 
-                                            translateX(${multiples ? multiples[0].posX : newImage.posX}%) 
-                                            translateY(${multiples ? multiples[0].posY : newImage.posY}%)
-                                            rotate(${multiples ? multiples[0].rotate : newImage.rotate}deg)`, 
-                                opacity: `${multiples ? multiples[0].opacity : newImage.opacity}%`,
-                                filter: (multiples ? multiples[0].filter === "no-filter" : newImage.filter === "no-filter") && 
-                                        `brightness(${multiples ? multiples[0].brightness : newImage.brightness}%) 
-                                        contrast(${multiples ? multiples[0].contrast : newImage.contrast}%) 
-                                        saturate(${multiples ? multiples[0].saturate : newImage.saturate}%) 
-                                        grayscale(${multiples ? multiples[0].grayscale : newImage.grayscale}%)
-                                        sepia(${multiples ? multiples[0].sepia : newImage.sepia}%)
-                                        hue-rotate(${multiples ? multiples[0].hue : newImage.hue}deg)
-                                        blur(${multiples ? multiples[0].blur : newImage.blur}px)`}} 
+                        className={`contentImage ${newImage[current].fit} ${newImage[current].filter}`}
+                        src={newImage[current].url} 
+                        style={{transform:  `scale(${newImage[current].scale}) 
+                                            translateX(${newImage[current].posX}%) 
+                                            translateY(${newImage[current].posY}%)
+                                            rotate(${newImage[current].rotate}deg)`, 
+                                opacity: `${newImage[current].opacity}%`,
+                                filter: (newImage[current].filter === "no-filter") && 
+                                        `brightness(${newImage[current].brightness}%) 
+                                        contrast(${newImage[current].contrast}%) 
+                                        saturate(${newImage[current].saturate}%) 
+                                        grayscale(${newImage[current].grayscale}%)
+                                        sepia(${newImage[current].sepia}%)
+                                        hue-rotate(${newImage[current].hue}deg)
+                                        blur(${newImage[current].blur}px)`}} 
                         draggable={false}>    
                 </img>
-                {(multiples ? multiples[0].vignette : newImage.vignette) &&
-                <div className="vignette" style={{boxShadow: `inset 0px 0px ${multiples ? multiples[0].vignetteBlur/2.5 : newImage.vignetteBlur/2.5}px ${multiples ? multiples[0].vignetteSpread/2.5 : newImage.vignetteSpread/2.5}px rgba(0, 0, 0, 0.5)`}}>
+                {(newImage[current].vignette) &&
+                <div className="vignette" style={{boxShadow: `inset 0px 0px ${newImage[current].vignetteBlur/2.5}px ${newImage[current].vignetteSpread/2.5}px rgba(0, 0, 0, 0.5)`}}>
                 </div>}
             </div>
             <textarea className="contentBox" placeholder="Write caption..." onChange={handleMessageChange}></textarea>

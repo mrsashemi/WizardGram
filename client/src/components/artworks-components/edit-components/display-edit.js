@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getFilterUsage, getNewImage, getNewImageIndex, getRotating, manageScaleForRotatedImage } from "../../../features/posts/newPostSlice";
 import { PostSlider } from "../sliders/post-slider";
 
-export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multiples, current, setCurrent, setUseFilter}) {
+export function EditDisplay() {
+    const newImage = useSelector(getNewImage);
+    const current = useSelector(getNewImageIndex);
+    const editRotate = useSelector(getRotating);
+    const useFilter = useSelector(getFilterUsage);
+
+    const dispatch = useDispatch();
     const [tile, setTile] = useState("");
     const scaleReminder = useRef(null);
     const timer = useRef(null);
@@ -12,6 +20,7 @@ export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multi
         startTimer.current = true;
         setTile(e.target.className);
         repeatEvent(e); 
+        console.log(tile)
     };
 
     const mouseUpEvent = () => {
@@ -21,27 +30,8 @@ export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multi
     };
 
     const repeatEvent = useCallback((e) => {
-        if (tile === "middleMiddle") {
-            setNewImage(n => ({
-                ...n,
-                scale: newImage.scale+0.01
-            }))
-        };
-
-        if (tile === "middleLeft") {
-            setNewImage(n => ({
-                ...n,
-                scale: newImage.scale-0.01
-            }));
-        };
-
-        if (tile === "middleRight") {
-            setNewImage(n => ({
-                ...n,
-                scale: scaleReminder.current
-            }));
-        };
-    },[tile, setNewImage, newImage.scale]);
+        dispatch(manageScaleForRotatedImage([tile, scaleReminder.current]))
+    },[tile, newImage[current].scale]);
     
 
     useEffect(() => {
@@ -52,26 +42,26 @@ export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multi
     return (
         <div className="newPostFileContainer">
             {
-            multiples ? 
-            <PostSlider multiples={multiples} useFilter={useFilter} current={current} setCurrent={setCurrent} setUseFilter={setUseFilter} existing={false}/>
+            newImage.length > 1 ? 
+            <PostSlider existing={false}/>
             : 
             <img 
                 alt="editing display"
-                className={`newPostFile ${newImage.fit} ${newImage.filter}`}
-                src={newImage.url} 
-                onLoad={() => {scaleReminder.current = newImage.scale}}
-                style={{transform:  `scale(${newImage.scale}) 
-                                    translateX(${newImage.posX}%) 
-                                    translateY(${newImage.posY}%)
-                                    rotate(${newImage.rotate}deg)`, 
-                        opacity: `${newImage.opacity}%`,
-                        filter: !useFilter && `brightness(${newImage.brightness}%) 
-                                contrast(${newImage.contrast}%) 
-                                saturate(${newImage.saturate}%) 
-                                grayscale(${newImage.grayscale}%)
-                                sepia(${newImage.sepia}%)
-                                hue-rotate(${newImage.hue}deg)
-                                blur(${newImage.blur}px)`}} 
+                className={`newPostFile ${newImage[current].fit_class} ${newImage[current].filter_class}`}
+                src={newImage[current].url} 
+                onLoad={() => {scaleReminder.current = newImage[current].scale}}
+                style={{transform:  `scale(${newImage[current].scale}) 
+                                    translateX(${newImage[current].position_x}%) 
+                                    translateY(${newImage[current].position_y}%)
+                                    rotate(${newImage[current].rotate}deg)`, 
+                        opacity: `${newImage[current].opacity}%`,
+                        filter: !useFilter && `brightness(${newImage[current].brightness}%) 
+                                contrast(${newImage[current].contrast}%) 
+                                saturate(${newImage[current].saturate}%) 
+                                grayscale(${newImage[current].grayscale}%)
+                                sepia(${newImage[current].sepia}%)
+                                hue-rotate(${newImage[current].hue}deg)
+                                blur(${newImage[current].blur}px)`}} 
                 draggable={false}>    
             </img>
             }
@@ -87,8 +77,8 @@ export function EditDisplay({newImage, setNewImage, editRotate, useFilter, multi
                 <div className="bottomMiddle"></div>
                 <div className="bottomLeft"></div>
             </div>}
-            {newImage.vignette &&
-            <div className="vignette" style={{boxShadow: `inset 0px 0px ${newImage.vignetteBlur}px ${newImage.vignetteSpread}px rgba(0, 0, 0, 0.5)`}}>
+            {newImage[current].vignette &&
+            <div className="vignette" style={{boxShadow: `inset 0px 0px ${newImage[current].vignette_blur}px ${newImage[current].vignette_spread}px rgba(0, 0, 0, 0.5)`}}>
             </div>}
         </div>
     )

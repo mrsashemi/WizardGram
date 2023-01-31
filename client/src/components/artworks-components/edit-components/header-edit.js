@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getNewImage, resetImages } from "../../../features/posts/newPostSlice";
+import { changeImageIndex, getNewImage, resetImages } from "../../../features/posts/newPostSlice";
 
 export function EditHeader() {
     const navigate = useNavigate();
@@ -12,13 +12,16 @@ export function EditHeader() {
         return navigate('/wizardgram/newpost');
     }
 
+    const toPostPublish = () => {
+        dispatch(changeImageIndex(0));
+        return navigate('/wizardgram/createpost')
+    }
+
     return (
         <div className="instaUserHeader">
             <button className="closeNewPost" onClick={() => toPostSelect()}>{`<`}</button>
             <h2>Edit Post</h2>
-            <Link to='/wizardgram/createpost'>
-                <button className="nextButton">Next</button>
-            </Link>
+            <button className="nextButton" onClick={() => toPostPublish()}>Next</button>
         </div>
     )
 }

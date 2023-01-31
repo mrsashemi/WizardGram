@@ -51,7 +51,53 @@ const initialState = {
         theme: "photography"
     }],
     postMultiple: false,
-    newImageIndex: 0
+    newImageIndex: 0,
+    rotating: false,
+    isUsingFilter: true,
+    filterClasses: [
+        ["None", "no-filter"],
+        ["1977", "filter-1977"],
+        ["Aden", "filter-aden"],
+        ["Amaro", "filter-amaro"],
+        ["Ashby", "filter-ashby"],
+        ["Brannan", "filter-brannan"],
+        ["Brooklyn", "filter-brooklyn"],
+        ["Charmes", "filter-charmes"],
+        ["Crema", "filter-crema"],
+        ["Dogpatch", "filter-dogpatch"],
+        ["Earlybird", "filter-earlybird"],
+        ["Gingham", "filter-gingham"],
+        ["Ginza", "filter-ginza"],
+        ["Helena", "filter-helena"],
+        ["Hudson", "filter-hudson"],
+        ["Inkwell", "filter-inkwell"],
+        ["Kelvin", "filter-kelvin"],
+        ["Kuno", "filter-kuno"],
+        ["Lark", "filter-lark"],
+        ["Lo-fi", "filter-lofi"],
+        ["Ludwig", "filter-ludwig"],
+        ["Maven", "filter-maven"],
+        ["Mayfair", "filter-mayfair"],
+        ["Moon", "filter-moon"],
+        ["Nashville", "filter-nashville"],
+        ["Perpetua", "filter-perpetua"],
+        ["Poprocket", "filter-poprocket"],
+        ["Reyes", "filter-reyes"],
+        ["Rise", "filter-rise"],
+        ["Sierra", "filter-sierra"],
+        ["Skyline", "filter-skyline"],
+        ["Slumber", "filter-slumber"],
+        ["Stinson", "filter-stinson"],
+        ["Sutro", "filter-sutro"],
+        ["Toaster", "filter-toaster"],
+        ["Valencia", "filter-valencia"],
+        ["Vesper", "filter-vesper"],
+        ["Walden", "filter-walden"],
+        ["Willow", "filter-willow"],
+        ["X-Pro II", "filter-xpro-ii"]
+    ],
+    newImageTitle: "",
+    newImageBodyMessage: ""
 }
 
 export const newPostSlice = createSlice({
@@ -78,10 +124,8 @@ export const newPostSlice = createSlice({
             }
         },
         updateImageUrlId(state, action) {
+            let indexCheck = state.newImage.findIndex(i => i.id === action.payload[1]);
             if (state.postMultiple) {
-                let indexCheck = state.newImage.findIndex(i => i.id === action.payload[1]);
-                console.log(indexCheck);
-
                 if (indexCheck === -1) {
                     state.newImageIndex = state.newImageIndex+1;
                     const tempNewImage = state.newImage;
@@ -89,16 +133,24 @@ export const newPostSlice = createSlice({
                 } else {
                     state.newImageIndex = state.newImageIndex-1;
                     const tempNewImage = state.newImage
-                    state.newImage = [...tempNewImage.slice(0, indexCheck), ...tempNewImage.slice(indexCheck+1)]
+                    const spliceTemp = tempNewImage.splice(indexCheck, 1)
+                    state.newImage = tempNewImage;
                 }
             }
 
             const tempNewImage = state.newImage;
-            if (tempNewImage[state.newImageIndex]) {
+            if (tempNewImage[state.newImageIndex] && indexCheck === -1) {
                 tempNewImage[state.newImageIndex].url = action.payload[0];
                 tempNewImage[state.newImageIndex].id = action.payload[1];
                 state.newImage = tempNewImage;
-            } 
+            } else if (indexCheck > -1 && state.postMultiple && tempNewImage.length === 0) {
+                state.postMultiple = false;
+                state.newImageIndex = 0;
+                tempNewImage.push(state.newImageReference);
+                tempNewImage[state.newImageIndex].url = action.payload[0];
+                tempNewImage[state.newImageIndex].id = action.payload[1];
+                state.newImage = tempNewImage;
+            }
         },
         postMultipleImages(state, action) {
             state.postMultiple = action.payload;
@@ -143,6 +195,7 @@ export const newPostSlice = createSlice({
         },
         cancelMultipleImages(state, action) {
             state.postMultiple = false;
+            state.newImageIndex = 0;
             const tempNewImage = [state.newImage[0]];
             state.newImage = tempNewImage;
         },
@@ -156,13 +209,84 @@ export const newPostSlice = createSlice({
             const tempNewImage = state.newImage;
             tempNewImage[state.newImageIndex].filter = action.payload;
             state.newImage = tempNewImage;
-         }
+        },
+        rotateNewImage(state, action) {
+            state.rotating = action.payload;
+        },
+        manageScaleForRotatedImage(state, action) {
+            const tempNewImage = state.newImage;
+            if (action.payload[0] === "middleMiddle") {
+                tempNewImage[state.newImageIndex].scale = tempNewImage[state.newImageIndex].scale+0.01;
+            } else if (action.payload[0] === "middleLeft") {
+                tempNewImage[state.newImageIndex].scale = tempNewImage[state.newImageIndex].scale-0.01;
+            } else if (action.payload[0] === "middleRight") {
+                tempNewImage[state.newImageIndex].scale = action.payload[1]
+            }
+            state.newImage = tempNewImage;
+        },
+        manageFilterUsage(state, action) {
+            state.isUsingFilter = action.payload
+        },
+        selectFilterForNewImage(state, action) {
+            const newTempImage = state.newImage;
+            newTempImage[state.newImageIndex].filter_class = action.payload;
+            state.newImage = newTempImage;
+        },
+        adjustImageValue(state, action) {
+            const newTempImage = state.newImage;
+            newTempImage[state.newImageIndex].brightness = (action.payload[0] === "brightness") ? action.payload[1] : newTempImage[state.newImageIndex].brightness
+            newTempImage[state.newImageIndex].contrast = (action.payload[0] === "contrast") ? action.payload[1] : newTempImage[state.newImageIndex].contrast
+            newTempImage[state.newImageIndex].saturate = (action.payload[0] === "saturate") ? action.payload[1] : newTempImage[state.newImageIndex].saturate
+            newTempImage[state.newImageIndex].grayscale = (action.payload[0] === "grayscale") ? action.payload[1] : newTempImage[state.newImageIndex].grayscale
+            newTempImage[state.newImageIndex].sepia = (action.payload[0] === "sepia") ? action.payload[1] : newTempImage[state.newImageIndex].sepia
+            newTempImage[state.newImageIndex].hue = (action.payload[0] === "hue-rotate") ? action.payload[1] : newTempImage[state.newImageIndex].hue
+            newTempImage[state.newImageIndex].opacity = (action.payload[0] === "opacity") ? action.payload[1] : newTempImage[state.newImageIndex].opacity
+            newTempImage[state.newImageIndex].blur = (action.payload[0] === "blur") ? action.payload[1] : newTempImage[state.newImageIndex].blur
+            newTempImage[state.newImageIndex].rotate = (action.payload[0] === "rotate") ? action.payload[1] : newTempImage[state.newImageIndex].rotate
+            newTempImage[state.newImageIndex].vignette_blur = (action.payload[0] === "box-shadow") ? 35 : newTempImage[state.newImageIndex].vignette_blur
+            newTempImage[state.newImageIndex].vignette_spread = (action.payload[0] === "box-shadow") ? action.payload[1] : newTempImage[state.newImageIndex].vignette_spread
+            newTempImage[state.newImageIndex].vignette = (action.payload[0] === "box-shadow") ? true : newTempImage[state.newImageIndex].vignette
+            state.newImage = newTempImage;
+        },
+        cancelImageValue(state, action) {
+            const newTempImage = state.newImage;
+            newTempImage[state.newImageIndex].brightness = (action.payload === "brightness") ? 100 : newTempImage[state.newImageIndex].brightness
+            newTempImage[state.newImageIndex].contrast = (action.payload === "contrast") ? 100 : newTempImage[state.newImageIndex].contrast
+            newTempImage[state.newImageIndex].saturate = (action.payload === "saturate") ? 100 : newTempImage[state.newImageIndex].saturate
+            newTempImage[state.newImageIndex].grayscale = (action.payload === "grayscale") ? 0 : newTempImage[state.newImageIndex].grayscale
+            newTempImage[state.newImageIndex].sepia = (action.payload === "sepia") ? 0 : newTempImage[state.newImageIndex].sepia
+            newTempImage[state.newImageIndex].hue = (action.payload === "hue-rotate") ? 0 : newTempImage[state.newImageIndex].hue
+            newTempImage[state.newImageIndex].opacity = (action.payload === "opacity") ? 100 : newTempImage[state.newImageIndex].opacity
+            newTempImage[state.newImageIndex].blur = (action.payload === "blur") ? 0 : newTempImage[state.newImageIndex].blur
+            newTempImage[state.newImageIndex].rotate = (action.payload === "rotate") ? 0 : newTempImage[state.newImageIndex].rotate
+            newTempImage[state.newImageIndex].vignette_blur = (action.payload === "box-shadow") ? 0 : newTempImage[state.newImageIndex].vignetteBlur
+            newTempImage[state.newImageIndex].vignette_spread = (action.payload === "box-shadow") ? 0 : newTempImage[state.newImageIndex].vignetteSpread
+            newTempImage[state.newImageIndex].vignette = (action.payload === "box-shadow") ? false : newTempImage[state.newImageIndex].vignette
+            state.newImage = newTempImage;
+        },
+        addVignetteForNewImage(state, action) {
+            const newTempImage = state.newImage;
+            newTempImage[state.newImageIndex].vignette_blur = 35;
+            newTempImage[state.newImageIndex].vignette = true;
+            state.newImage = newTempImage;
+        },
+        changeNewImageTitle(state, action) {
+            state.newImageTitle = action.payload;
+        },
+        changeNewImageBodyMessage(state, action) {
+            state.newImageBodyMessage = action.payload;
+        }
     }
 })
 
 export const getNewImage = (state) => state.newImage.newImage;
 export const getPostMultiple = (state) => state.newImage.postMultiple;
 export const getNewImageIndex = (state) => state.newImage.newImageIndex;
+export const getRotating = (state) => state.newImage.rotating
+export const getFilterUsage = (state) => state.newImage.isUsingFilter;
+export const getFilterClasses = (state) => state.newImage.filterClasses;
+export const getNewImageTitle = (state) => state.newImage.newImageTitle;
+export const getNewImageMessage = (state) => state.newImage.newImageBodyMessage;
 
 export const { 
     chooseUnedited, 
@@ -174,7 +298,16 @@ export const {
     changeImageIndex,
     cancelMultipleImages,
     resetImages,
-    changeFilter
+    changeFilter,
+    rotateNewImage,
+    manageScaleForRotatedImage,
+    manageFilterUsage,
+    selectFilterForNewImage,
+    adjustImageValue,
+    cancelImageValue,
+    addVignetteForNewImage,
+    changeNewImageTitle,
+    changeNewImageBodyMessage
 } = newPostSlice.actions;
 
 export default newPostSlice.reducer;
