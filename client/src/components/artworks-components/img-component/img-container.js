@@ -5,7 +5,7 @@ export function ImgContainer({post, render, imgClass, slider, all, idx, newImg, 
 
     return (
         <React.Fragment>
-            {slider && all && idx && slider(all, idx)}
+            {slider && all && (idx === 0 || idx) && slider(all, idx)}
             <img    alt={post.title}
                     src={(post.img_location) ? post.img_location : post.url} 
                     id={`gridimg-${post.post_id}`}
@@ -15,7 +15,7 @@ export function ImgContainer({post, render, imgClass, slider, all, idx, newImg, 
                                     translateY(${post.position_y}%)
                                     rotate(${post.rotate}deg)`, 
                             opacity: `${post.opacity}%`,
-                            filter: (newImg && !useFltr) || (!newImg && post.filter_class === "no-filter") && 
+                            filter: ((newImg && !useFltr) || (!newImg && post.filter_class === "no-filter")) && 
                                     `brightness(${post.brightness}%) 
                                     contrast(${post.contrast}%) 
                                     saturate(${post.saturate}%) 

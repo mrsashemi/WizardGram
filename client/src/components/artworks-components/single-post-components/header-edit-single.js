@@ -1,16 +1,12 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
-import { axiosPrivate } from "../../../api/axios";
-import { editPostBody, editSinglePost, getPostMessage, selectAllPosts } from "../../../features/posts/getAllPostsSlice";
+import { editSinglePost, getPostMessage, useUpdatePostMutation } from "../../../features/posts/getAllPostsSlice";
 
-export function SingleEditHeader() {
-    const allPosts = useSelector(selectAllPosts);
+export function SingleEditHeader({posts, id}) {
+    const [updatePost] = useUpdatePostMutation();
     const message = useSelector(getPostMessage);
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
-    const [errMsg, setErrMsg] = useState(null);
 
     const cancelEdit = () => {
         dispatch(editSinglePost(false));
@@ -21,36 +17,20 @@ export function SingleEditHeader() {
         const time = new Date().toISOString();
 
         try {
-            const result = await axiosPrivate.put(`/posts/update-post/${allPosts[[...Object.keys(allPosts)]][0].post_id}`, 
-                JSON.stringify({
-                    body: message,
-                    theme_id: allPosts[[...Object.keys(allPosts)]][0].theme_id,
-                    title: allPosts[[...Object.keys(allPosts)]][0].title,
-                    date_updated: time,
-                    likes: allPosts[[...Object.keys(allPosts)]][0].likes,
-                    show_likes: allPosts[[...Object.keys(allPosts)]][0].show_likes,
-                    archived: allPosts[[...Object.keys(allPosts)]][0].archived
-                }),
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
+            const result = await updatePost({
+                update: {
+                    prop: "body",
+                    val: message,
+                    date: time,
+                    post: posts[id].post[0]
                 }
-            );
+            })
 
             if (result) {
-                dispatch(editPostBody([allPosts[[...Object.keys(allPosts)]][0].post_id, message]));
                 dispatch(editSinglePost(false));
             }
         } catch (error) {
-            if (error.response.status === 500) {
-                setErrMsg("Database Error"); 
-            } else if (error.response.status === 401) {
-                setErrMsg("Unauthorized");
-            } else {
-                setErrMsg("Failed")
-            }
-
-            console.log("updatePost", errMsg, error);
+            console.log(error)
         }
     }
 

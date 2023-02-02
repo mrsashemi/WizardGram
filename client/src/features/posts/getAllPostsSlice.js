@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk, createSelector, createEntityAdapter } from "@reduxjs/toolkit";
+import { createSlice, createSelector, createEntityAdapter } from "@reduxjs/toolkit";
+import { fetchWithBQ } from "@reduxjs/toolkit/dist/query";
 import { apiSlice } from "../api/apiSlice";
-import axios from "../../api/axios";
 const GET_ALL_POSTS_URL = '/posts/get-all-fishstaposts'
 
 const postsAdapter = createEntityAdapter({
@@ -23,16 +23,15 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     return post
                 });
 
-                console.log(loadedPosts)
-
                 const hash = {};
                 for (let i = 0; i < loadedPosts.length; i++) {
                     let key = loadedPosts[i].id;
 
                     if (key in hash) {
-                        hash[key].post = [...hash[key].post, loadedPosts[i]];
+                        hash[key].post[loadedPosts[i].slider_order] = loadedPosts[i];
                     } else {
-                        hash[key] = {id: key, post: [loadedPosts[i]]};
+                        hash[key] = {id: key, post: []};
+                        hash[key].post[loadedPosts[i].slider_order] = loadedPosts[i]
                     }
                 }
 
@@ -51,23 +50,42 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
 
         }),
         getPostsById: builder.query({
-            query: id => `/posts/${id}`,
+            query: id => `/posts/get-post/${id}`,
             transformResponse: responseData => {
-                const loadedPost = responseData.map(post => {
+                const loadedPost = [...responseData.postList.slice(0)].map(post => {
                     post.id = post.post_id
                     return post
                 });
-                return postsAdapter.setAll(initialState, loadedPost)
+                
+                const hash = {};
+                for (let i = 0; i < loadedPost.length; i++) {
+                    let key = loadedPost[i].id;
+
+                    if (key in hash) {
+                        hash[key].post = [...hash[key].post, loadedPost[i]];
+                    } else {
+                        hash[key] = {id: key, post: [loadedPost[i]]};
+                    }
+                }
+
+                return postsAdapter.setAll(initialState, hash)
             },
             providesTags: (result, error, arg) => {
-                return [...result.ids.map(id => ({type: 'Post', id}))]
+                if (result?.ids) {
+                    return [
+                        { type: 'Posts', id: 'LIST' },
+                        ...result.ids.map(id => ({type: 'Posts', id}))
+                    ]
+                } else {
+                    return [{type: 'Posts', id: 'LIST'}]
+                }
             }
         }),
         updatePost: builder.mutation({
-            query: ({postId, update}) => ({
-                url: `posts/update-post/${postId}`,
+            query: ({update}) => ({
+                url: `posts/update-post/${update.post.post_id}`,
                 method: 'PUT',
-                body: { 
+                body: JSON.stringify({ 
                     body: (update.prop === "body") ? update.val : update.post.body,
                     theme_id: update.post.theme_id,
                     title: update.post.title,
@@ -75,15 +93,31 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                     likes: (update.prop === "likes") ? update.val : update.post.likes,
                     show_likes: (update.prop === "showLikes") ? update.val : update.post.show_likes,
                     archived: (update.prop === "archived") ? update.val : update.post.archived
-                }
+                }),
             }),
-            async onQueryStarted({postId, update}, {dispatch, queryFulfilled}) {
+            async onQueryStarted({update}, {dispatch, queryFulfilled}) {
                 //updateQueryData requires the endpoint name and cache key arguments,
                 //so it knows which piece of cache state to update
                 const putResult = dispatch(
                     extendedApiSlice.util.updateQueryData('getPosts', undefined, draft => {
                         //the draft is immer-wrapped and can be mutated like in createslice
-                        const post = draft.entities[postId];
+                        const post = draft.entities[update.post.post_id];
+                        if (post) {
+                            post.post[0].body = (update.prop === "body") ? update.val : update.post.body
+                            post.post[0].theme_id = update.post.theme_id
+                            post.post[0].title = update.post.title
+                            post.post[0].date_updated = update.date
+                            post.post[0].likes = (update.prop === "likes") ? update.val : update.post.likes
+                            post.post[0].show_likes = (update.prop === "showLikes") ? update.val : update.post.show_likes
+                            post.post[0].archived = (update.prop === "archived") ? update.val : update.post.archived
+                        }
+                    })
+                )
+
+                const putSpecificResult = dispatch(
+                    extendedApiSlice.util.updateQueryData('getPostsById', update.post.post_id, draft => {
+                        //this draft is to update te individual post in case it exists in the cache
+                        const post = draft.entities[update.post.post_id];
                         if (post) {
                             post.post[0].body = (update.prop === "body") ? update.val : update.post.body
                             post.post[0].theme_id = update.post.theme_id
@@ -98,19 +132,103 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled
                 } catch (error) {
+                    console.log(error)
                     putResult.undo()
+                    putSpecificResult.undo()
                 }
             }
         }),
         deletePost: builder.mutation({
             query: ({id}) => ({
-                url: `/post/delete-post/${id}`,
+                url: `/posts/delete-post/${id}`,
                 method: 'DELETE',
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
                 { type: 'Posts', id: arg.id }
             ]
+        }),
+        addNewPost: builder.mutation({
+            queryFn: async ({newPost}, queryApi, extraOptions, fetchWithBQ) => {
+                const multiplePosts = [];
+                for (let i = 0; i < newPost.newImage.length; i++) {
+                    const createClass = await fetchWithBQ({
+                        url: '/classes/create-class',
+                        method: 'POST',
+                        body: JSON.stringify({
+                            filter_class: newPost.newImage[i].filter_class, 
+                            fit_class: newPost.newImage[i].fit_class, 
+                            position_x: newPost.newImage[i].position_x, 
+                            position_y: newPost.newImage[i].position_y, 
+                            scale: newPost.newImage[i].scale, 
+                            brightness: newPost.newImage[i].brightness, 
+                            contrast: newPost.newImage[i].contrast, 
+                            saturate: newPost.newImage[i].saturate, 
+                            grayscale: newPost.newImage[i].grayscale, 
+                            sepia: newPost.newImage[i].sepia, 
+                            hue: newPost.newImage[i].hue, 
+                            opacity: newPost.newImage[i].opacity, 
+                            blur: newPost.newImage[i].blur, 
+                            rotate: newPost.newImage[i].rotate, 
+                            vignette: newPost.newImage[i].vignette, 
+                            vignette_class: newPost.newImage[i].vignette_class, 
+                            vignette_blur: newPost.newImage[i].vignette_blur, 
+                            vignette_spread: newPost.newImage[i].vignette_spread,
+                            unedited: newPost.newImage[i].original
+                        })
+                    })
+
+                    if (createClass?.error?.data?.class_id) {
+                        multiplePosts.push({imgId: newPost.newImage[i].id, classId: createClass.error.data.class_id})
+                    } else if (createClass.data) {
+                        multiplePosts.push({imgId: newPost.newImage[i].id, classId: createClass.data.class_id})
+                    } else if (createClass.error) {
+                        console.log(createClass.error)
+                        return createClass.error;
+                    }
+                }
+
+                const createPost = await fetchWithBQ({
+                    url: '/posts/create-post',
+                    method: 'POST',
+                    body: JSON.stringify({
+                        post_type: newPost.post.postType,
+                        title: newPost.post.postTitle,
+                        body: newPost.post.message,
+                        img_id: multiplePosts[0].imgId,
+                        class_id: multiplePosts[0].classId
+                    })
+                })
+
+                if (createPost.error) {
+                    console.log(multiplePosts);
+                    console.log(createPost.error);
+                    return createPost.error
+                }
+
+                for (let i = 1; i < multiplePosts.length; i++) {
+                    const addToRelationalTable = await fetchWithBQ({
+                        url: '/posts/add-images-classes-to-post/',
+                        method: 'POST',
+                        body: JSON.stringify({
+                            img_id: multiplePosts[i].imgId,
+                            post_id: createPost.data.post_id,
+                            class_id: multiplePosts[i].classId,
+                            order: i
+                        })
+                    })
+                    if (addToRelationalTable.error) {
+                        console.log(addToRelationalTable.error)
+                        return addToRelationalTable.error
+                    }
+                }
+
+                return createPost.data;
+            },
+            invalidatesTags: (result, error, arg) => {
+                if (error) return error
+                else return [{type: 'Posts', id: 'LIST'}]
+        }
         })
 
 
@@ -121,7 +239,8 @@ export const {
     useGetPostsQuery,
     useGetPostsByIdQuery,
     useUpdatePostMutation,
-    useDeletePostMutation
+    useDeletePostMutation,
+    useAddNewPostMutation
 } = extendedApiSlice
 
 // returns the query result object
@@ -142,98 +261,19 @@ export const {
 
 
 
-
-// thunk is a piece of code that allows async work in redux toolkit
-export const getAllPosts = createAsyncThunk('posts/getAllPosts', async (id) => {
-    try {
-        const result = await axios.get(GET_ALL_POSTS_URL, {
-            headers: {'Content-Type': 'application/json'},
-            withCredentials: true,
-        });
-        return [[...result.data.postList.slice(0).reverse()], id]
-    } catch (error) {
-        console.error(error);
-        return error.message
-    }
-})
-
-
+// Global state for other post operations
 export const allPostsSlice = createSlice({
     name: 'allPosts',
     initialState: {
-        allPosts: null,
-        allPostsInitial: null,
         selectedId: null,
         editing: false,
         expanded: false,
         currentGrid: "artwork",
         postMessage: null,
-        status: 'idle', //'idle' || 'loading' || 'succeeded' || 'failed',
-        error: null
     },
     reducers: {
-        incrementPostLikes(state, action) {
-            const newAllPosts = state.allPosts;
-            const newAllPostsInitial = state.allPostsInitial
-            newAllPosts[action.payload][0].likes = newAllPosts[action.payload][0].likes+1;
-            newAllPostsInitial[action.payload][0].likes = newAllPostsInitial[action.payload][0].likes+1;
-            state.allPosts = newAllPosts;
-            state.allPostsInitial = newAllPostsInitial;
-        },
-        decrementPostLikes(state, action) {
-            const newAllPosts = state.allPosts;
-            const newAllPostsInitial = state.allPostsInitial
-            newAllPosts[action.payload][0].likes = newAllPosts[action.payload][0].likes-1;
-            newAllPostsInitial[action.payload][0].likes = newAllPostsInitial[action.payload][0].likes-1;
-            state.allPosts = newAllPosts;
-            state.allPostsInitial = newAllPostsInitial;
-        },
-        deleteSelectedPost(state, action) {
-            const newAllPosts = state.allPosts;
-            const newAllPostsInitial = state.allPostsInitial
-            delete newAllPosts[action.payload];
-            delete newAllPostsInitial[action.payload];
-            state.allPosts = newAllPosts;
-            state.allPostsInitial = newAllPostsInitial;
-        },
-        archiveSelectedPost(state, action) {
-            const newAllPosts = state.allPosts;
-            const newAllPostsInitial = state.allPostsInitial
-            newAllPosts[action.payload][0].archived = (newAllPosts[action.payload][0].archived) ? false : true;
-            newAllPostsInitial[action.payload][0].archived = (newAllPostsInitial[action.payload][0].archived) ? false : true;
-            state.allPosts = newAllPosts;
-            state.allPostsInitial = newAllPostsInitial;
-        },
-        hidePostLikes(state, action) {
-            const newAllPosts = state.allPosts;
-            const newAllPostsInitial = state.allPostsInitial
-            newAllPosts[action.payload][0].show_likes = (newAllPosts[action.payload][0].show_likes) ? false : true;
-            newAllPostsInitial[action.payload][0].show_likes = (newAllPostsInitial[action.payload][0].show_likes) ? false : true;
-            state.allPosts = newAllPosts;
-            state.allPostsInitial = newAllPostsInitial;
-        },
-        editPostBody(state, action) {
-            const newAllPosts = state.allPosts;
-            const newAllPostsInitial = state.allPostsInitial
-            newAllPosts[action.payload[0]][0].body = action.payload[1];
-            newAllPostsInitial[action.payload[0]][0].body = action.payload[1];
-            state.allPosts = newAllPosts;
-            state.allPostsInitial = newAllPostsInitial;
-        },
         changeCurrentGrid(state, action) {
             state.currentGrid = action.payload;
-
-            const newAllPosts = state.allPostsInitial;
-            state.allPosts = [...Object.keys(newAllPosts)]
-                .filter(k => newAllPosts[k][0].archived === false && newAllPosts[k][0].post_type === action.payload)
-                .sort((x,y) => new Date(newAllPosts[y][0].date_created) - new Date(newAllPosts[x][0].date_created))
-                .reduce((curr, k) => {return Object.assign(curr, {[k]: newAllPosts[k]})}, {});
-        },
-        selectSinglePost(state, action) {
-            const newAllPosts = state.allPostsInitial;
-            state.allPosts = [...Object.keys(newAllPosts)]
-                .filter(k => newAllPosts[k][0].post_id === action.payload)
-                .reduce((curr, k) => {return Object.assign(curr, {[k]: newAllPosts[k]})}, {});
         },
         choosePostId(state, action) {
             state.selectedId = action.payload;
@@ -247,50 +287,9 @@ export const allPostsSlice = createSlice({
         changePostMessage(state, action) {
             state.postMessage = action.payload;
         }
-    },
-    extraReducers(builder) {
-        builder
-            .addCase(getAllPosts.pending, (state, action) => {
-                state.status = 'loading'
-            })
-            .addCase(getAllPosts.fulfilled, (state, action) => {
-                state.status = 'succeeded'
-
-                let hash = {};
-                for (let i = 0; i < action.payload[0].length; i++) {
-                    let key = action.payload[0][i].post_id;
-
-                    if (key in hash) {
-                        hash[key] = [...hash[key], action.payload[0][i]];
-                    } else {
-                        hash[key] = [action.payload[0][i]];
-                    }
-                }
-
-                state.allPostsInitial = hash;
-                if (action.payload[1]) {
-                    const newAllPosts = hash;
-                    state.allPosts = [...Object.keys(newAllPosts)]
-                        .filter(k => newAllPosts[k][0].post_id === Number(action.payload[1]))
-                        .reduce((curr, k) => {return Object.assign(curr, {[k]: newAllPosts[k]})}, {});
-                } else {
-                    const newAllPosts = hash;
-                    state.allPosts = [...Object.keys(newAllPosts)]
-                        .filter(k => newAllPosts[k][0].archived === false && newAllPosts[k][0].post_type === state.currentGrid)
-                        .sort((x,y) => new Date(newAllPosts[y][0].date_created) - new Date(newAllPosts[x][0].date_created))
-                        .reduce((curr, k) => {return Object.assign(curr, {[k]: newAllPosts[k]})}, {});
-                } 
-            })
-            .addCase(getAllPosts.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.error.message;
-            })
     }
 });
 
-export const selectAllPosts = (state) => state.allPosts.allPosts;
-export const getAllPostsStatus = (state) => state.allPosts.status;
-export const getAllPostsError = (state) => state.allPosts.error;
 export const getPostId = (state) => state.allPosts.selectedId;
 export const getEditing = (state) => state.allPosts.editing;
 export const getExpanded = (state) => state.allPosts.expanded;
@@ -298,14 +297,7 @@ export const getCurrentGrid = (state) => state.allPosts.currentGrid;
 export const getPostMessage = (state) => state.allPosts.postMessage;
 
 export const { 
-    incrementPostLikes, 
-    decrementPostLikes, 
-    deleteSelectedPost, 
-    archiveSelectedPost, 
-    hidePostLikes, 
-    editPostBody, 
     changeCurrentGrid,
-    selectSinglePost,
     choosePostId,
     editSinglePost,
     expandSinglePost,

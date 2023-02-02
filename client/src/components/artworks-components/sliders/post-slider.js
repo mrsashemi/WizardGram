@@ -14,12 +14,12 @@ export function PostSlider({multiples, existing}) {
 
     const nextSlide = () => {
         if(existing) setCurr((curr === length - 1) ? 0 : curr + 1);
-        else dispatch(changeImageIndex((current === newImage.length - 1) ? 0 : current + 1))
+        else dispatch(changeImageIndex((current === length - 1) ? 0 : current + 1))
     };
 
     const prevSlide = () => {
         if (existing) setCurr((curr === 0) ? length - 1 : curr - 1);
-        else dispatch(changeImageIndex((current === 0) ? newImage.length - 1 : current - 1))
+        else dispatch(changeImageIndex((current === 0) ? length - 1 : current - 1))
     }
 
     const setOptionOnChange = (post, index) => {
@@ -53,7 +53,11 @@ export function PostSlider({multiples, existing}) {
                             slider={(multPosts, currIdx) => (
                                 <div className="pickSlideButtonsContainer">
                                     {multPosts.map((post, index) => 
-                                    <div key={index} className="pickSlideButton" onClick={() => setOptionOnChange(post, index)} style={{background: (index === currIdx) ? 'rgba(0, 21, 252, 0.5)' : 'rgba(255, 255, 255, 0.2)'}}></div>
+                                    <div 
+                                        key={index} className="pickSlideButton" 
+                                        onClick={() => setOptionOnChange(post, index)} 
+                                        style={{background: (index === currIdx) ? 'rgba(0, 21, 252, 0.5)' : 'rgba(255, 255, 255, 0.2)'}}>
+                                    </div>
                                     )}
                                 </div> 
                             )}

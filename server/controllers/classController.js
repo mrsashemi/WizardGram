@@ -3,10 +3,6 @@ const jwt = require("jsonwebtoken");
 
 //upload a photo to s3 and store information in psql
 exports.createClass = async (req, res) => {
-    const cookies = req.cookies;
-    if(!cookies.jwt) return res.sendStatus(401);
-    const refreshToken = cookies.jwt;
-
     const { 
         filter_class, 
         fit_class, 
@@ -30,7 +26,6 @@ exports.createClass = async (req, res) => {
     } = req.body;
     
     try {
-        const udata = await pool.query(`SELECT * FROM users WHERE refresh_token = $1;`, [refreshToken]);
         const cdata = await pool.query(
             `SELECT * FROM image_classes 
             WHERE filter_class = $1 
@@ -74,14 +69,9 @@ exports.createClass = async (req, res) => {
                 unedited
             ]);
     
-        const user = udata.rows;
         const classData = cdata.rows;
 
-        if (user.length === 0) {
-            res.status(401).json({
-                error: "Unauthorized, please log back in"
-            });
-        } else if (classData.length >= 1) {
+        if (classData.length >= 1) {
             res.status(303).json({
                 message: "Class resource already exists in database",
                 class_id: classData[0].class_id

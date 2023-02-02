@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { ImgContainer } from "../img-component/img-container.js"
-import { selectAllPosts, getAllPostsStatus, changeCurrentGrid, getExpanded, expandSinglePost, getPostId, choosePostId, selectSinglePost, useGetPostsQuery, selectAllPost, selectPostById, selectUserIds } from "../../../features/posts/getAllPostsSlice";
+import { changeCurrentGrid, getExpanded, expandSinglePost, getPostId, choosePostId, useGetPostsQuery, getCurrentGrid } from "../../../features/posts/getAllPostsSlice";
 import { useNavigate } from "react-router-dom"
 import useLongPress from "../../../hooks/uselongpress"
 
@@ -12,21 +12,21 @@ export function ArtworksHomeGrid() {
     const imgInfo = useRef(null);
     let interval = useRef();
 
-    const allPost = useSelector(selectAllPost);
-    const allPosts = useSelector(selectAllPosts);
+    const currentGrid = useSelector(getCurrentGrid);
     const isExpanded = useSelector(getExpanded);
-    const selectedPostId = useSelector(getPostId);
-    //const allPostsStatus = useSelector(getAllPostsStatus);
     const dispatch = useDispatch();
 
     const {
-        data: post,
+        data: posts,
         isLoading,
         isSuccess,
         isError,
         error
     } = useGetPostsQuery()
 
+    useEffect(() => {
+        console.log(posts);
+    }, [posts])
 
     // simulate pressing shrinking effect on post with intervals
     useEffect(() => {
@@ -78,7 +78,6 @@ export function ArtworksHomeGrid() {
         setPressing(false);
         if (!isExpanded) {
             dispatch(expandSinglePost(true));
-            dispatch(selectSinglePost(selectedPostId));
         } 
     };
 
@@ -108,13 +107,16 @@ export function ArtworksHomeGrid() {
             </div>
             <div className="instaGrid">
                 {
-                allPosts && [...Object.keys(allPosts)].reverse().map((k, index) => 
+                posts && [...Object.keys(posts.entities)]
+                    .filter(k => posts.entities[k].post[0].archived === false && posts.entities[k].post[0].post_type === currentGrid)
+                    .sort((x,y) => new Date(posts.entities[y].post[0].date_created) - new Date(posts.entities[x].post[0].date_created))
+                    .map((k, index) => 
                     <div 
-                        key={allPosts[k][0].post_id} 
+                        key={posts.entities[k].post[0].post_id} 
                         className="gridImageContainer" 
-                        onMouseEnter={() => {onHover(allPosts[k][0].post_id)}}
+                        onMouseEnter={() => {onHover(posts.entities[k].post[0].post_id)}}
                         {...longPressEvent}>
-                            <ImgContainer post={allPosts[k][0]} imgClass={'scrollPage'} render={(selected) => (
+                            <ImgContainer post={posts.entities[k].post[0]} imgClass={'scrollPage'} render={(selected) => (
                                 selected.vignette ? (
                                     <div className="vignette" style={{boxShadow: `inset 0px 0px ${selected.vignette_blur/2.5}px ${selected.vignette_spread/2.5}px rgba(0, 0, 0, 0.5)`}}></div>
                                 ) : (

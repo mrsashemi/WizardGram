@@ -1,159 +1,111 @@
-import React, { useEffect, useRef, useState } from "react";
-import { deleteSelectedPost, archiveSelectedPost, hidePostLikes, selectAllPosts, getPostId, choosePostId, getEditing, editSinglePost, selectSinglePost } from "../../../features/posts/getAllPostsSlice";
+import React, { useState } from "react";
+import { ModalInfo } from './ModalInfo';
+import { getEditing, editSinglePost, useUpdatePostMutation, useDeletePostMutation } from "../../../features/posts/getAllPostsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { axiosPrivate } from "../../../api/axios";
 
-export function ExistingModal({onHide, showModal}) {
-    const editing = useSelector(getEditing);
-    const allPosts = useSelector(selectAllPosts);
-    const selectedId = useSelector(getPostId);
-    const dispatch = useDispatch();
-
+export function ExistingModal({onHide, showModal, selectedId, posts}) {
     const [confirmDelete, setConfirmDelete] = useState(false);
-    const modalRef = useRef(null);
+    const editing = useSelector(getEditing);
     const navigate = useNavigate();
 
+    const [updatePost] = useUpdatePostMutation();
+    const [removePost] = useDeletePostMutation();
+    const dispatch = useDispatch();
+
     const toPostEdit = () => {
-        dispatch(selectSinglePost(selectedId));
         dispatch(editSinglePost(true));
+        onHide();
         navigate(`/wizardgram/posts/${selectedId}`);
     }
 
-    useEffect(() => {
-        const handleHide = (e) => {
-            if (modalRef.current && !modalRef.current.contains(e.target)) {
-                onHide && onHide();
-                setConfirmDelete(false)
-            }
-        };
-
-        document.addEventListener('click', handleHide, true);
-        return () => {
-            document.removeEventListener('click', handleHide, true);
-        }
-
-    }, [onHide]);
-
     const deletePost = async () => {
         try {
-            const result = await axiosPrivate.delete(`/posts/delete-post/${selectedId}`,
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
-                }
-            );
-
+            const result = await removePost({id: selectedId})
             if (result) {
-                dispatch(deleteSelectedPost(selectedId));
-                if (!editing) {
-                    onHide();
-                } else {
+                if (!editing) onHide();
+                else {
                     onHide();
                     return navigate(-1);
                 }
             }
         } catch (error) {
-            console.log("deletePost", error);
+            console.log(error)
         }
     }
 
-
-
     const archivePost = async () => {
+        const time = new Date(Date.now()).toISOString();
         try {
-            const result = await axiosPrivate.put(`/posts/update-post/${selectedId}`, 
-                JSON.stringify({
-                    body: allPosts[selectedId][0].body,
-                    theme_id: allPosts[selectedId][0].theme_id,
-                    title: allPosts[selectedId][0].title,
-                    date_updated: allPosts[selectedId][0].date_updated,
-                    likes: allPosts[selectedId][0].likes,
-                    show_likes: allPosts[selectedId][0].show_likes,
-                    archived: (allPosts[selectedId][0].archived) ? false : true
-                }),
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
+            const result = await updatePost({
+                update: {
+                    prop: "archived",
+                    val: (posts[selectedId].post[0].archived) ? false : true,
+                    date: time,
+                    post: posts[selectedId].post[0]
                 }
-            );
-
-            if (result) {
-                dispatch(archiveSelectedPost(selectedId));
-                dispatch(choosePostId(null));
-                onHide();
-            }
+            })
+            if (result) onHide();
         } catch (error) {
-            console.log("updatePost", error);
+            console.log(error)
         }
-   }
+    }
 
     const hideLikes = async () => {   
+        const time = new Date(Date.now()).toISOString();
         try {
-            const result = await axiosPrivate.put(`/posts/update-post/${selectedId}`, 
-                JSON.stringify({
-                    body: allPosts[selectedId][0].body,
-                    theme_id: allPosts[selectedId][0].theme_id,
-                    title: allPosts[selectedId][0].title,
-                    date_updated: allPosts[selectedId][0].date_updated,
-                    likes: allPosts[selectedId][0].likes,
-                    show_likes: (allPosts[selectedId][0].show_likes) ? false : true,
-                    archived: allPosts[selectedId][0].archived
-                }),
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
+            const result = await updatePost({
+                update: {
+                    prop: "showLikes",
+                    val: (posts[selectedId].post[0].show_likes) ? false : true,
+                    date: time,
+                    post: posts[selectedId].post[0]
                 }
-            );
-
-            if (result) {
-                dispatch(hidePostLikes(selectedId));
-                onHide();
-            }
+            })
+            if (result) onHide();
         } catch (error) {
-            console.log("updatePost", error);
+            console.log(error)
         }
-   }
+    }
 
     return (
-        <React.Fragment>
-            {confirmDelete 
-            ? <div id="postModalContainer" className={`postModalContainer ${showModal ? 'showModal' : ''}`} ref={modalRef}>
-                <div className="modalTitleContainer">
-                <div className="modalHideDragBar" onClick={onHide}></div>
-                <h3 className="modalTitle">Are You Sure?</h3>
-                </div>
-                <div className="modalButtonContainer">
-                        <button className="modalButton" onClick={() => deletePost()}>Yes</button>
-                    <div className="modalButtonBottomBar"></div>
-                </div>
-                <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => setConfirmDelete(false)}>No</button>
-                    <div className="modalButtonBottomBar"></div>
-                </div>
-                </div>
-            : <div id="postModalContainer" className={`postModalContainer ${showModal ? 'showModal' : ''}`} ref={modalRef}>
-                <div className="modalTitleContainer">
-                <div className="modalHideDragBar" onClick={onHide}></div>
-                <h3 className="modalTitle">Post</h3>
-                </div>
-                <div className="modalButtonContainer">
-                        <button className="modalButton" onClick={() => toPostEdit()}>Edit</button>
-                    <div className="modalButtonBottomBar"></div>
-                </div>
-                <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => setConfirmDelete(true)}>Delete</button>
-                    <div className="modalButtonBottomBar"></div>
-                </div>
-                <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => archivePost()}>{(!selectedId) ? 'Archive' : (allPosts[selectedId][0].archived) ? 'Unarchive' : 'Archive'}</button> 
-                    <div className="modalButtonBottomBar"></div>
-                </div>
-                <div className="modalButtonContainer">
-                    <button className="modalButton" onClick={() => hideLikes()}>{(!selectedId) ? 'Hide Like Count' : (allPosts[selectedId][0].show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
-                    <div className="modalButtonBottomBar"></div>
-                </div>
-            </div>}
-        </React.Fragment>
+        <ModalInfo 
+            showModal={showModal}
+            onHide={onHide}
+            setConfirmDelete={setConfirmDelete}
+            title={confirmDelete ? "Are You Sure?" : "Post"}
+            render={() => (
+                confirmDelete ? (
+                    <React.Fragment>
+                        <div className="modalButtonContainer">
+                            <button className="modalButton" onClick={() => deletePost()}>Yes</button>
+                            <div className="modalButtonBottomBar"></div>
+                        </div>
+                        <div className="modalButtonContainer">
+                            <button className="modalButton" onClick={() => setConfirmDelete(false)}>No</button>
+                            <div className="modalButtonBottomBar"></div>
+                        </div>
+                    </React.Fragment>
+                ) : (
+                    <React.Fragment>
+                        <div className="modalButtonContainer">
+                            <button className="modalButton" onClick={() => toPostEdit()}>Edit</button>
+                            <div className="modalButtonBottomBar"></div>
+                        </div>
+                        <div className="modalButtonContainer">
+                            <button className="modalButton" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <div className="modalButtonBottomBar"></div>
+                        </div>
+                        <div className="modalButtonContainer">
+                            <button className="modalButton" onClick={() => archivePost()}>{(posts[selectedId]?.post[0]?.archived) ? 'Unarchive' : 'Archive'}</button> 
+                            <div className="modalButtonBottomBar"></div>
+                        </div>
+                        <div className="modalButtonContainer">
+                            <button className="modalButton" onClick={() => hideLikes()}>{(posts[selectedId]?.post[0]?.show_likes) ? 'Hide Like Count' : 'Show Like Count'}</button>
+                            <div className="modalButtonBottomBar"></div>
+                        </div>
+                    </React.Fragment>
+                )
+        )}/>
     )
 }
