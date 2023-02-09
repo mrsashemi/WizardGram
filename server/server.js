@@ -14,6 +14,9 @@ const cookieParser = require('cookie-parser');
 // use pool to access the database
 const pool = require("./databases/db");
 
+// use body parser to support encoded bodies
+const bodyParser = require('body-parser');
+
 // set port
 const port = process.env.PORT || 5050;
 if (process.env.NODE_ENV === 'development') require('dotenv').config()
@@ -30,8 +33,9 @@ pool.connect((err) => {
 //middleware
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}))
 app.use('/', express.static(path.join(__dirname, '/public')));
 
 

@@ -24,7 +24,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 });
 
                 const hash = {};
-                for (let i = 0; i < loadedPosts.length; i++) {
+                for (let i = 0; i < loadedPosts.length; i++) {  
                     let key = loadedPosts[i].id;
 
                     if (key in hash) {

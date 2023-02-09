@@ -97,7 +97,8 @@ const initialState = {
         ["X-Pro II", "filter-xpro-ii"]
     ],
     newImageTitle: "",
-    newImageBodyMessage: ""
+    newImageBodyMessage: "",
+    scaleReminder: null
 }
 
 export const newPostSlice = createSlice({
@@ -220,7 +221,7 @@ export const newPostSlice = createSlice({
             } else if (action.payload[0] === "middleLeft") {
                 tempNewImage[state.newImageIndex].scale = tempNewImage[state.newImageIndex].scale-0.01;
             } else if (action.payload[0] === "middleRight") {
-                tempNewImage[state.newImageIndex].scale = action.payload[1]
+                tempNewImage[state.newImageIndex].scale = action.payload[1];
             }
             state.newImage = tempNewImage;
         },
@@ -275,6 +276,14 @@ export const newPostSlice = createSlice({
         },
         changeNewImageBodyMessage(state, action) {
             state.newImageBodyMessage = action.payload;
+        },
+        setScaleReminder(state, action) {
+            let scaleArray = [];
+            for (let i = 0; i < state.newImage.length; i++) {
+                scaleArray.push(state.newImage[i].scale);
+            }
+
+            state.scaleReminder = scaleArray;
         }
     }
 })
@@ -287,6 +296,7 @@ export const getFilterUsage = (state) => state.newImage.isUsingFilter;
 export const getFilterClasses = (state) => state.newImage.filterClasses;
 export const getNewImageTitle = (state) => state.newImage.newImageTitle;
 export const getNewImageMessage = (state) => state.newImage.newImageBodyMessage;
+export const getScaleReminder = (state) => state.newImage.scaleReminder;
 
 export const { 
     chooseUnedited, 
@@ -307,7 +317,8 @@ export const {
     cancelImageValue,
     addVignetteForNewImage,
     changeNewImageTitle,
-    changeNewImageBodyMessage
+    changeNewImageBodyMessage,
+    setScaleReminder
 } = newPostSlice.actions;
 
 export default newPostSlice.reducer;

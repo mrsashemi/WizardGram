@@ -7,12 +7,23 @@ import useAxiosPrivate from "../../hooks/useaxiosprivate";
 import { useOutletContext } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateImageUrlId } from "../../features/posts/newPostSlice";
+import { useAddNewImageFileMutation, useGetImagesQuery } from "../../features/posts/imagesSclice";
 const SAVE_IMG_URL = '/img/save-image';
 const GET_ALL_IMG_URL = '/img/get-all-images';
 
 
 export function NewPost() {
     const dispatch = useDispatch();
+    const [addNewPost] = useAddNewImageFileMutation();
+
+
+    const {
+        data: images,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetImagesQuery();
 
     const [selectedImage, setSelectedImage] = useState("");
     const [allImg, setAllImg] = useState(null);
@@ -27,34 +38,17 @@ export function NewPost() {
         if (selectedImage !== "") {
             const createImg = async () => {
                 try {
-                    const result = await axiosPrivate.post(SAVE_IMG_URL, formData, 
-                        {
-                            headers: {'Content-Type': 'multipart/form-data'},
-                            withCredentials: true,
-                        });
+                    const result = await addNewPost({formData});
+                    if (result) {
+                        console.log(result);
                         dispatch(updateImageUrlId([result.data.img_location, result.data.img_id]))
-                        setSelectedImage("");       
+                        setSelectedImage("");   
+                    }
                 } catch (error) {
-                    console.error(error);
+                    console.log(error);
                 }
             }
-
             createImg();
-        } else {
-            const getAllImg = async () => {
-                try {
-                    const result = await axiosPrivate.get(GET_ALL_IMG_URL, {
-                        headers: {'Content-Type': 'application/json'},
-                        withCredentials: true,
-                    });
-                    setAllImg(result.data.imageList.slice(0).reverse());
-                    dispatch(updateImageUrlId([result.data.imageList.slice(0).reverse()[0].img_location, result.data.imageList.slice(0).reverse()[0].img_id]));
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-
-            getAllImg();
         }
     }, [axiosPrivate, selectedImage, dispatch]);
 
@@ -70,8 +64,8 @@ export function NewPost() {
             <NewDisplay />
             <NewFileSelect 
                 setSelectedImage={setSelectedImage} />
-            <NewGrid 
-                allImg={allImg} />
+            {isSuccess && <NewGrid 
+                allImg={images.entities[1].images} />}
         </div>
     )
 }
