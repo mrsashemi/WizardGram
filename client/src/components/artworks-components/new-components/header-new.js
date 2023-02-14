@@ -1,10 +1,11 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { changeImageIndex, setScaleReminder } from "../../../features/posts/newPostSlice";
+import { changeImageIndex, getPostType, setScaleReminder } from "../../../features/posts/newPostSlice";
 
-export function NewHeader({postType}) {
+export function NewHeader() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const postType = useSelector(getPostType)
 
     const toNextPage = () => {
         if (postType === "photograph") {

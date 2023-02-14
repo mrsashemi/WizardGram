@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
 import { ArtworksHomeGrid } from "./home-artworks-components/grid-artworks-home";
 import { ArtworksHomeHeader } from "./home-artworks-components/header-artworks-home";
 import { ArtworksHomeHighlights } from "./home-artworks-components/highlights-artworks-home";
@@ -9,7 +8,6 @@ import { CreateModal } from "./modals/create-modal";
 
 export function ArtworksHome() {
     const [showModal, setShowModal] = useState(false);
-    const { setPostType } = useOutletContext();
 
     function showPostModal() {
         setShowModal(true);
@@ -29,8 +27,7 @@ export function ArtworksHome() {
             <ArtworksHomeGrid />
             <CreateModal 
                 onHide={hidePostModal} 
-                showModal={showModal}
-                setPostType={setPostType} />
+                showModal={showModal} />
         </div>
     )
 }

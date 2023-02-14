@@ -20,7 +20,6 @@ store.dispatch(extendedApiSlice.endpoints.getPosts.initiate());
 
 export function ArtworkGallery() {
     const [delay, setDelay] = useState(false); 
-    const [postType, setPostType] = useState(null); // for use on  deciding what type of post to make (new post)
     const dispatch = useDispatch();
     const postRef = useRef(null); 
     const navigate = useNavigate();
@@ -87,9 +86,9 @@ export function ArtworkGallery() {
             <SimpleBackground />
             <div id="instaGalleryContainer">
                 <TopNavBar />
-                <Outlet context={{postType, setPostType}} />
+                <Outlet />
             </div>
-            {isExpanded && 
+            {isExpanded && isSuccess &&
             <div className="expandedPostContainer" 
             ref={postRef} 
             key={post.entities[postId].post[0].post_id} 

@@ -1,14 +1,15 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useAddNewPostMutation } from "../../../features/posts/getAllPostsSlice";
-import { getNewImage, getNewImageMessage, getNewImageTitle } from "../../../features/posts/newPostSlice";
+import { getNewImage, getNewImageMessage, getNewImageTitle, getPostType } from "../../../features/posts/newPostSlice";
 
 
-export function PublishHeader({ postType }) {
+export function PublishHeader() {
     const [addNewPost] = useAddNewPostMutation();
     const message = useSelector(getNewImageMessage);
     const postTitle = useSelector(getNewImageTitle);
     const newImage = useSelector(getNewImage);
+    const postType = useSelector(getPostType);
     const navigate = useNavigate();
 
     const uploadPost = async () => {

@@ -1,7 +1,12 @@
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { useAddNewImageFileMutation } from "../../../features/posts/imagesSclice";
+import { updateImageUrlId } from "../../../features/posts/newPostSlice";
 
-export function NewFileSelect({setSelectedImage}) {
+export function NewFileSelect() {
     const hiddenFileInput = useRef(null);
+    const dispatch = useDispatch();
+    const [addNewPost] = useAddNewImageFileMutation();
 
     const handleClick = (e) => {
         hiddenFileInput.current.click();
@@ -9,7 +14,21 @@ export function NewFileSelect({setSelectedImage}) {
 
     const handleChange = (e) => {
         e.preventDefault();
-        setSelectedImage(e.target.files[0]);
+        const formData = new FormData();
+        formData.append("image", e.target.files[0]);
+
+        const createImg = async () => {
+            try {
+                const result = await addNewPost({formData});
+                if (result) {
+                    console.log(result);
+                    dispatch(updateImageUrlId([result.data.img_location, result.data.img_id]))  
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        createImg();
     }
    
 

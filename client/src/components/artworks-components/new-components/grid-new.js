@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { cancelMultipleImages, getNewImage, getPostMultiple, updateImageUrlId } from "../../../features/posts/newPostSlice";
+import { getNewImage, getPostMultiple, updateImageUrlId } from "../../../features/posts/newPostSlice";
 
 export function NewGrid({allImg}) {
     const newImage = useSelector(getNewImage);

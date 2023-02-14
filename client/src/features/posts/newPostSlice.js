@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 
 const initialState = {
+    postType: "",
     newImageReference: {
         id: "",
         url: null,
@@ -284,6 +285,9 @@ export const newPostSlice = createSlice({
             }
 
             state.scaleReminder = scaleArray;
+        },
+        setPostType(state, action) {
+            state.postType = action.payload;
         }
     }
 })
@@ -297,6 +301,7 @@ export const getFilterClasses = (state) => state.newImage.filterClasses;
 export const getNewImageTitle = (state) => state.newImage.newImageTitle;
 export const getNewImageMessage = (state) => state.newImage.newImageBodyMessage;
 export const getScaleReminder = (state) => state.newImage.scaleReminder;
+export const getPostType = (state) => state.newImage.postType;
 
 export const { 
     chooseUnedited, 
@@ -318,7 +323,8 @@ export const {
     addVignetteForNewImage,
     changeNewImageTitle,
     changeNewImageBodyMessage,
-    setScaleReminder
+    setScaleReminder,
+    setPostType
 } = newPostSlice.actions;
 
 export default newPostSlice.reducer;

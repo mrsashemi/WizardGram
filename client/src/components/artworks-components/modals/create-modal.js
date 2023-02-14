@@ -1,18 +1,21 @@
 import React, { useRef } from "react";
 import { ModalInfo } from "./ModalInfo";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setPostType } from "../../../features/posts/newPostSlice";
 
-export function CreateModal({onHide, showModal, setPostType}) {
+export function CreateModal({onHide, showModal}) {
     const modalRef = useRef(null);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const postPhotography = () => {
-        setPostType("photograph")
+        dispatch(setPostType("photograph"));
         return navigate("/wizardgram/newpost");
     }
 
     const postArtworks = () => {
-        setPostType("artwork")
+        dispatch(setPostType("artwork"));
         return navigate("/wizardgram/newpost");
     }
 
