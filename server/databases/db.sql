@@ -41,20 +41,6 @@ CREATE TABLE posts(
             ON DELETE CASCADE
 );
 
-CREATE TABLE post_likes(
-    post_id INT NOT NULL,
-    users_id INT NOT NULL,
-    CONSTRAINT fk_post
-        FOREIGN KEY(post_id)
-            REFERENCES posts(post_id)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE,
-    CONSTRAINT fk_users
-        FOREIGN KEY(users_id)
-            REFERENCES users(users_id)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE
-);
 
 CREATE TABLE images(
     img_id SERIAL PRIMARY KEY,
@@ -66,41 +52,24 @@ CREATE TABLE image_classes(
     class_id SERIAL PRIMARY KEY,
     filter_class TEXT NOT NULL DEFAULT 'no-filter',
     fit_class TEXT NOT NULL DEFAULT 'coverImg', 
-    position_x INT NOT NULL DEFAULT 0,
-    position_y INT NOT NULL DEFAULT 0, 
-    scale INT NOT NULL DEFAULT 1,
-    brightness INT NOT NULL DEFAULT 100,
-    contrast INT NOT NULL DEFAULT 100,
-    saturate INT NOT NULL DEFAULT 100,
-    grayscale INT NOT NULL DEFAULT 0,
-    sepia INT NOT NULL DEFAULT 0,
-    hue INT NOT NULL DEFAULT 0,
-    opacity INT NOT NULL DEFAULT 100,
-    blur INT NOT NULL DEFAULT 0,
-    rotate INT NOT NULL DEFAULT 0,
+    position_x NUMERIC NOT NULL DEFAULT 0,
+    position_y NUMERIC NOT NULL DEFAULT 0, 
+    scale NUMERIC NOT NULL DEFAULT 1,
+    brightness NUMERIC NOT NULL DEFAULT 100,
+    contrast NUMERIC NOT NULL DEFAULT 100,
+    saturate NUMERIC NOT NULL DEFAULT 100,
+    grayscale NUMERIC NOT NULL DEFAULT 0,
+    sepia NUMERIC NOT NULL DEFAULT 0,
+    hue NUMERIC NOT NULL DEFAULT 0,
+    opacity NUMERIC NOT NULL DEFAULT 100,
+    blur NUMERIC NOT NULL DEFAULT 0,
+    rotate NUMERIC NOT NULL DEFAULT 0,
     vignette BOOLEAN NOT NULL DEFAULT FALSE,
     vignette_class TEXT NOT NULL DEFAULT 'vignette',
-    vignette_blur INT NOT NULL DEFAULT 0,
-    vignette_spread INT NOT NULL DEFAULT 0,
-    unedited INT NOT NULL DEFAULT FALSE
+    vignette_blur NUMERIC NOT NULL DEFAULT 0,
+    vignette_spread NUMERIC NOT NULL DEFAULT 0,
+    unedited BOOLEAN NOT NULL DEFAULT FALSE
 );
-
-ALTER TABLE image_classes
-ALTER COLUMN position_x TYPE NUMERIC,
-ALTER COLUMN position_y TYPE NUMERIC,
-ALTER COLUMN scale TYPE NUMERIC,
-ALTER COLUMN brightness TYPE NUMERIC,
-ALTER COLUMN contrast TYPE NUMERIC,
-ALTER COLUMN saturate TYPE NUMERIC,
-ALTER COLUMN grayscale TYPE NUMERIC,
-ALTER COLUMN sepia TYPE NUMERIC,
-ALTER COLUMN hue TYPE NUMERIC,
-ALTER COLUMN opacity TYPE NUMERIC,
-ALTER COLUMN blur TYPE NUMERIC,
-ALTER COLUMN rotate TYPE NUMERIC,
-ALTER COLUMN vignette_blur TYPE NUMERIC,
-ALTER COLUMN vignette_spread TYPE NUMERIC,
-ALTER COLUMN unedited TYPE BOOLEAN;
 
 CREATE TABLE posts_images(
     img_id INT NOT NULL,
@@ -124,36 +93,6 @@ CREATE TABLE posts_images(
         PRIMARY KEY (img_id, post_id)
 );
 
-CREATE TABLE posts_themes(
-    theme_id SERIAL PRIMARY KEY,
-    theme_name VARCHAR(50) NOT NULL UNIQUE
-);
-
-
-CREATE TABLE comments(
-    comment_id SERIAL PRIMARY KEY,
-    body VARCHAR(500) NOT NULL,
-    users_id INT NOT NULL,
-    posts_id INT NOT NULL,
-    parent_comment_id INT, 
-    date_created TIMESTAMPTZ DEFAULT NOW(),
-    date_updated TIMESTAMPTZ DEFAULT NOW(),
-    CONSTRAINT fk_user
-        FOREIGN KEY(users_id)
-            REFERENCES users(users_id)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE,
-    CONSTRAINT fk_posts
-        FOREIGN KEY(posts_id)
-            REFERENCES posts(posts_id)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE,
-    CONSTRAINT fk_parent_comment
-        FOREIGN KEY(parent_comment_id)
-            REFERENCES comments(comment_id)
-            ON DELETE CASCADE
-);
-
 CREATE TABLE addresses(
     address_id SERIAL PRIMARY KEY,
     city VARCHAR(50) NOT NULL,
@@ -175,41 +114,3 @@ CREATE TABLE users_addresses(
             REFERENCES users(users_id)
             ON DELETE CASCADE
 );
-
-CREATE OR REPLACE FUNCTION UPDATE_DATE()
-    RETURNS TRIGGER
-    LANGUAGE PLPGSQL
-AS $$
-BEGIN 
-    NEW.date_updated = CURRENT_DATE;
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION UPDATE_TIMESTAMP()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
-AS $$
-BEGIN 
-    NEW.date_updated = NOW();
-    RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER update_posts_date
-    BEFORE UPDATE 
-    ON posts_posts
-    FOR EACH ROW
-        EXECUTE PROCEDURE UPDATE_DATE();
-
-CREATE TRIGGER update_users_date
-    BEFORE UPDATE 
-    ON users
-    FOR EACH ROW
-        EXECUTE PROCEDURE UPDATE_DATE();
-
-CREATE TRIGGER update_users_date
-    BEFORE UPDATE 
-    ON comments
-    FOR EACH ROW
-        EXECUTE PROCEDURE UPDATE_TIMESTAMP();

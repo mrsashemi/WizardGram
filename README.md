@@ -1,4 +1,6 @@
 # WizardGram Introduction
+This app is now deprciated and a newer version is now being worked on here: https://github.com/mrsashemi/wrk-website
+
 This app is loose a clone of the instagram user page designed to be used for an artist to show case their work. 
 
 ## Description

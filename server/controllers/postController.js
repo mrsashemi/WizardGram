@@ -1,11 +1,6 @@
 const Aws = require('aws-sdk');
 const pool = require("../databases/db");
 const jwt = require("jsonwebtoken");
-const { uploadFile, getFileStream } = require('../databases/s3');
-
-
-
-
 
 // upload a post and store information in psql
 exports.createPost = async (req, res) => {
@@ -219,6 +214,26 @@ exports.deletePost = async (req, res) => {
                 })
             })
         }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Database error while deleting post"
+        })
+    }
+}
+
+//delete all posts
+exports.deleteAllPosts = async (req, res) => {
+    try {
+        pool.query(`DELETE FROM posts`, (error, results) => {
+            if (error) {
+                throw error
+            }
+
+            res.status(200).json({
+                message: "All Posts deleted"
+            })
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json({

@@ -41,4 +41,11 @@ function App() {
 
 export default App;
 
-
+// Current Plan:
+//// add some tests
+//// Dockerize
+//// Add NGINX as reverse proxy
+//// Mongo and Neo4j api's
+//// loadtests 
+//// decide on service and host
+//// optimize
